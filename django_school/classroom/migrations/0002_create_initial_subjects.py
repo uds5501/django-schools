@@ -11,7 +11,13 @@ def create_subjects(apps, schema_editor):
     Subject.objects.create(name='Biology', color='#17a2b8')
     Subject.objects.create(name='History', color='#ffc107')
 
-
+def create_schools(apps, schema_editor):
+    School = apps.get_model('classroom', 'School')
+    School.objects.create(name='ASMMHSS')
+    School.objects.create(name='Mary Matha')
+    School.objects.create(name='PKHS')
+    School.objects.create(name='NES')
+    
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -20,4 +26,5 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(create_subjects),
+        migrations.RunPython(create_schools),
     ]
