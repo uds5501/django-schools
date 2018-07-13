@@ -8,12 +8,18 @@ from classroom.models import (Answer, Question,
 
 
 class TeacherSignUpForm(UserCreationForm):
+    schools = forms.ModelChoiceField(
+        queryset=School.objects.all(),
+        required=True
+    )
+
     class Meta(UserCreationForm.Meta):
         model = User
 
     def save(self, commit=True):
         user = super().save(commit=False)
         user.is_teacher = True
+        user.school = self.cleaned_data.get('schools')
         if commit:
             user.save()
         return user
@@ -37,6 +43,7 @@ class StudentSignUpForm(UserCreationForm):
     def save(self):
         user = super().save(commit=False)
         user.is_student = True
+        user.school = self.cleaned_data.get('schools')
         user.save()
         student = Student.objects.create(user=user)
         student.interests.add(*self.cleaned_data.get('interests'))
