@@ -5,11 +5,13 @@ from django.db import transaction
 from .models import Student
 
 class StudentSignUpForm(CustomUserCreationForm):
+    course = forms.ChoiceField(required=True)
     interests = forms.ModelMultipleChoiceField(
         queryset=Subject.objects.all(),
         widget=forms.CheckboxSelectMultiple,
         required=True
     )
+    
 
     @transaction.atomic
     def save(self):
@@ -22,3 +24,6 @@ class StudentSignUpForm(CustomUserCreationForm):
         student.interests.add(*self.cleaned_data.get('interests'))
         return user
 
+def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['city'].queryset = City.objects.none()

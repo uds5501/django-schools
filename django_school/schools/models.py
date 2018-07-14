@@ -34,7 +34,7 @@ class User(AbstractUser):
       (4, 'supervisor'),
       (5, 'admin'),
     )
-    user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES)
+    user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES,default=1)
     school = models.ForeignKey(School,on_delete=models.CASCADE, related_name='users',null=True)
     location = models.ForeignKey(Location,on_delete=models.CASCADE,null=True)
     
@@ -49,10 +49,11 @@ class User(AbstractUser):
         return self.user_type == 2
 
 class Course(models.Model):
-    # Class
+    # Class for exampl: 8A, 7B, 10I etc
     school = models.ForeignKey(School,on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
-    class_teacher = models.ForeignKey(User,on_delete=models.CASCADE)
+    #teacher = models.ForeignKey(User,on_delete=models.CASCADE)
+    # i don't know whether the below things are required or not
     teachers = models.ManyToManyField(User, related_name="course_teachers")
     students = models.ManyToManyField(User, related_name="course_students")
 
