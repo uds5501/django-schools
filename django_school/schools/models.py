@@ -16,8 +16,6 @@ class Location(models.Model):
     #def get_absolute_url(self):
     #    return reverse('location_detail', args=[str(self.id)])
 
-
-
 class School(models.Model):
     name = models.CharField(max_length=30)
     location = models.ForeignKey(Location,on_delete=models.CASCADE,null=True)
@@ -50,13 +48,11 @@ class User(AbstractUser):
         "Is the user a teacher?"
         return self.user_type == 2
 
-
-
-
 class Course(models.Model):
     # Class
     school = models.ForeignKey(School,on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
+    class_teacher = models.ForeignKey(User,on_delete=models.CASCADE)
     teachers = models.ManyToManyField(User, related_name="course_teachers")
     students = models.ManyToManyField(User, related_name="course_students")
 

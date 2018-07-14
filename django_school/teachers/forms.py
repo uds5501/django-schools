@@ -1,20 +1,10 @@
-from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from schools.models import School,User
+from schools.forms import CustomUserCreationForm
 
-class TeacherSignUpForm(UserCreationForm):
-    schools = forms.ModelChoiceField(
-        queryset=School.objects.all(),
-        required=True
-    )
-
-    class Meta(UserCreationForm.Meta):
-        model = User #settings.AUTH_USER_MODEL
-
+class TeacherSignUpForm(CustomUserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.user_type = 2
-        user.school = self.cleaned_data.get('schools')
+        user.user_type = 2 # teacher
+        #user.is_active = False
         if commit:
             user.save()
         return user

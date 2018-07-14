@@ -1,8 +1,34 @@
 {% extends 'base.html' %}
 
 {% load crispy_forms_tags %}
+{% block extracss %}
+<style type="text/css">
+html,
+body {
+  height: 100%;
+  background-color: #333;
+}
 
+body {
+  display: -ms-flexbox;
+  display: flex;
+  /*color: #fff;*/
+  text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
+  box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+}
+
+.cover-container {
+  max-width: 42em;
+}
+</style>
+    {% endblock %}
 {% block content %}
+<h2>Welcome to the Django Schools! <span class="icon-emo-happy"></span></h2>
+<p class="lead">
+  If you already have an account, go ahead and <a href="{% url 'login' %}">log in</a>. If you are new to Django Schools, get started
+  by creating a <a href="{% url 'student_signup' %}">student account</a> or a <a href="{% url 'teacher_signup' %}">teacher account</a>.
+</p>
+<hr>
   {% if form.non_field_errors %}
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
       {% for error in form.non_field_errors %}
@@ -12,15 +38,7 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-  {% endif %}
-  <p>
-    sample teacher: 
-    username: <strong>sumee</strong>, 
-    password: <strong>sumee1910</strong><br>
-    sample student: 
-    username: <strong>suhail</strong>, 
-    password: <strong>sumee1910</strong>
-  </p>
+  {% endif %}  
   <div class="row">
     <div class="col-lg-4 col-md-6 col-sm-8 col-12">
       <h2>Log in</h2>      
@@ -33,4 +51,9 @@
       </form>
     </div>
   </div>
+  <p>
+    sample accounts:
+    teacher: <strong>sumee</strong>, <strong>sumee1910</strong><br>
+    student: <strong>suhail</strong>, <strong>sumee1910</strong>
+  </p>
 {% endblock %}
