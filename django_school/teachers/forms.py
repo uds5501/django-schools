@@ -13,7 +13,7 @@ class TeacherSignUpForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.is_teacher = True
+        user.user_type = 2
         user.school = self.cleaned_data.get('schools')
         if commit:
             user.save()

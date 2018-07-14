@@ -1,7 +1,6 @@
 from django.db import models
 from django.conf import settings
-from quizzes.models import Quiz,Answer
-from schools.models import Subject
+from quizzes.models import Quiz,Answer,Subject
 
 # Create your models here.
 class Student(models.Model):

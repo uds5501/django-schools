@@ -4,7 +4,7 @@ from django.db import migrations
 
 
 def create_subjects(apps, schema_editor):
-    Subject = apps.get_model('schools', 'Subject')
+    Subject = apps.get_model('quizzes', 'Subject')
     Subject.objects.create(name='Arts', color='#343a40')
     Subject.objects.create(name='Computing', color='#007bff')
     Subject.objects.create(name='Math', color='#28a745')

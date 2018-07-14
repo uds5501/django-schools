@@ -10,7 +10,8 @@ from django.contrib import messages
 from django.db import transaction
 from django.db.models import Count
 
-from .forms import StudentInterestsForm, StudentSignUpForm, TakeQuizForm
+from quizzes.forms import StudentInterestsForm, TakeQuizForm
+from .forms import StudentSignUpForm
 from .decorators import student_required
 from .models import Student,TakenQuiz
 from quizzes.models import Quiz
