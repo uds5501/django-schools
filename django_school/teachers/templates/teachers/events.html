@@ -2,89 +2,414 @@
 {% block extracss %}
 <link href='https://fullcalendar.io/releases/fullcalendar/3.9.0/fullcalendar.min.css' rel='stylesheet' />
 <link href='https://fullcalendar.io/releases/fullcalendar/3.9.0/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+<link href='http://jonthornton.github.io/jquery-timepicker/jquery.timepicker.css' rel='stylesheet' />
+
 {% endblock %}
 
 {% block content %}
 <h2 class="mb-3">Events</h2>
 <div id='calendar'></div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="addEventModel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add New Event:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="frm_addevent">{% csrf_token %}
+        <div class="modal-body">
+          <div class="errormsg"></div>
+          <div class="form-group">
+            <label class="col-form-label">Event Date:</label>
+            <p class="eventDate"></p>
+            <input type="hidden" class="form-control" name="date" id="eventDate">
+          </div>
+          <div class="form-group">
+            <label class="col-form-label">Event Time:</label>
+            <input type="text" class="form-control" name="time" id="eventTime" required="">
+          </div>
+          <div class="form-group">
+            <label class="col-form-label">Event Title:</label>
+            <input type="text" class="form-control" name="title" required="">
+          </div>        
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" id="btn_add_event">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block extrajs %}
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"></script>
+
+<script src="http://jonthornton.github.io/jquery-timepicker/jquery.timepicker.js"></script>
+
 <script src='https://fullcalendar.io/releases/fullcalendar/3.9.0/lib/moment.min.js'></script>
 <script src='https://fullcalendar.io/releases/fullcalendar/3.9.0/fullcalendar.min.js'></script>
 <script>
 
-  $(document).ready(function() {
+$(document).ready(function() {
 
-    $('#calendar').fullCalendar({
-      header: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'month,basicWeek,basicDay'
-      },
-      defaultDate: '2018-07-12',
-      navLinks: true, // can click day/week names to navigate views
-      editable: true,
-      eventLimit: true, // allow "more" link when too many events
-      events: [
-        {
-          title: 'All Day Event',
-          start: '2018-07-01'
-        },
-        {
-          title: 'Long Event',
-          start: '2018-07-07',
-          end: '2018-07-10'
-        },
-        {
-          id: 999,
-          title: 'Repeating Event',
-          start: '2018-07-09T16:00:00'
-        },
-        {
-          id: 999,
-          title: 'Repeating Event',
-          start: '2018-07-16T16:00:00'
-        },
-        {
-          title: 'Conference',
-          start: '2018-07-11',
-          end: '2018-07-13'
-        },
-        {
-          title: 'Meeting',
-          start: '2018-07-12T10:30:00',
-          end: '2018-07-12T12:30:00'
-        },
-        {
-          title: 'Lunch',
-          start: '2018-07-12T12:00:00'
-        },
-        {
-          title: 'Meeting',
-          start: '2018-07-12T14:30:00'
-        },
-        {
-          title: 'Happy Hour',
-          start: '2018-07-12T17:30:00'
-        },
-        {
-          title: 'Dinner',
-          start: '2018-07-12T20:00:00'
-        },
-        {
-          title: 'Birthday Party',
-          start: '2018-07-13T07:00:00'
-        },
-        {
-          title: 'Click for Google',
-          url: 'http://google.com/',
-          start: '2018-07-28'
-        }
-      ]
-    });
-
+  var calendar = $('#calendar').fullCalendar({
+    dayClick: function(date, allDay, jsEvent, view) {
+      var date1 = new Date(date);
+      var date2 = new Date();
+      // only date latter is allowed
+      if (date1.getTime() >= date2.getTime()) {
+        $('p.eventDate').text(moment(date).format("MMM Do YY"));
+        $('#eventDate').val(moment(date).format());
+        $('#eventTime').timepicker({'scrollDefault': 'now'});
+        $('#addEventModel').modal('show');
+      }
+    },
+    eventClick: function (calEvent, jsEvent, view) {
+      alert('Event: ' + calEvent.title);
+      // change the border color just for fun
+      //$(this).css('border-color', 'red');
+    },
+    header: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'month,basicWeek,basicDay'
+    },
+    defaultDate: '2018-07-12',
+    navLinks: true, // can click day/week names to navigate views
+    editable: false,
+    eventLimit: true, // allow "more" link when too many events
+    events: "{% url 'teachers:events' %}?json=true"
   });
+  
+
+  $("#btn_add_event").click(function(e) {
+    e.preventDefault();     
+    var $addevent=$('#addEventModel');    
+    var datas=$('#frm_addevent').serializeArray();
+    $('#frm_addevent :input').attr('disabled', true);    
+    $.ajax({
+      type: "POST",
+      url: "{% url 'teachers:events' %}",
+      data: datas
+    }).done(function(resp){
+      if (resp == 'success'){ 
+        calendar.fullCalendar('refetchEvents');
+        $addevent.modal('hide');        
+      }else{
+        $('#frm_addevent :input').each(function(){this.disabled = false;});
+        $addevent.find('.errormsg').html('<div class="alert alert-danger">'+resp+'</div>');
+      }
+      
+    });
+  });
+
+});
 
 </script>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %}
+dict(id=et.id, title=et.title, start=str(start), end=str(end),
+events_list=[create_final_dict(dt) for dt in self.filter(event_date__range=(start_date, end_date)) if dt.rule==0]
+def ajaxloadevents(request):
+  diff=int(request.GET['_'])
+  start,end=int(request.GET['start']),int(request.GET['end'])
+  str_json=Event.objects.get_ajaxloaddata(start,end)
+  return HttpResponse(json.dumps(str_json), mimetype="application/json")
+<script>
+$(document).ready(function() {
+  $(".modal").draggable({
+      handle: ".modal-content"
+  });
+  $("#datepick_endrepeat").datepicker({
+    dateFormat: 'd-M-yy',   
+    changeMonth: true,
+    changeYear: true
+  });
+  //+++++++++++++++++++++++++++++++++++++++++++++
+  //=========== CALENDAR ========================
+  //|||||||||||||||||||||||||||||||||||||||||||||
+  var calendar = $('#calendar').fullCalendar({    
+    dayClick: function(date, allDay, jsEvent, view) {
+      {% if request.user.is_active %}     
+      if ($(jsEvent.target).is('div.fc-day-number')) {
+        if (allDay){
+          calendar.fullCalendar('changeView', 'basicDay'/* or 'basicDay' */) 
+                   .fullCalendar('gotoDate', date.getFullYear(), date.getMonth(), date.getDate());
+        }
+      }else{  
+      //===============================================================
+      //********************** ADD EVENT FUNCTION *********************
+      //===============================================================
+        var start=date;
+        var sel_date=$.fullCalendar.formatDate(start,'dd-MMM-yyyy');
+        var sel_time=$.fullCalendar.formatDate(start,'hh:mm TT');
+        var millisecondOffset = 2 * 60 * 60 * 1000;//2hour
+        var endHours = new Date(start.getTime() + millisecondOffset); 
+        var sel_endtime=$.fullCalendar.formatDate(endHours,'hh:mm TT');
+        
+        //set button text addevent
+        $(".btn_add_event_label").text('Add Event');
+        $('#AddEvent_selected_Date').text(sel_date);
+        $('#selected_starttime').val(sel_time);
+        //$('#selected_startdate').val(sel_date);     
+        $('#timeOnly .start').timepicker({
+          'minTime': sel_time,
+            'timeFormat': 'h:i A'//'g:ia'
+        });
+        $('#timeOnly .end').timepicker({
+            'showDuration': true,
+            'timeFormat': 'h:i A',
+            'maxTime': '11:30 PM'
+        });
+        $('#timeOnly .end').timepicker('setTime', sel_endtime);
+        $('#timeOnly').datepair();  
+        $(".divendrecurr").hide();      
+        var footer_html='<button type="reset" class="btn btn-labeled btn-warning">'+
+      '<span class="btn-label"><i class="glyphicon glyphicon-refresh"></i></span>'+
+      'Clear</button>';
+        $("#footer-add-update").html(footer_html);
+        $('#stack1_addevent').modal('show');
+      }
+      {% else %}
+      if (allDay){
+        calendar.fullCalendar('changeView', 'agendaDay'/* or 'basicDay' */) 
+              .fullCalendar('gotoDate', date.getFullYear(), date.getMonth(), date.getDate());
+          }
+      {% endif %}
+    },
+    eventClick: function (calEvent, jsEvent, view) {
+      //alert('Event: '+calEvent.title+jsEvent.pageX + jsEvent.pageY);
+          //alert('View: ' + view.name);
+      {% if request.user.is_active %}
+      //===============================================================
+      //********************** Update Event ***************************
+      //===============================================================
+      // + Add delete button
+      // + In modal change add button to update
+      // + Fill update modal values
+      // + show update modal
+
+      // show updatemodal
+      $("#AddEvent_selected_Date").text();
+      var $md_updateevent=$("#stack1_addevent");
+      var footer_html='<a data-toggle="modal" href="#stack3_deleteevent" class="btn btn-labeled btn-danger">'+
+    '<span class="btn-label">'+
+      '<i class="glyphicon glyphicon-trash"></i>'+
+    '</span> Delete</a>';
+      $("#footer-add-update").html(footer_html);
+      $(".btn_add_event_label").text('Update Event'); 
+      $("#btn_delete_event").data("eid",calEvent._id);
+      $md_updateevent.modal('show');
+      //disable and add spinner
+      var target = document.getElementById('frm_addevent');   
+        var spinner=new Spinner({lines: 13,length: 20}).spin(target);
+      //e.preventDefault();       
+      $('#frm_addevent :input').attr('disabled', true);
+
+      //ajax get datas from server
+      $.get( "{% url 'ajax_gettype' %}", { id: calEvent._id} )
+        .done(function(data) {
+          $('#frm_addevent :input').attr('disabled', false);
+          //or $('#frm_addevent :input').each(function(){this.disabled = false;});    
+        $("#AddEvent_selected_Date").text(data.edate);
+        $("#selected_startdate").val(data.edate);
+        $md_updateevent.find("input[name=title]").val(data.etitle);
+        $("#txt_event_desc").text(data.edescription);
+        $md_updateevent.find("select[name=event_type]").val(data.etype);
+        $md_updateevent.find("select[name=rule]").val(data.erule);
+        if (data.erule == '0'){
+          $(".divendrecurr").hide();
+        }else{
+          $(".divendrecurr").show();
+          $("#datepick_endrepeat").val(data.end_recur);
+        }
+        
+
+        $('#timeOnly .start').timepicker({'timeFormat': 'h:i A' });
+        $('#timeOnly .end').timepicker({
+            'showDuration': true,
+            'timeFormat': 'h:i A',
+            'maxTime': '11:30 PM'
+        });
+        $('#timeOnly').datepair();
+        $('#timeOnly .start').timepicker('setTime', data.estart);
+        $('#timeOnly .end').timepicker('setTime', data.eend);
+
+        $("#datepick_endrepeat").datepicker("option", "minDate",data.edate);
+        $("#footer-add-update").append('<input type="hidden" name="eventid" value="'+data.eid+'"/>');
+        spinner.stop();
+      });
+      // END: Update Event****************
+      {% else %}    
+      //===============================================================
+      //********************** View an event **************************
+      //===============================================================
+      var $eventviewmodal=$('#stack0_viewevent');
+      //var $inputs = $('#stack0_viewevent :input');
+      $eventviewmodal.find('.modal-body').empty();
+      $eventviewmodal.modal('show');      
+      var target = document.getElementById('loading_viewevent');   
+        var spinner=new Spinner({lines: 13,length: 20}).spin(target);     
+      $.get( "{% url 'ajax_gettype' %}", { id: calEvent._id} )
+        .done(function( data ) {
+          spinner.stop();
+          //$inputs.each(function(){this.disabled = false;});
+          $eventviewmodal.find('.modal-body').html(data); 
+      });       
+      {% endif %}     
+    },
+    header: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'month,agendaWeek,agendaDay'
+    },
+    events: "{% url 'ajax_loadevents' %}"   
+  }); 
+
+
+  //||||||||||||||||||||||||||||||||||||||
+  // END OF CALENDAR
+  //++++++++++++++++++++++++++++++++++++++
+
+  
+  //ADD/Update Event Button Click
+  //========================================= 
+  $("#stack1_addevent").on("click", "#btn_add_event",function(e){ 
+    e.preventDefault();     
+    var $addevent=$('#stack1_addevent');
+    //spinner
+    var target = document.getElementById('frm_addevent');   
+      var spinner=new Spinner({lines: 13,length: 20}).spin(target);
+    var datas=$('#frm_addevent').serializeArray();
+    $('#frm_addevent :input').attr('disabled', true);
+    datas.push({name: 'edate', value: $('#AddEvent_selected_Date').text()});
+    $.ajax({
+      type: "POST",
+      url: "{% url 'ajax_addevent' %}",
+      data: datas
+    }).done(function(dt){     
+      $('#frm_addevent :input').each(function(){this.disabled = false;});
+      spinner.stop();
+      if (dt.issuccess == 'error'){ 
+        $addevent.find('.errormsg').html('<div class="alert alert-danger fade in">'+
+  dt.msg+'<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+      }else{
+        calendar.fullCalendar('refetchEvents');
+        /*
+        //delete the event  
+        if (dt.issuccess == 'update')calendar.fullCalendar('removeEvents', dt.msg.id);  
+        calendar.fullCalendar('renderEvent',
+        {
+          id:dt.msg.id,
+          title: dt.msg.title,
+          start: new Date(dt.msg.year,dt.msg.month,
+            dt.msg.day,dt.msg.shour,dt.msg.sminute),
+          end: new Date(dt.msg.year,dt.msg.month,
+            dt.msg.day,dt.msg.ehour,dt.msg.eminute),
+          textColor:dt.msg.tcolor,
+          color:dt.msg.bcolor,
+          allDay: false
+        },
+          true // make the event "stick"
+        );*/
+
+          $addevent.modal('hide');
+      }
+    });
+  });
+
+  //ADD Event Type Button click
+  //======================================
+  $("#btn_add_event_type").click(function(e){   
+    e.preventDefault();   
+    var $addeventtype=$('#stack2_addeventtype');
+    var datas=$('#frm_addeventtype').serialize();
+    var target = document.getElementById('frm_addeventtype');
+    var spinner=new Spinner({lines: 13,length: 20}).spin(target);
+    //$('#frm_addeventtype :input').attr('disabled', 'disabled'); 
+    $('#frm_addeventtype :input').each(function(){this.disabled = true;});    
+    e.preventDefault();     
+    $.ajax({
+      type: "POST",
+      url: "{% url 'ajax_addevent_type' %}",
+      data: datas
+    }).done(function(data){
+      $('#frm_addeventtype :input').each(function(){this.disabled = false;});
+      spinner.stop();
+      if (data.issuccess == '1'){
+        $('#cmb_eventtype').prop('selectedIndex',0);
+            $('#cmb_eventtype').append("<option value="+data.msg+" selected>"+data.eventname+"</option>"); 
+          $addeventtype.modal('hide');
+      }else{  
+        $addeventtype.find('.errormsg')
+              .html('<div class="alert alert-danger fade in">'+
+                data.msg+'<button type="button" class="close" data-dismiss="alert">&times;</button>'+
+                '</div>'
+              );            
+      } 
+    });
+  });
+
+  //Remove event button
+  //==============================
+  $("#btn_delete_event").click(function(e){
+    e.preventDefault(); 
+    $md_deleteevent=$("#stack3_deleteevent");
+    var target = document.getElementById('loading_deleteevent');   
+      var spinner=new Spinner({lines: 13,length: 20}).spin(target);
+    var eid=$("#btn_delete_event").data("eid");//$("#eventid_view").text();
+    $('#stack3_deleteevent :input').each(function(){this.disabled = true;});  
+    $.get("{% url 'ajax_deleteevent' %}", { id: eid})
+      .done(function(data) {
+        calendar.fullCalendar('removeEvents', data.id);         
+        spinner.stop();
+        $('#stack3_deleteevent :input').each(function(){this.disabled = false;});
+        $md_deleteevent.modal('hide');      
+        $("#stack1_addevent").modal('hide');      
+    });   
+  }); 
+
+  $(".btn_gotoYear_fullcalendar").click(function(){
+    calendar.fullCalendar('gotoDate',$(this).text());
+    //e.preventDefault();
+    //calendar.fullCalendar('gotoDate',$(this).data('year'),$(this).data('month'));
+  }); 
+  $("#rrule_select").change(function(){
+      if (this.value != 0) $(".divendrecurr").show();
+      else $(".divendrecurr").hide();
+  }); 
+
+  //color picker initialization
+  //=================================
+  $('#txt_colorpicker').on('change', function() {
+      $("#color_viewer").css('color', $(this).val());
+  }); 
+  $('#bg_colorpicker').on('change', function() {
+      $("#color_viewer").css('background-color', $(this).val());
+  }); 
+  $('#txt_colorpicker').simplecolorpicker();  
+  $('#bg_colorpicker').simplecolorpicker();
+});
+</script>
+{% endblock %}
+{% endcomment %}

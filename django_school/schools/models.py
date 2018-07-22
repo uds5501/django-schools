@@ -82,3 +82,10 @@ class Session(models.Model):
 
     # def get_absolute_url(self):
     #    return reverse('session_detail', args=[str(self.id)])
+
+class Event(models.Model):
+    '''This model stores Event.'''
+    startdatetime = models.DateTimeField()
+    enddatetime = models.DateTimeField(blank=True,null=True)
+    title = models.CharField(max_length=255)
+    school = models.ForeignKey(School,on_delete=models.CASCADE)
