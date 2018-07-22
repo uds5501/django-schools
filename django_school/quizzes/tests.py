@@ -8,6 +8,4 @@ class QuizTestCase(TestCase):
 
     def test_quiztest_url(self):
         response = self.c.get('/quizzes/')
-        print (response.content)
-        print (response.status_code)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 302)

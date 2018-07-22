@@ -2,23 +2,22 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class Location(models.Model):
-    name = models.CharField(max_length=50)
     address_1 = models.CharField(max_length=50)
     address_2 = models.CharField(max_length=50, blank=True)
     city = models.CharField(max_length=50)
-    state_province = models.CharField(max_length=4)
-    zip_postal_code = models.CharField(max_length=10)
-    country = models.CharField(max_length=2)
+    state_province = models.CharField(max_length=20, default='kerala')
+    zip_postal_code = models.CharField(max_length=10, blank=True)
+    country = models.CharField(max_length=20, default='india')
 
     def __str__(self):
-        return self.name    
+        return self.city    
 
     #def get_absolute_url(self):
     #    return reverse('location_detail', args=[str(self.id)])
 
 class School(models.Model):
     name = models.CharField(max_length=30)
-    location = models.ForeignKey(Location,on_delete=models.CASCADE,null=True)
+    location = models.ForeignKey(Location,on_delete=models.CASCADE,null=True,blank=True)
     def __str__(self):
         return self.name
 
@@ -35,8 +34,9 @@ class User(AbstractUser):
       (5, 'admin'),
     )
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES,default=1)
-    school = models.ForeignKey(School,on_delete=models.CASCADE, related_name='users',null=True)
-    location = models.ForeignKey(Location,on_delete=models.CASCADE,null=True)
+    school = models.ForeignKey(School,on_delete=models.CASCADE, related_name='users',null=True,blank=True)
+    location = models.ForeignKey(Location,on_delete=models.CASCADE,null=True,blank=True)
+    verified = models.BooleanField(default=False)
     
     @property
     def is_student(self):
@@ -48,14 +48,19 @@ class User(AbstractUser):
         "Is the user a teacher?"
         return self.user_type == 2
 
+
+
 class Course(models.Model):
     # Class for exampl: 8A, 7B, 10I etc
     school = models.ForeignKey(School,on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     #teacher = models.ForeignKey(User,on_delete=models.CASCADE)
     # i don't know whether the below things are required or not
-    teachers = models.ManyToManyField(User, related_name="course_teachers")
-    students = models.ManyToManyField(User, related_name="course_students")
+    teachers = models.ManyToManyField(User, related_name="course_teachers",blank=True)
+    students = models.ManyToManyField(User, related_name="course_students",blank=True)
+
+    class Meta:
+        unique_together = ("school", "name")
 
     def __str__(self):
         return self.name

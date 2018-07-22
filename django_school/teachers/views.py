@@ -94,6 +94,3 @@ def question_change(request, quiz_pk, question_pk):
         'form': form,
         'formset': formset
     })
-
-
-

@@ -10,5 +10,6 @@ class QuizTestCase(TestCase):
         	"username": "admin",
             "password": 999,
         })
-        self.assertIn('Usernames such as admin,students,teachers,quizzes,accounts are not allowed',response.content)
+        self.assertIn('Usernames such as admin,students,teachers,quizzes,accounts are not allowed',
+        	response.content.decode())
         self.assertEqual(response.status_code, 200)
