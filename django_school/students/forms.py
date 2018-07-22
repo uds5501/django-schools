@@ -3,9 +3,10 @@ from schools.forms import CustomUserCreationForm
 from quizzes.models import Subject
 from django.db import transaction
 from .models import Student
+from schools.models import Course
 
 class StudentSignUpForm(CustomUserCreationForm):
-    course = forms.ChoiceField(required=True)
+    # course = forms.ChoiceField(required=True)
     interests = forms.ModelMultipleChoiceField(
         queryset=Subject.objects.all(),
         widget=forms.CheckboxSelectMultiple,
@@ -22,8 +23,6 @@ class StudentSignUpForm(CustomUserCreationForm):
         user.save()
         student = Student.objects.create(user=user)
         student.interests.add(*self.cleaned_data.get('interests'))
+        # course = Course.objects.get(id= self.cleaned_data.get('course'))
+        # course.students.add(user)
         return user
-
-def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['city'].queryset = City.objects.none()

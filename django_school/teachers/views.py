@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.forms import inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import CreateView
+from django.views.generic import CreateView,ListView
 from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
 
@@ -13,7 +13,10 @@ from .forms import TeacherSignUpForm
 from quizzes.forms import BaseAnswerInlineFormSet, QuestionForm
 from quizzes.models import Answer, Question, Quiz
 
-        
+from students.models import Student
+from django.views import View
+from schools.models import User
+
 class TeacherSignUpView(CreateView):
     model = settings.AUTH_USER_MODEL
     form_class = TeacherSignUpForm
@@ -26,9 +29,28 @@ class TeacherSignUpView(CreateView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        return redirect('quiz_change_list')
+        return redirect('home')
 
 
+class StudentList(View):
+    def get(self, request):
+        queryset = Student.objects.filter(user__school = request.user.school)
+        return render(request,'teachers/students.html',{'students':queryset})
+
+    def post(self,request):
+        user_id = request.POST.get('user','')
+        verified = request.POST.get('verified', '')
+        if user_id:
+            user = User.objects.get(id = user_id)
+            if verified == 'on': 
+                user.is_verified = True
+            else:
+                user.is_verified = False
+            user.save()
+
+        return redirect('teachers:student_list')
+
+        
 @login_required
 @teacher_required
 def question_add(request, pk):

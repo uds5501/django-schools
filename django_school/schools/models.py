@@ -36,7 +36,7 @@ class User(AbstractUser):
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES,default=1)
     school = models.ForeignKey(School,on_delete=models.CASCADE, related_name='users',null=True,blank=True)
     location = models.ForeignKey(Location,on_delete=models.CASCADE,null=True,blank=True)
-    verified = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
     
     @property
     def is_student(self):
@@ -46,9 +46,7 @@ class User(AbstractUser):
     @property
     def is_teacher(self):
         "Is the user a teacher?"
-        return self.user_type == 2
-
-
+        return self.user_type == 2    
 
 class Course(models.Model):
     # Class for exampl: 8A, 7B, 10I etc
@@ -59,9 +57,10 @@ class Course(models.Model):
     teachers = models.ManyToManyField(User, related_name="course_teachers",blank=True)
     students = models.ManyToManyField(User, related_name="course_students",blank=True)
 
+    
     class Meta:
         unique_together = ("school", "name")
-
+    
     def __str__(self):
         return self.name
 

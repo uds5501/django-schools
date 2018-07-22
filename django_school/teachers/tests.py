@@ -1,15 +1,25 @@
-from django.test import TestCase
-
-# Create your tests here.
-from django import test
+from django.test import TestCase, Client
 from django.urls import reverse
 from django.conf import settings
-import importlib
+from django.contrib.auth import get_user_model
 
-class UrlsTest(test.TestCase):
+class TeacherTestCase(TestCase):
+    """Teacher pages tests"""
+    def setUp(self):
+        self.client = Client()
+        self.teacher = get_user_model().objects.create_user(username='some_user_teacher',
+         password='secret',user_type = 2)
 
-    def test_responses(self, allowed_http_codes=[200, 302, 405],
-            credentials={}, logout_url="", default_kwargs={}, quiet=True):
+    def test_homepage_urls(self):
+        self.client.login(username='some_user_teacher', password='secret')
+        for u in ['quiz_change_list','student_list',]: #'teachers','attendence','events','dashboard',]:            
+            response = self.client.get(reverse('teachers:%s'%u))            
+            self.assertEqual(200,response.status_code)
+
+#class UrlsTest(TestCase):
+
+#    def test_responses(self, allowed_http_codes=[200, 302, 405],
+#            credentials={}, logout_url="", default_kwargs={}, quiet=True):
         """
         Test all pattern in root urlconf and included ones.
         Do GET requests only.
@@ -29,6 +39,7 @@ class UrlsTest(test.TestCase):
         If @quiet=False, print all the urls checked. If status code of the response is not 200,
             print the status code.
         """
+"""        import importlib
         module = importlib.import_module(settings.ROOT_URLCONF)
         if credentials:
             self.client.login(**credentials)
@@ -77,3 +88,4 @@ class UrlsTest(test.TestCase):
                     if not quiet:
                         print("SKIP " + regex.pattern + " " + fullname)
         check_urls(module.urlpatterns)
+"""

@@ -1,24 +1,28 @@
 {% extends 'base.html' %}
 
 {% block nav %}
+{% url 'home' as home %}
+{% url 'teachers:student_list' as student_list %}
+{% url 'teachers:quiz_change_list' as quiz_change_list %}
+{% url 'teachers:events' as events %}
 <ul class="nav nav-tabs">             
   <li class="nav-item">
-    <a class="nav-link" href="{% url 'home' %}">Dashboard</a>
+    <a class="nav-link{% if request.path == home %} active{% endif %}" href="{{ home }}">Dashboard </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Students</a>
+    <a class="nav-link{% if request.path == student_list %} active{% endif %}" href="{{ student_list }}">Students</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="#">Teachers</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Attandence</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'quiz_change_list' %}">Quizzes</a>
-  </li>
-  <li class="nav-item">
     <a class="nav-link" href="#">Attendence</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link{% if request.path == quiz_change_list %} active{% endif %}" href="{{ quiz_change_list }}">Quizzes</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link{% if request.path == events %} active{% endif %}" href="{{ events }}">Events</a>
   </li>
 </ul><br>
 {% endblock %}

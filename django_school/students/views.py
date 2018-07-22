@@ -28,7 +28,7 @@ class StudentSignUpView(CreateView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        return redirect('quiz_list')
+        return redirect('home')#students:quiz_list')
 
 
 @method_decorator([login_required, student_required], name='dispatch')
@@ -36,7 +36,7 @@ class StudentInterestsView(UpdateView):
     model = Student
     form_class = StudentInterestsForm
     template_name = 'students/interests_form.html'
-    success_url = reverse_lazy('quiz_list')
+    success_url = reverse_lazy('students:quiz_list')
 
     def get_object(self):
         return self.request.user.student
@@ -100,7 +100,7 @@ def take_quiz(request, pk):
                 student_answer.student = student
                 student_answer.save()
                 if student.get_unanswered_questions(quiz).exists():
-                    return redirect('take_quiz', pk)
+                    return redirect('students:take_quiz', pk)
                 else:
                     correct_answers = student.quiz_answers.filter(answer__question__quiz=quiz, answer__is_correct=True).count()
                     score = round((correct_answers / total_questions) * 100.0, 2)
@@ -109,11 +109,11 @@ def take_quiz(request, pk):
                         messages.warning(request, 'Better luck next time! Your score for the quiz %s was %s.' % (quiz.name, score))
                     else:
                         messages.success(request, 'Congratulations! You completed the quiz %s with success! You scored %s points.' % (quiz.name, score))
-                    return redirect('quiz_list')
+                    return redirect('students:quiz_list')
     else:
         form = TakeQuizForm(question=question)
 
-    return render(request, 'classroom/students/take_quiz_form.html', {
+    return render(request, 'students/take_quiz_form.html', {
         'quiz': quiz,
         'question': question,
         'form': form,
