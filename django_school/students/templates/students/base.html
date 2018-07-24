@@ -1,21 +1,9 @@
 {% extends 'base.html' %}
 
 {% block nav %}
-<ul class="nav nav-tabs">             
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'home' %}">Dashboard</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#">Students</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'students:attendance' %}">Attendance</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'students:quiz_list' %}">Quizzes</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#">Events</a>
-  </li>
-</ul><br>
+  {% if user.is_teacher %}
+    {% include 'teachers/nav.html' %}
+  {% else %}
+    {% include 'students/nav.html' %}
+  {% endif %}
 {% endblock %}
