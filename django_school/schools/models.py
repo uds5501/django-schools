@@ -5,6 +5,7 @@ class Location(models.Model):
     address_1 = models.CharField(max_length=50)
     address_2 = models.CharField(max_length=50, blank=True)
     city = models.CharField(max_length=50)
+    district = models.CharField(max_length=50)
     state_province = models.CharField(max_length=20, default='kerala')
     zip_postal_code = models.CharField(max_length=10, blank=True)
     country = models.CharField(max_length=20, default='india')
@@ -17,6 +18,7 @@ class Location(models.Model):
 
 class School(models.Model):
     name = models.CharField(max_length=30)
+    code = models.IntegerField(blank=True,null=True)
     location = models.ForeignKey(Location,on_delete=models.CASCADE,null=True,blank=True)
     def __str__(self):
         return self.name
