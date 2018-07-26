@@ -8,6 +8,7 @@ from django.views.generic import CreateView,ListView
 from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
 from django.views import View
+from django.utils.decorators import method_decorator
 
 from .decorators import teacher_required
 from .forms import TeacherSignUpForm
@@ -32,7 +33,7 @@ class TeacherSignUpView(CreateView):
         login(self.request, user)
         return redirect('home')
 
-
+@method_decorator([login_required, teacher_required], name='dispatch')
 class StudentList(View):
     def get(self, request):
         queryset = Student.objects.filter(user__school = request.user.school)
@@ -44,9 +45,11 @@ class StudentList(View):
         if user_id:
             user = User.objects.get(id = user_id)
             if verified == 'on': 
-                user.is_verified = True
+                # user.is_verified = True
+                user.is_staff = True
             else:
-                user.is_verified = False
+                user.is_staff = False
+                # user.is_verified = False
             user.save()
 
         return redirect('teachers:student_list')
@@ -54,6 +57,8 @@ class StudentList(View):
 
 from django.http import HttpResponse,JsonResponse
 import json
+
+@method_decorator([login_required, teacher_required], name='dispatch')
 class EventList(View):
     def get(self, request):
         flag = request.GET.get('json','')

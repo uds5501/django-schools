@@ -4,6 +4,7 @@ from . import views as students
 from django.views.generic import TemplateView
 
 urlpatterns = [
+	path('events/', students.EventList.as_view(), name='events'),
 	path('attendance/', TemplateView.as_view(template_name="students/attendance.html"), name='attendance'),
     path('quizzes/', students.QuizListView.as_view(), name='quiz_list'),
     path('interests/', students.StudentInterestsView.as_view(), name='student_interests'),

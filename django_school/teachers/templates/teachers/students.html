@@ -1,21 +1,26 @@
-{% extends 'teachers/base.html' %}
+{% extends 'base.html' %}
 {% block content %}
   
 <h2 class="mb-3">Students</h2>
 <div class="card-deck">
 {% for student in students %}
-  <div class="card{% if not student.user.is_verified %} border-danger{% endif %}">
+  <div class="card{% if not student.user.is_staff %} border-danger{% endif %}">
     <!--<img class="card-img-top" src=".../100px200/" alt="Card image cap">-->
-    <div class="card-body{% if not student.user.is_verified %} text-danger{% endif %}">
+    <div class="card-body{% if not student.user.is_staff %} text-danger{% endif %}">
       <h5 class="card-title">{{student.user.username}}</h5>
-      <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+      <p class="card-text">email: {{student.user.email}}</p>
+
+      <p class="card-text">first name: {{student.user.first_name}}</p>
+      <p class="card-text">last_name: {{student.user.last_name}}</p>
+      <p class="card-text">is_active: {{student.user.is_active}}</p>
+      <p class="card-text">date_joined: {{student.user.date_joined}}</p>
       <form method="post">
       {% csrf_token %}
       <input type="hidden" name="user" value="{{student.user.id}}">
-      verified: <input type="checkbox" name="verified"{% if student.user.is_verified %} checked{%endif%}>
+      verified: <input type="checkbox" name="verified"{% if student.user.is_staff %} checked{%endif%}>
       <button type="submit" class="btn btn-primary btn-sm">save</button>
       </form>
-      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+      <p class="card-text"><small class="text-muted">Last login {{student.user.last_login}}</small></p>
     </div>
   </div>
 {% endfor %}
