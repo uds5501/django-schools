@@ -2,24 +2,27 @@
 {% url 'teachers:student_list' as student_list %}
 {% url 'teachers:quiz_change_list' as quiz_change_list %}
 {% url 'teachers:events' as events %}
-
-<ul class="nav nav-tabs">             
-  <li class="nav-item">
-    <a class="nav-link{% if request.path == home %} active{% endif %}" href="{{ home }}">Dashboard </a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link{% if request.path == student_list %} active{% endif %}" href="{{ student_list }}">Students</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#">Teachers</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#">Attendance</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link{% if request.path == quiz_change_list %} active{% endif %}" href="{{ quiz_change_list }}">Quizzes</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link{% if request.path == events %} active{% endif %}" href="{{ events }}">Events</a>
-  </li>
-</ul><br>
+{% url 'profile' as profile %}
+<ul class="nav nav-tabs card-header-tabs">
+<li class="nav-item">
+  <a class="nav-link{% if request.path == home %} active{% endif %}" href="{{ home }}">Dashboard </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link{% if request.path == student_list %} active{% endif %}" href="{{ student_list }}">Students</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="#">Teachers</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="#">Attendance</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link{% if request.path == quiz_change_list %} active{% endif %}" href="{{ quiz_change_list }}">Quizzes</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link{% if request.path == events %} active{% endif %}" href="{{ events }}">Events</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link{% if request.path == profile %} active{% endif %}" href="{{ profile }}">Profile</a>
+</li>
+ </ul>

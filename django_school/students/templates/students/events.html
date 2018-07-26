@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block extracss %}
+<link href='https://fullcalendar.io/releases/fullcalendar/3.9.0/fullcalendar.min.css' rel='stylesheet' />
+<link href='https://fullcalendar.io/releases/fullcalendar/3.9.0/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+{% endblock %}
+
+{% block content %}
+<h2 class="mb-3">Events</h2>
+<div id='calendar'></div>
+{% endblock %}
+
+{% block extrajs %}
+<script src='https://fullcalendar.io/releases/fullcalendar/3.9.0/lib/moment.min.js'></script>
+<script src='https://fullcalendar.io/releases/fullcalendar/3.9.0/fullcalendar.min.js'></script>
+<script>
+
+$(document).ready(function() {
+
+  var calendar = $('#calendar').fullCalendar({
+    eventClick: function (calEvent, jsEvent, view) {
+      alert('Event: ' + calEvent.title);
+      // change the border color just for fun
+      //$(this).css('border-color', 'red');
+    },
+    header: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'month,basicWeek,basicDay'
+    },
+    defaultDate: '2018-07-12',
+    navLinks: true, // can click day/week names to navigate views
+    editable: false,
+    eventLimit: true, // allow "more" link when too many events
+    events: "{% url 'students:events' %}?json=true"
+  });
+});
+
+</script>
+{% endblock %}
