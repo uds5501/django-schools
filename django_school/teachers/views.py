@@ -34,12 +34,13 @@ class TeacherSignUpView(CreateView):
         return redirect('home')
 
 @method_decorator([login_required, teacher_required], name='dispatch')
-class StudentList(View):
-    def get(self, request):
-        queryset = Student.objects.filter(user__school = request.user.school)
-        return render(request,'teachers/students.html',{'students':queryset})
+class UserList(View):
+    def get(self, request, usertype):
+        queryset = User.objects.filter(school = request.user.school, user_type = usertype)
+        #Student.objects.filter(user__school = request.user.school)
+        return render(request,'teachers/users.html',{'users':queryset,'page': usertype})
 
-    def post(self,request):
+    def post(self,request, usertype):
         user_id = request.POST.get('user','')
         verified = request.POST.get('verified', '')
         if user_id:
@@ -52,7 +53,7 @@ class StudentList(View):
                 # user.is_verified = False
             user.save()
 
-        return redirect('teachers:student_list')
+        return redirect('teachers:user_list', usertype)
 
 
 from django.http import HttpResponse,JsonResponse
@@ -85,6 +86,12 @@ class EventList(View):
             msg = 'success'
 
         return HttpResponse(msg)
+
+@method_decorator([login_required, teacher_required], name='dispatch')
+class Attendance(View):
+    def get(self, request):
+        queryset = Student.objects.filter(user__school = request.user.school)
+        return render(request,'teachers/attendance.html',{'students':queryset})
 
 @login_required
 @teacher_required
