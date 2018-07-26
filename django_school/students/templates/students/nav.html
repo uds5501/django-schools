@@ -2,6 +2,7 @@
 {% url 'students:attendance' as attendance %}
 {% url 'students:quiz_list' as quiz_list %}
 {% url 'students:events' as events %}
+{% url 'profile' as profile %}
 <ul class="nav nav-tabs card-header-tabs">
 <li class="nav-item">
   <a class="nav-link{% if request.path == home %} active{% endif %}" href="{{ home }}">Dashboard </a>
@@ -17,5 +18,8 @@
 </li>
 <li class="nav-item">
   <a class="nav-link{% if request.path == events %} active{% endif %}" href="{{ events }}">Events</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link{% if request.path == profile %} active{% endif %}" href="{{ profile }}">Profile</a>
 </li>
 </ul>

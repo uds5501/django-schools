@@ -33,6 +33,7 @@ class StudentSignUpView(CreateView):
 
 from django.http import JsonResponse
 from django.views import View
+from schools.models import Event
 @method_decorator([login_required, student_required], name='dispatch')
 class EventList(View):
     def get(self, request):
@@ -43,6 +44,8 @@ class EventList(View):
             return JsonResponse(qs_json,safe=False)
 
         return render(request,'students/events.html')
+
+
 
 @method_decorator([login_required, student_required], name='dispatch')
 class StudentInterestsView(UpdateView):

@@ -25,7 +25,7 @@
       <h5 class="my-0 mr-md-auto font-weight-normal">{{user.school}}</h5>
       <nav class="my-2 my-md-0 mr-md-3">        
         {% if user.is_authenticated %}
-        <a class="p-2 text-dark" href="#"><strong>{{ user.username }}</strong></a>
+        <a class="p-2 text-dark" href="{% url 'home' %}"><strong>{{ user.username }}</strong></a>
         {% else %}
         <a class="p-2 text-dark" href="{% url 'login' %}">Log in</a>
         {% endif %}        
@@ -48,20 +48,18 @@
           {% endif %}
          
         </div>
-        <div class="card-body">
-          <div class="card-body">
-            {% for message in messages %}
-              <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-            {% endfor %}
+        <div class="card-body">          
+          {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endfor %}
 
-            {% block content %}
-            {% endblock %}
-          </div>
+          {% block content %}
+          {% endblock %}
         </div>
       </div>
       {% endblock %}
