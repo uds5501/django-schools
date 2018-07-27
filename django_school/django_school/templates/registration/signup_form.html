@@ -2,6 +2,10 @@
 
 {% load crispy_forms_tags %}
 
+{% block extracss %}
+<link rel="stylesheet" type="text/css" href='https://harvesthq.github.io/chosen/chosen.css'>
+{% endblock %}
+
 {% block content %}
   <div class="row">
     <div class="col-md-8 col-sm-10 col-12">
@@ -18,7 +22,10 @@
 
 {% block extrajs %}
 {% if usertype == 'student' %}
-
+<script src="https://harvesthq.github.io/chosen/chosen.jquery.js"></script>
+<script type="text/javascript">
+$("select").chosen({disable_search_threshold: 10});
+</script>
 <!--
   <script>
     $("#id_school").change(function () {

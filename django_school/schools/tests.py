@@ -11,11 +11,11 @@ class BaseTestCase(TestCase):
          password='secret',user_type = 5,is_superuser=True,is_staff=True,is_active=True)
     # create principal
     self.principal = get_user_model().objects.create_user(username='some_user_principal',
-         password='secret',user_type = 4)
+         password='secret',user_type = 4,is_staff=True,is_active=True)
     self.teacher = get_user_model().objects.create_user(username='some_user_teacher',
-         password='secret',user_type = 2)
+         password='secret',user_type = 2,is_staff=True,is_active=True)
     self.student = get_user_model().objects.create_user(username='some_user_student',
-         password='secret',user_type = 1) 
+         password='secret',user_type = 1,is_staff=True,is_active=True) 
     
 class UserPermissionTests(BaseTestCase):
 
@@ -41,6 +41,52 @@ class HomePageTests(BaseTestCase):
         # self.assertIn('<h2>Log in</h2>',response.content.decode())
       else:
         self.assertEqual(200,response.status_code)
-        self.assertIn('Logged in as <strong>some_user_%s</strong>'%u
+        self.assertIn('<strong>some_user_%s</strong>'%u
           ,response.content.decode())
-       
+
+
+from django.test import LiveServerTestCase
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+
+
+class SeleniumAccountTestCase(LiveServerTestCase):
+
+    def setUp(self):
+        self.selenium = webdriver.Firefox()#Chrome('/home/suhailvs/Downloads')#webdriver.Firefox()
+        super().setUp()
+
+    def tearDown(self):
+        self.selenium.quit()
+        super().tearDown()
+
+    def test_register(self):
+        selenium = self.selenium
+        #Opening the link we want to test
+        selenium.get('http://127.0.0.1:8000/accounts/signup/student/')
+        #find the form element
+        #first_name = selenium.find_element_by_id('id_first_name')
+        #last_name = selenium.find_element_by_id('id_last_name')
+        username = selenium.find_element_by_id('id_username')
+        #email = selenium.find_element_by_id('id_email')
+        password1 = selenium.find_element_by_id('id_password1')
+        password2 = selenium.find_element_by_id('id_password2')
+
+        school = selenium.find_element_by_id('id_school')
+        #last_name = selenium.find_element_by_id('id_last_name')
+
+        submit = selenium.find_element_by_tag_name('button')
+
+        #Fill the form with data
+        
+        username.send_keys('unary')
+        #email.send_keys('yusuf@qawba.com')
+        password1.send_keys('123456')
+        password2.send_keys('123456')
+        school.send_keys('ASMMHSS')
+
+        #submitting the form
+        submit.send_keys(Keys.RETURN)
+
+        #check the returned result
+        assert 'Check your email' in selenium.page_source

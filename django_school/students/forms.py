@@ -9,7 +9,6 @@ class StudentSignUpForm(CustomUserCreationForm):
     # course = forms.ChoiceField(required=True)
     interests = forms.ModelMultipleChoiceField(
         queryset=Subject.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
         required=True
     )
     
