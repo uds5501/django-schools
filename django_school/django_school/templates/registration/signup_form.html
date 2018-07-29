@@ -16,6 +16,12 @@
         {{ form|crispy }}
         <button type="submit" class="btn btn-success">Sign up</button>
       </form>
+      <br>
+      {% if usertype == 'student' %}
+        or <a href="{% url 'teacher_signup' %}">sign up as a teacher</a>
+      {% elif usertype == 'teacher' %}
+        or <a href="{% url 'student_signup' %}">sign up as a student</a>      
+      {% endif %}
     </div>
   </div>
 {% endblock %}
@@ -24,32 +30,36 @@
 {% if usertype == 'student' %}
 <script src="https://harvesthq.github.io/chosen/chosen.jquery.js"></script>
 <script type="text/javascript">
-$("select").chosen({disable_search_threshold: 10});
+  $("select").chosen({disable_search_threshold: 10});
+
+  $("#id_school").change(function () {
+    get_courses($(this).val());
+  });
+
+  // if page refresh set courses value  
+  get_courses($("#id_school").val());
+
+  function get_courses(school_id) {
+
+    if (school_id == 0) { //Not selected
+      $("#id_course").empty();
+      $("#id_course").trigger("chosen:updated");
+    } else {
+      //$("#id_course").prop('disabled',true); 
+      $("#id_course").empty();
+      $("#id_course").trigger("chosen:updated");
+      $.ajax({                       // initialize an AJAX request
+        url: "{% url 'ajax_load_courses' %}",
+        data: { 'school': school_id },
+        success: function (data) {   
+          //$("#id_course").removeAttr("disabled");
+          $("#id_course").html(data);  // replace the contents of the city input with the data that came from the server
+          $("#id_course").trigger("chosen:updated");
+        }
+      });
+    }
+  }
 </script>
-<!--
-  <script>
-    $("#id_school").change(function () {
-      //var url = $("#personForm").attr("data-cities-url");  // get the url of the `load_cities` view
-      var schoolId = $(this).val();  // get the selected school ID from the HTML input
-      if (schoolId == 0) { //Not selected
-        $("#id_course").html("<option value=\"\">---------</option>");
-      } else {
-        $("#id_course").prop('disabled',true);
-        
-        $.ajax({                       // initialize an AJAX request
-          url: "{% url 'ajax_load_courses' %}",                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
-          data: {
-            'school': schoolId       // add the country id to the GET parameters
-          },
-          success: function (data) {   // `data` is the return of the `load_cities` view function
-            //remove it
-            $("#id_course").removeAttr("disabled");
-            $("#id_course").html(data);  // replace the contents of the city input with the data that came from the server
-          }
-        });
-      }
-    });
-  </script>
-  -->
+
 {% endif %}
 {% endblock %}
