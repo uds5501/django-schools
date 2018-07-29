@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<p class="lead"> Search Schools</p>	
+<form method="get">
+  <div class="form-row align-items-center">
+    <div class="col-auto my-1">
+      <input type="text" class="form-control" name="name" placeholder="School Name" required>
+    </div>
+    <div class="col-auto my-1">
+      <button type="submit" class="btn btn-primary">Search school</button>
+    </div>
+  </div>
+</form>
+<hr> 
+{% if q %}
+<div class="alert alert-primary">
+	Filtered by: {{q}}
+</div>
+{% endif %}
+<div class="card" style="width: 25rem;">
+  <div class="card-header">
+    Schools ({{schools.count}})
+  </div>
+  <ul class="list-group list-group-flush">
+  	{% for school in schools %}
+	<li class="list-group-item"><small>{{forloop.counter}}. </small><a href="{% url 'schools:school_view' school.code %}">{{school.name}} </a></li>
+	{% endfor %}
+  </ul>
+</div>
+{% endblock %}

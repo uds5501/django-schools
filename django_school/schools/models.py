@@ -4,7 +4,7 @@ from django.db import models
 # #########################
 class BasicInfo(models.Model):
     establish_date = models.CharField(max_length=30)
-    area = models.CharField(max_length=30)
+    area = models.CharField(max_length=50)
     rooms = models.IntegerField(blank =True, null = True)
     teaching_staffs = models.IntegerField(blank =True, null = True)
     non_teaching_staffs = models.IntegerField(blank =True, null = True)
@@ -28,7 +28,7 @@ class School(models.Model):
 class StaffStrength(models.Model):
     school = models.ForeignKey(School,on_delete=models.CASCADE,related_name='staffstrength')
     year = models.CharField(max_length =30)
-    designation = models.CharField(max_length=50)
+    designation = models.CharField(max_length=200)
     strength = models.IntegerField(blank =True, null = True)
 
 class StudentStrength(models.Model):
@@ -44,8 +44,8 @@ class StudentStrength(models.Model):
     
 class Staff(models.Model):
     school = models.ForeignKey(School,on_delete=models.CASCADE,related_name='staffs')
-    name = models.CharField(max_length=50)
-    designation = models.CharField(max_length=50)
+    name = models.CharField(max_length=200)
+    designation = models.CharField(max_length=200)
     date_of_join = models.DateField()
 
     def __str__(self):

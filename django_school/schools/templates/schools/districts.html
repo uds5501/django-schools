@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<!--http://103.251.43.156/schoolfixation/index.php/Publicview/ -->
+<div class="card" style="width: 25rem;">
+  <div class="card-header">
+    <strong> District wise Schools</strong>
+  </div>
+  <ul class="list-group list-group-flush">
+  	{% for district in districts %}
+	<li class="list-group-item"> <small>{{forloop.counter}}. </small><a href="{% url 'schools:sub_districts' forloop.counter %}">{{district|capfirst}} </a></li>
+	{% endfor %}
+  </ul>
+</div>
+{% endblock %}
