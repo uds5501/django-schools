@@ -2,17 +2,16 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import School,User
 from django import forms
 class CustomUserCreationForm(UserCreationForm):
-    school = forms.ModelChoiceField(
-        queryset=School.objects.all(),
-        required=True
-    )
+    school = forms.CharField(required=True,
+        widget=forms.Select(attrs={'required': 'required'}))
 
     class Meta(UserCreationForm.Meta):
         model = User #settings.AUTH_USER_MODEL
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.school = self.cleaned_data.get('school')
+        print (self.cleaned_data.get('school'))
+        user.school = School.objects.get(id = self.cleaned_data.get('school'))
         return user
 
     def clean_username(self, *args, **kargs):

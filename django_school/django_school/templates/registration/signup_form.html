@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block extracss %}
-<link rel="stylesheet" type="text/css" href='https://harvesthq.github.io/chosen/chosen.css'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 {% endblock %}
 
 {% block content %}
@@ -27,39 +27,62 @@
 {% endblock %}
 
 {% block extrajs %}
-{% if usertype == 'student' %}
-<script src="https://harvesthq.github.io/chosen/chosen.jquery.js"></script>
-<script type="text/javascript">
-  $("select").chosen({disable_search_threshold: 10});
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+<script type="text/javascript">
+  $("#id_school").select2({
+    ajax: {
+      url: "{% url 'schools:search' %}",
+      dataType: 'json',
+      delay: 250,      
+      cache: true
+    },
+    placeholder: 'Search school by name',    
+    minimumInputLength: 1,
+    templateResult: formatRepo,
+    templateSelection: formatRepoSelection
+  });
+  function formatRepoSelection (repo) {
+    return repo.name;
+  }
+  function formatRepo (repo) {
+    return repo.name
+  }
+
+{% if usertype == 'student' %}
+
+  $('#id_interests').select2({ placeholder: 'Select interested Subjects'});
+  $('#id_course').select2({ placeholder: 'Select your Class' });
   $("#id_school").change(function () {
     get_courses($(this).val());
   });
 
   // if page refresh set courses value  
-  get_courses($("#id_school").val());
+  // get_courses($("#id_school").val());
 
   function get_courses(school_id) {
 
     if (school_id == 0) { //Not selected
       $("#id_course").empty();
-      $("#id_course").trigger("chosen:updated");
+      $("#id_course").trigger("change"); // .trigger("chosen:updated");
     } else {
       //$("#id_course").prop('disabled',true); 
       $("#id_course").empty();
-      $("#id_course").trigger("chosen:updated");
+      $("#id_course").trigger("change"); // .trigger("chosen:updated");
       $.ajax({                       // initialize an AJAX request
         url: "{% url 'ajax_load_courses' %}",
         data: { 'school': school_id },
         success: function (data) {   
           //$("#id_course").removeAttr("disabled");
           $("#id_course").html(data);  // replace the contents of the city input with the data that came from the server
-          $("#id_course").trigger("chosen:updated");
+          $("#id_course").trigger("change"); // .trigger("chosen:updated");
         }
       });
     }
   }
+{% endif %}
 </script>
 
-{% endif %}
+
 {% endblock %}
