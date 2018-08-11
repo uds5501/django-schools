@@ -37,8 +37,10 @@ def districts(request):
         'alappuzha','kottayam','idukki', 'ernakulam',
         'thrissur', 'palakkad', 'malappuram', 'kozhikode',
         'wayanad', 'kannur', 'kasaragod',
-    ]  
-    return render(request,'schools/districts.html',{'districts':districts})
+    ]
+    c_districts = [[d,School.objects.filter(district__iexact=d).count()] for d in districts]
+    
+    return render(request,'schools/districts.html',{'districts':c_districts})
 
 def sub_districts(request,district):
     from .sub_districts import SUB_DISTRICTS

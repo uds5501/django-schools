@@ -7,7 +7,7 @@
   </div>
   <ul class="list-group list-group-flush">
   	{% for district in districts %}
-	<li class="list-group-item"> <small>{{forloop.counter}}. </small><a href="{% url 'schools:sub_districts' forloop.counter %}">{{district|capfirst}} </a></li>
+	<li class="list-group-item"> <small>{{forloop.counter}}. </small><a href="{% url 'schools:sub_districts' forloop.counter %}">{{district.0|capfirst}} ({{district.1}}) </a></li>
 	{% endfor %}
   </ul>
 </div>
