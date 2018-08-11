@@ -55,7 +55,9 @@ import json
 def search(request):
     q_ajax = request.GET.get('q','')
     if q_ajax: 
-        s = School.objects.filter(name__icontains = q_ajax)[:20].values('id','name')
+        print('query')
+        s = School.objects.filter(name__trigram_similar = q_ajax)[:20].values('id','name')
+        # s = School.objects.filter(name__icontains = q_ajax)[:20].values('id','name')
         return JsonResponse({"results": list(s)},safe=False)
     
     sub_district = request.GET.get('sub_district','')

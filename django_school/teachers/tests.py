@@ -16,10 +16,10 @@ class TeacherTestCase(TestCase):
             response = self.client.get(reverse('teachers:%s'%u))            
             self.assertEqual(200,response.status_code)
 
-#class UrlsTest(TestCase):
+class UrlsTest(TestCase):
 
-#    def test_responses(self, allowed_http_codes=[200, 302, 405],
-#            credentials={}, logout_url="", default_kwargs={}, quiet=True):
+    def test_responses(self, allowed_http_codes=[200, 302, 405],
+            credentials={}, logout_url="", default_kwargs={}, quiet=True):
         """
         Test all pattern in root urlconf and included ones.
         Do GET requests only.
@@ -39,7 +39,7 @@ class TeacherTestCase(TestCase):
         If @quiet=False, print all the urls checked. If status code of the response is not 200,
             print the status code.
         """
-"""        import importlib
+        import importlib
         module = importlib.import_module(settings.ROOT_URLCONF)
         if credentials:
             self.client.login(**credentials)
@@ -88,4 +88,4 @@ class TeacherTestCase(TestCase):
                     if not quiet:
                         print("SKIP " + regex.pattern + " " + fullname)
         check_urls(module.urlpatterns)
-"""
+

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
 'students',
 'teachers',
 'quizzes',
+'django.contrib.postgres',
 'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

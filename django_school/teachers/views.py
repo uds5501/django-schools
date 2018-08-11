@@ -109,7 +109,7 @@ def question_add(request, pk):
             question.quiz = quiz
             question.save()
             messages.success(request, 'You may now add answers/options to the question.')
-            return redirect('question_change', quiz.pk, question.pk)
+            return redirect('teachers:question_change', quiz.pk, question.pk)
     else:
         form = QuestionForm()
 
@@ -147,7 +147,7 @@ def question_change(request, quiz_pk, question_pk):
                 form.save()
                 formset.save()
             messages.success(request, 'Question and answers saved with success!')
-            return redirect('quiz_change', quiz.pk)
+            return redirect('teachers:quiz_change', quiz.pk)
     else:
         form = QuestionForm(instance=question)
         formset = AnswerFormSet(instance=question)

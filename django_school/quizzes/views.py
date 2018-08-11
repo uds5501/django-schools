@@ -37,7 +37,7 @@ class QuizCreateView(CreateView):
         quiz.owner = self.request.user
         quiz.save()
         messages.success(self.request, 'The quiz was created with success! Go ahead and add some questions now.')
-        return redirect('quiz_change', quiz.pk)
+        return redirect('teachers:quiz_change', quiz.pk)
 
 
 @method_decorator([login_required, teacher_required], name='dispatch')
@@ -60,7 +60,7 @@ class QuizUpdateView(UpdateView):
         return self.request.user.quizzes.all()
 
     def get_success_url(self):
-        return reverse('quiz_change', kwargs={'pk': self.object.pk})
+        return reverse('teachers:quiz_change', kwargs={'pk': self.object.pk})
 
 
 @method_decorator([login_required, teacher_required], name='dispatch')
@@ -123,4 +123,4 @@ class QuestionDeleteView(DeleteView):
 
     def get_success_url(self):
         question = self.get_object()
-        return reverse('quiz_change', kwargs={'pk': question.quiz_id})
+        return reverse('teachers:quiz_change', kwargs={'pk': question.quiz_id})
