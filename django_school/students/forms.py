@@ -3,19 +3,19 @@ from schools.forms import CustomUserCreationForm
 from quizzes.models import Subject
 from django.db import transaction
 from .models import Student
-from schools.models import Course
+from schools.models import ClassRoom
 
 class StudentSignUpForm(CustomUserCreationForm):
-    course = forms.CharField(required=True,
+    classroom = forms.CharField(required=True,
         widget=forms.Select(attrs={'required': 'required'}))
     interests = forms.ModelMultipleChoiceField(
         queryset=Subject.objects.all(),
         required=True
     )
     
-    def clean_course(self):
-        print (self.cleaned_data['course'])
-        return self.cleaned_data['course']
+    def clean_classroom(self):
+        # print (self.cleaned_data['classroom'])
+        return self.cleaned_data['classroom']
 
     @transaction.atomic
     def save(self):
@@ -24,8 +24,9 @@ class StudentSignUpForm(CustomUserCreationForm):
         #user.is_active = False
         #user.school = self.cleaned_data.get('school')
         user.save()
-        student = Student.objects.create(user=user)
+        classroom = ClassRoom.objects.get(id= self.cleaned_data.get('classroom'))
+        student = Student.objects.create(user=user,classroom = classroom)
         student.interests.add(*self.cleaned_data.get('interests'))
-        course = Course.objects.get(id= self.cleaned_data.get('course'))
-        course.students.add(user)
+        
+        # course.students.add(user)
         return user

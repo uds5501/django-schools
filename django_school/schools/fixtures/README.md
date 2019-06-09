@@ -8,11 +8,11 @@ then run ::
 add classes::
 
 	./manage.py shell
-	>>> from schools.models import StudentStrength, Course
-	>>> courses = []
+	>>> from schools.models import StudentStrength, ClassRoom
+	>>> rooms = []
     >>> for student in StudentStrength.objects.all():
-    ...  courses.append(Course(school = student.school, name = "{0}A".format(student.course)))
-    >>> Course.objects.bulk_create(courses)
+    ...  rooms.append(ClassRoom(school = student.school, name = "{0}A".format(student.course)))
+    >>> ClassRoom.objects.bulk_create(rooms)
 
 add subjects::
 

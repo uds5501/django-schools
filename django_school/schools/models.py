@@ -95,14 +95,14 @@ class User(AbstractUser):
         "Is the user a teacher?"
         return self.user_type == 2    
 
-class Course(models.Model):
+class ClassRoom(models.Model):
     # Class for exampl: 8A, 7B, 10I etc
     school = models.ForeignKey(School,on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     #teacher = models.ForeignKey(User,on_delete=models.CASCADE)
     # i don't know whether the below things are required or not
-    teachers = models.ManyToManyField(User, related_name="course_teachers",blank=True)
-    students = models.ManyToManyField(User, related_name="course_students",blank=True)
+    teachers = models.ManyToManyField(User,blank=True)
+    #students = models.ManyToManyField(User, related_name="course_students",blank=True)
 
     
     class Meta:
@@ -114,21 +114,21 @@ class Course(models.Model):
     #def get_absolute_url(self):
     #    return reverse('course_detail', args=[str(self.id)])
 
-from django.utils import timezone
-class Session(models.Model):
-    #This will be replaced by Event model in the school_calendar app.
-    #A Session will just be a recurring Event related to a Course.
+# from django.utils import timezone
+# class Session(models.Model):
+#     #This will be replaced by Event model in the school_calendar app.
+#     #A Session will just be a recurring Event related to a Course.
     
-    course = models.ForeignKey(Course,on_delete=models.CASCADE,related_name="sessions")
-    startdatetime = models.DateTimeField()
-    enddatetime = models.DateTimeField()
+#     course = models.ForeignKey(Course,on_delete=models.CASCADE,related_name="sessions")
+#     startdatetime = models.DateTimeField()
+#     enddatetime = models.DateTimeField()
 
-    def __str__(self):
-        startdatetime = timezone.localtime(self.startdatetime)
-        return self.course.name + " on " + startdatetime.strftime("%A, %B %d at %X")
+#     def __str__(self):
+#         startdatetime = timezone.localtime(self.startdatetime)
+#         return self.course.name + " on " + startdatetime.strftime("%A, %B %d at %X")
 
-    # def get_absolute_url(self):
-    #    return reverse('session_detail', args=[str(self.id)])
+#     # def get_absolute_url(self):
+#     #    return reverse('session_detail', args=[str(self.id)])
 
 class Event(models.Model):
     '''This model stores Event.'''

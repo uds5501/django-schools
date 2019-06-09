@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.views import View, generic
 from django.contrib import messages
-from .models import Course, School
+from .models import ClassRoom, School
 
 class SignUpView(generic.TemplateView):
     template_name = 'registration/signup.html'
@@ -10,8 +10,8 @@ def load_courses(request):
     import time
     time.sleep(3)
     school_id = request.GET.get('school')
-    courses = Course.objects.filter(school_id=school_id).order_by('name')
-    return render(request, 'registration/course_dropdown_list_options.html', {'courses': courses})
+    classrooms = ClassRoom.objects.filter(school_id=school_id).order_by('name')
+    return render(request, 'registration/classroom_dropdown_list_options.html', {'classrooms': classrooms})
 
 def home(request):    
     if not request.user.is_authenticated: 
