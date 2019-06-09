@@ -1,50 +1,62 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form method="post" enctype="multipart/form-data">{% csrf_token %}
-<input type="hidden" name="user" value="{{user.id}}">
 <div class="row">
-  <div class="col-md-8">
-    <h3>Profile </h3><hr>
-    <div class="form-group row">
-      <label for="username" class="col-4 col-form-label">User Name</label> 
-      <div class="col-8">
-        <input name="username" placeholder="Username" class="form-control" value="{{user.username}}" disabled="">
-      </div>
+  <div class="col-3">
+    <div class="nav flex-column nav-pills">
+      <a class="nav-link active" href="#">Profile</a>
+      <a class="nav-link" href="#">Account</a>
+      <a class="nav-link" href="#">Class</a>
     </div>
-    <div class="form-group row">
-      <label for="name" class="col-4 col-form-label">First Name</label> 
-      <div class="col-8">
-        <input value="{{user.first_name}}" name="first_name" placeholder="First Name" class="form-control">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label for="lastname" class="col-4 col-form-label">Last Name</label> 
-      <div class="col-8">
-        <input value="{{user.last_name}}" name="last_name" placeholder="Last Name" class="form-control">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label for="text" class="col-4 col-form-label">Email</label> 
-      <div class="col-8">
-        <input value="{{user.email}}" name="email" placeholder="Email" class="form-control">
-      </div>
-    </div>
-    <div class="form-group row">
-      <div class="offset-4 col-8">
-        <button name="submit" type="submit" class="btn btn-success">Update Profile</button>
-      </div>
-    </div>
-    
   </div>
-  <div class="col-md-4">
-    <label><strong>Profile picture</strong></label>
-    <img class="avatar rounded-2" src="https://avatars2.githubusercontent.com/u/2777384?s=400&amp;u=9e752bc260afa5e847ac89106286412ee8410b56&amp;v=4" width="200" height="200" alt="@suhailvs">
-    <label class="btn btn-info" for="my-file-selector">
-      <input id="my-file-selector" type="file" style="display:none;">
-      Uploade new picture
-    </label>
+  <div class="col-9">    
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+      <input type="hidden" name="user" value="{{user.id}}">
+      <div class="row">
+        <div class="col-md-8">
+          <h3>Profile </h3><hr>
+          <div class="form-group row">
+            <label for="username" class="col-4 col-form-label">User Name</label> 
+            <div class="col-8">
+              <input name="username" placeholder="Username" class="form-control" value="{{user.username}}" disabled="">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="name" class="col-4 col-form-label">First Name</label> 
+            <div class="col-8">
+              <input value="{{user.first_name}}" name="first_name" placeholder="First Name" class="form-control">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="lastname" class="col-4 col-form-label">Last Name</label> 
+            <div class="col-8">
+              <input value="{{user.last_name}}" name="last_name" placeholder="Last Name" class="form-control">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="text" class="col-4 col-form-label">Email</label> 
+            <div class="col-8">
+              <input value="{{user.email}}" name="email" placeholder="Email" class="form-control">
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="offset-4 col-8">
+              <button name="submit" type="submit" class="btn btn-success">Update Profile</button>
+            </div>
+          </div>
+          
+        </div>
+        <div class="col-md-4">
+          <label><strong>Profile picture</strong></label>
+          <img class="avatar rounded-2" src="https://avatars2.githubusercontent.com/u/2777384?s=400&amp;u=9e752bc260afa5e847ac89106286412ee8410b56&amp;v=4" width="200" height="200" alt="@suhailvs">
+          <label class="btn btn-info" for="my-file-selector">
+            <input id="my-file-selector" type="file" style="display:none;">
+            Uploade new picture
+          </label>
+        </div>
+      </div>    
+    </form>
   </div>
-</div>    
-</form>
+</div>
+
 {% endblock %}

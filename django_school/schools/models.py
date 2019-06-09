@@ -114,21 +114,34 @@ class ClassRoom(models.Model):
     #def get_absolute_url(self):
     #    return reverse('course_detail', args=[str(self.id)])
 
-# from django.utils import timezone
-# class Session(models.Model):
-#     #This will be replaced by Event model in the school_calendar app.
-#     #A Session will just be a recurring Event related to a Course.
+class Subject(models.Model):
+    name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
+
+class Period(models.Model):
+    # A Period will just be a recurring Event(every week) related to a Classroom.
     
-#     course = models.ForeignKey(Course,on_delete=models.CASCADE,related_name="sessions")
-#     startdatetime = models.DateTimeField()
-#     enddatetime = models.DateTimeField()
+    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    starttime = models.TimeField()
+    endtime = models.TimeField()
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, null=True, blank=True)
 
-#     def __str__(self):
-#         startdatetime = timezone.localtime(self.startdatetime)
-#         return self.course.name + " on " + startdatetime.strftime("%A, %B %d at %X")
+    DAY_CHOICES = (
+        (0, 'Monday'),
+        (1, 'Tuesday'),
+        (2, 'Wednesday'),
+        (3, 'Thursday'),
+        (4, 'Friday'),
+        (5, 'Saturday'),
+        (6, 'Sunday'),
+    )
+    dayoftheweek = models.IntegerField(choices=DAY_CHOICES)
 
-#     # def get_absolute_url(self):
-#     #    return reverse('session_detail', args=[str(self.id)])
+    def __str__(self):
+        return f"{self.classroom.name} - {self.subject} on {self.DAY_CHOICES[self.dayoftheweek][1]} {self.starttime}"
+
 
 class Event(models.Model):
     '''This model stores Event.'''
