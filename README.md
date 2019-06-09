@@ -35,12 +35,25 @@ create database schools;
 #### then migrate:
 
 ```bash
-./manage.py makemigration
+./manage.py makemigrations
 ./manage.py migrate
 ./manage.py runserver
 ```
 The project will be available at <http://127.0.0.1:8000>
 
+## Initialization
+
+### Load Sample Data
+
+#### Load Fixtures
+
+Read `schools/fixtures/README.md` for information about adding sample data
+
+#### Create Teacher 
+
++ Create a Teacher Account
++ Create super user `./manage.py createsuperuser`
++ Login as Superuser and give `Staff status` to that user
 
 ## License
 
