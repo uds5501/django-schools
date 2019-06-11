@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row">
+<!-- <div class="row">
   <div class="col-3">
     <div class="nav flex-column nav-pills">
       <a class="nav-link active" href="#">Profile</a>
@@ -9,7 +9,7 @@
       <a class="nav-link" href="#">Class</a>
     </div>
   </div>
-  <div class="col-9">    
+  <div class="col-9">     -->
     <form method="post" enctype="multipart/form-data">{% csrf_token %}
       <input type="hidden" name="user" value="{{user.id}}">
       <div class="row">
@@ -46,17 +46,17 @@
           </div>
           
         </div>
-        <div class="col-md-4">
+        <!-- <div class="col-md-4">
           <label><strong>Profile picture</strong></label>
           <img class="avatar rounded-2" src="https://avatars2.githubusercontent.com/u/2777384?s=400&amp;u=9e752bc260afa5e847ac89106286412ee8410b56&amp;v=4" width="200" height="200" alt="@suhailvs">
           <label class="btn btn-info" for="my-file-selector">
             <input id="my-file-selector" type="file" style="display:none;">
             Uploade new picture
           </label>
-        </div>
+        </div> -->
       </div>    
     </form>
-  </div>
-</div>
+  <!-- </div>
+</div> -->
 
 {% endblock %}
