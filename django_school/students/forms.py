@@ -8,10 +8,10 @@ from schools.models import ClassRoom
 class StudentSignUpForm(CustomUserCreationForm):
     classroom = forms.CharField(required=True,
         widget=forms.Select(attrs={'required': 'required'}))
-    interests = forms.ModelMultipleChoiceField(
-        queryset=Subject.objects.all(),
-        required=True
-    )
+    # interests = forms.ModelMultipleChoiceField(
+    #     queryset=Subject.objects.all(),
+    #     required=True
+    # )
     
     def clean_classroom(self):
         # print (self.cleaned_data['classroom'])
@@ -26,7 +26,7 @@ class StudentSignUpForm(CustomUserCreationForm):
         user.save()
         classroom = ClassRoom.objects.get(id= self.cleaned_data.get('classroom'))
         student = Student.objects.create(user=user,classroom = classroom)
-        student.interests.add(*self.cleaned_data.get('interests'))
+        # student.interests.add(*self.cleaned_data.get('interests'))
         
         # course.students.add(user)
         return user

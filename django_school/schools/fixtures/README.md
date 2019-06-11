@@ -14,6 +14,14 @@ add classes::
     ...  rooms.append(ClassRoom(school = student.school, name = "{0}A".format(student.course)))
     >>> ClassRoom.objects.bulk_create(rooms)
 
+school name fix::
+
+    >>> from schools.models import School
+    >>> for school in School.objects.all():
+    ...  name = school.name.replace('.', ' ')
+    ...  school.name = name.replace('  ', ' ')
+    ...  school.save()
+
 add subjects::
 
     >>> from quizzes.models import Subject
@@ -24,5 +32,4 @@ if you want more data, load these::
 
 	./manage.py loaddata staffs.json
 	./manage.py loaddata staffstrengths.json
-	./manage.py loaddata studentstrengths.json
 

@@ -140,7 +140,8 @@ class Period(models.Model):
     dayoftheweek = models.IntegerField(choices=DAY_CHOICES)
 
     def __str__(self):
-        return f"{self.classroom.name} - {self.subject} on {self.DAY_CHOICES[self.dayoftheweek][1]} {self.starttime}"
+        # return f"{self.classroom.name} - {self.subject} on {self.DAY_CHOICES[self.dayoftheweek][1]} {self.starttime}"
+        return "{0} - {1} on {2} {3}".format(self.classroom.name, self.subject, self.DAY_CHOICES[self.dayoftheweek][1], self.starttime)
 
 
 class Event(models.Model):

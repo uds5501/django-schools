@@ -53,7 +53,7 @@
 {% if usertype == 'student' %}
 
   $('#id_interests').select2({ placeholder: 'Select interested Subjects'});
-  $('#id_classroom').select2({ placeholder: 'Select your Class' });
+  // $('#id_classroom').select2({ placeholder: 'Select your Class' });
   $("#id_school").change(function () {
     get_classrooms($(this).val());
   });
@@ -62,21 +62,19 @@
   // get_courses($("#id_school").val());
 
   function get_classrooms(school_id) {
+    $("#id_classroom").empty();
+    // $("#id_classroom").trigger("change"); // .trigger("chosen:updated");
 
-    if (school_id == 0) { //Not selected
-      $("#id_classroom").empty();
-      $("#id_classroom").trigger("change"); // .trigger("chosen:updated");
-    } else {
-      //$("#id_classroom").prop('disabled',true); 
-      $("#id_classroom").empty();
-      $("#id_classroom").trigger("change"); // .trigger("chosen:updated");
+    // if (school_id != 0) { 
+    if (school_id) {
+      $("#id_classroom").attr('disabled',true);
       $.ajax({                       // initialize an AJAX request
         url: "{% url 'ajax_load_courses' %}",
         data: { 'school': school_id },
         success: function (data) {   
-          //$("#id_classroom").removeAttr("disabled");
+          $("#id_classroom").removeAttr("disabled");
           $("#id_classroom").html(data);  // replace the contents of the city input with the data that came from the server
-          $("#id_classroom").trigger("change"); // .trigger("chosen:updated");
+          // $("#id_classroom").trigger("change"); // .trigger("chosen:updated");
         }
       });
     }
