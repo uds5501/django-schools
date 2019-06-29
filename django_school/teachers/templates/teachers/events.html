@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
+
+{% load static %}
 {% block extracss %}
-<link href='https://fullcalendar.io/releases/fullcalendar/3.9.0/fullcalendar.min.css' rel='stylesheet' />
-<link href='https://fullcalendar.io/releases/fullcalendar/3.9.0/fullcalendar.print.min.css' rel='stylesheet' media='print' />
-<link href='http://jonthornton.github.io/jquery-timepicker/jquery.timepicker.css' rel='stylesheet' />
+<link href='{% static 'fullcalendar/fullcalendar.min.css' %}' rel='stylesheet' />
+<link href='{% static 'fullcalendar/fullcalendar.print.min.css' %}' rel='stylesheet' media='print' />
+<link href='{% static 'timepicker/jquery.timepicker.css' %}' rel='stylesheet' />
 <style type="text/css">
   .fc-sat { color:red;  }
   .fc-sun { color:red;  }
@@ -53,12 +55,12 @@
 {% endblock %}
 
 {% block extrajs %}
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
 
-<script src="http://jonthornton.github.io/jquery-timepicker/jquery.timepicker.js"></script>
+<script src="{% static 'timepicker/jquery.timepicker.js' %}"></script>
 
-<script src='https://fullcalendar.io/releases/fullcalendar/3.9.0/lib/moment.min.js'></script>
-<script src='https://fullcalendar.io/releases/fullcalendar/3.9.0/fullcalendar.min.js'></script>
+<script src='{% static 'fullcalendar/moment.min.js' %}'></script>
+<script src='{% static 'fullcalendar/fullcalendar.min.js' %}'></script>
 <script>
 
 $(document).ready(function() {
