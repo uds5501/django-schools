@@ -9,6 +9,7 @@ urlpatterns = [
     path('schools/', include(('schools.urls','schools'),namespace='schools')),
     path('students/', include(('students.urls','students'),namespace='students')),
     path('teachers/', include(('teachers.urls','teachers'),namespace='teachers')),
+    path('classroom/', include(('classroom.urls','classroom'),namespace='classroom')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('settings/profile/', Profile.as_view(), name='profile'),
     path('accounts/signup/', SignUpView.as_view(), name='signup'),

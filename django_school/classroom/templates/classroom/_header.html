@@ -1,0 +1,9 @@
+
+<ul class="nav nav-tabs mb-3">
+  <li class="nav-item">
+    <a class="nav-link{% if active == 'timetable' %} active{% endif %}" href="{% url 'classroom:timetable' %}">Timetable</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link{% if active == 'attendance' %} active{% endif %}" href="#">Attendance</a>
+  </li>
+</ul>
