@@ -1,8 +1,8 @@
 from django.shortcuts import redirect, render
 from django.views import View, generic
 from django.contrib import messages
-from .models import ClassRoom, School
-
+from .models import School
+from classroom.models import ClassRoom
 class SignUpView(generic.TemplateView):
     template_name = 'registration/signup.html'
 

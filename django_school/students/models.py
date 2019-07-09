@@ -7,7 +7,7 @@ class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True)
     quizzes = models.ManyToManyField(Quiz, through='TakenQuiz')
     interests = models.ManyToManyField(Subject, related_name='interested_students')
-    classroom = models.ForeignKey('schools.ClassRoom', on_delete=models.CASCADE)
+    classroom = models.ForeignKey('classroom.ClassRoom', on_delete=models.CASCADE)
 
     def get_unanswered_questions(self, quiz):
         answered_questions = self.quiz_answers \

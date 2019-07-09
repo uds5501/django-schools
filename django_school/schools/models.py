@@ -57,17 +57,17 @@ class Staff(models.Model):
 
 from django.contrib.auth.models import AbstractUser
 
-class Location(models.Model):
-    address_1 = models.CharField(max_length=50, blank= True)
-    address_2 = models.CharField(max_length=50, blank=True)
-    city = models.CharField(max_length=50)
-    district = models.CharField(max_length=50)
-    state_province = models.CharField(max_length=20, default='kerala')
-    zip_postal_code = models.CharField(max_length=10, blank=True)
-    country = models.CharField(max_length=20, default='india')
+# class Location(models.Model):
+#     address_1 = models.CharField(max_length=50, blank= True)
+#     address_2 = models.CharField(max_length=50, blank=True)
+#     city = models.CharField(max_length=50)
+#     district = models.CharField(max_length=50)
+#     state_province = models.CharField(max_length=20, default='kerala')
+#     zip_postal_code = models.CharField(max_length=10, blank=True)
+#     country = models.CharField(max_length=20, default='india')
 
-    def __str__(self):
-        return self.city    
+#     def __str__(self):
+#         return self.city    
 
     #def get_absolute_url(self):
     #    return reverse('location_detail', args=[str(self.id)])
@@ -82,7 +82,7 @@ class User(AbstractUser):
     )
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES,default=1)
     school = models.ForeignKey(School,on_delete=models.CASCADE, related_name='users',null=True,blank=True)
-    location = models.ForeignKey(Location,on_delete=models.CASCADE,null=True,blank=True)
+    # location = models.ForeignKey(Location,on_delete=models.CASCADE,null=True,blank=True)
     is_verified = models.BooleanField(default=False)
     
     @property
@@ -95,58 +95,35 @@ class User(AbstractUser):
         "Is the user a teacher?"
         return self.user_type == 2    
 
-class ClassRoom(models.Model):
-    # Class for exampl: 8A, 7B, 10I etc
-    school = models.ForeignKey(School,on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
-    #teacher = models.ForeignKey(User,on_delete=models.CASCADE)
-    # i don't know whether the below things are required or not
-    teachers = models.ManyToManyField(User,blank=True)
-    #students = models.ManyToManyField(User, related_name="course_students",blank=True)
-
-    
-    class Meta:
-        unique_together = ("school", "name")
-    
-    def __str__(self):
-        return self.name
-
-    #def get_absolute_url(self):
-    #    return reverse('course_detail', args=[str(self.id)])
-
-class Subject(models.Model):
-    name = models.CharField(max_length=30)
-
-    def __str__(self):
-        return self.name
-
-class Period(models.Model):
-    # A Period will just be a recurring Event(every week) related to a Classroom.
-    
-    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
-    starttime = models.TimeField()
-    endtime = models.TimeField()
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, null=True, blank=True)
-
-    DAY_CHOICES = (
-        (0, 'Monday'),
-        (1, 'Tuesday'),
-        (2, 'Wednesday'),
-        (3, 'Thursday'),
-        (4, 'Friday'),
-        (5, 'Saturday'),
-        (6, 'Sunday'),
-    )
-    dayoftheweek = models.IntegerField(choices=DAY_CHOICES)
-
-    def __str__(self):
-        # return f"{self.classroom.name} - {self.subject} on {self.DAY_CHOICES[self.dayoftheweek][1]} {self.starttime}"
-        return "{0} - {1} on {2} {3}".format(self.classroom.name, self.subject, self.DAY_CHOICES[self.dayoftheweek][1], self.starttime)
-
-
 class Event(models.Model):
     '''This model stores Event.'''
     startdatetime = models.DateTimeField()
     enddatetime = models.DateTimeField(blank=True,null=True)
     title = models.CharField(max_length=255)
-    school = models.ForeignKey(School,on_delete=models.CASCADE)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+
+
+# class Period(models.Model):
+#     # A Period will just be a recurring Event(every week) related to a Classroom.
+    
+#     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+#     starttime = models.TimeField()
+#     endtime = models.TimeField()
+#     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, null=True, blank=True)
+
+#     DAY_CHOICES = (
+#         (0, 'Monday'),
+#         (1, 'Tuesday'),
+#         (2, 'Wednesday'),
+#         (3, 'Thursday'),
+#         (4, 'Friday'),
+#         (5, 'Saturday'),
+#         (6, 'Sunday'),
+#     )
+#     dayoftheweek = models.IntegerField(choices=DAY_CHOICES)
+
+#     def __str__(self):
+#         # return f"{self.classroom.name} - {self.subject} on {self.DAY_CHOICES[self.dayoftheweek][1]} {self.starttime}"
+#         return "{0} - {1} on {2} {3}".format(self.classroom.name, self.subject, self.DAY_CHOICES[self.dayoftheweek][1], self.starttime)
+
+

@@ -3,7 +3,7 @@ from schools.forms import CustomUserCreationForm
 from quizzes.models import Subject
 from django.db import transaction
 from .models import Student
-from schools.models import ClassRoom
+from classroom.models import ClassRoom
 
 class StudentSignUpForm(CustomUserCreationForm):
     classroom = forms.CharField(required=True,

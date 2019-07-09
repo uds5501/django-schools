@@ -16,6 +16,10 @@ from .decorators import student_required
 from .models import Student,TakenQuiz
 from quizzes.models import Quiz
 
+from django.http import JsonResponse
+from django.views import View
+from schools.models import Event
+
 class StudentSignUpView(CreateView):
     model = settings.AUTH_USER_MODEL
     form_class = StudentSignUpForm
@@ -31,9 +35,6 @@ class StudentSignUpView(CreateView):
         return redirect('home')#students:quiz_list')
 
 
-from django.http import JsonResponse
-from django.views import View
-from schools.models import Event
 @method_decorator([login_required, student_required], name='dispatch')
 class EventList(View):
     def get(self, request):
