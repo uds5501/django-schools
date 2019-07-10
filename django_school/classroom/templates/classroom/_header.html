@@ -4,7 +4,7 @@
     <a class="nav-link{% if active == 'classrooms' %} active{% endif %}" href="{% url 'classroom:classrooms' %}">Classrooms</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link{% if active == 'subjects' %} active{% endif %}" href="#">Subjects</a>
+    <a class="nav-link{% if active == 'subjects' %} active{% endif %}" href="{% url 'classroom:subjects' %}">Subjects</a>
   </li>
   <li class="nav-item">
     <a class="nav-link{% if active == 'timetable' %} active{% endif %}" href="{% url 'classroom:timetable' %}">Timetable</a>

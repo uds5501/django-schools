@@ -40,16 +40,16 @@
           <div class="form-group row">
             <label class="col-sm-4 col-form-label">Classroom:</label>
             <div class="col-sm-8">
-              <input type="text" class="form-control" name="classroom" id="classRoom" disabled="">
+              <input type="text" class="form-control classRoom" name="classroom" readonly="">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-4 col-form-label">Subject:</label>
             <div class="col-sm-8">
-              <select class="form-control">
+              <select class="form-control" name="subject">
                 <option value="">--select--</option>
                 {% for subject in subjects %}
-                <option>{{subject.name}}</option>
+                <option value="{{subject.id}}">{{subject.name}}</option>
                 {% endfor %}
               </select>
             </div>
@@ -57,10 +57,10 @@
           <div class="form-group row">
             <label class="col-sm-4 col-form-label">Teacher:</label>
             <div class="col-sm-8">
-              <select class="form-control">
+              <select class="form-control" name="teacher">
                 <option value="">--select--</option>
                 {% for teacher in teachers %}
-                <option>{{teacher.username}}</option>
+                <option value="{{teacher.id}}">{{teacher.username}}</option>
                 {% endfor %}
               </select>
             </div>
@@ -68,13 +68,13 @@
           <div class="form-group row">
             <label class="col-sm-4 col-form-label">Day of the week:</label>
             <div class="col-sm-8">
-              <input type="text" class="form-control" name="date" id="weekDay" disabled="">
+              <input type="text" class="form-control" name="dayoftheweek" id="weekDay" readonly="">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-4 col-form-label">Start Time:</label>
             <div class="col-sm-8">
-              <input type="time" class="form-control" name="starttime" id="startTime" disabled="">
+              <input type="time" class="form-control" name="starttime" id="startTime" readonly="">
             </div>
           </div>
           <div class="form-group row">
@@ -128,7 +128,7 @@ $(document).ready(function() {
   });
 
   function loadCalendar(classroom) {
-    $('#classRoom').val(classroom);
+    $('input.classRoom').val(classroom);
 
     var calendar = $('#calendar').fullCalendar({
       //lang: 'de',
@@ -156,7 +156,8 @@ $(document).ready(function() {
         let weekday = moment(date);
         $('#weekDay').val(weekday.format("dddd")); // weekday.day());
         $('#startTime').val(weekday.format("HH:mm"));        
-        $('#addPeriodModel').modal('show');        
+        $('#addPeriodModel').modal('show');
+        $('#addPeriodModel').find('.errormsg').html('');   
       },
       events: "{% url 'classroom:timetable' %}?classroom="+classroom,
     });

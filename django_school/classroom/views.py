@@ -9,7 +9,7 @@ from django.urls import reverse
 
 from teachers.decorators import teacher_required
 from .models import ClassRoom, Subject, Period
-from .forms import ClassroomForm
+from .forms import ClassroomForm,PeriodForm, SubjectForm
 
 # Create your views here.
 @method_decorator([login_required, teacher_required], name='dispatch')
@@ -39,8 +39,19 @@ class TimeTableView(View):
         """
         Save a Period of TimeTable
         """
-        print(request.POST)
-        return HttpResponse('success')
+        # classroom, subject, teacher, day, starttime,endtime
+        DAY_CHOICES = {n[1]: n[0] for n in Period._meta.get_field('dayoftheweek').choices}
+        updated_request = request.POST.copy()
+        updated_request['classroom'] = ClassRoom.objects.get(name=updated_request['classroom']).id
+        updated_request['dayoftheweek'] = DAY_CHOICES[updated_request['dayoftheweek']]
+        form = PeriodForm(updated_request)
+        if form.is_valid():
+            form.save()
+            message = 'success'
+        else:
+            message = str(form.errors)
+
+        return HttpResponse(message)
 
 
 def classroom_view(request):
@@ -58,3 +69,19 @@ def classroom_view(request):
 
     classrooms = ClassRoom.objects.filter(school = request.user.school)
     return render(request,"classroom/classrooms.html", {'form': form, 'classrooms':classrooms })
+
+def subject_view(request):
+    if request.method == 'POST':
+        form = SubjectForm(request.POST)
+        if form.is_valid():
+            subject = form.save(commit=False)
+            subject.school = request.user.school
+            subject.save()
+            messages.success(request, 'Subject saved with success!')
+            return redirect('classroom:subjects')
+    else:
+        subject = Subject(school = request.user.school)
+        form = SubjectForm(instance=subject)
+
+    subjects = Subject.objects.filter(school = request.user.school)
+    return render(request,"classroom/subjects.html", {'form': form, 'subjects':subjects })
