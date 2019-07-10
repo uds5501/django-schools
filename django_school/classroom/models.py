@@ -3,8 +3,6 @@ from schools.models import School
 from django.conf import settings
 # Create your models here.
 
-
-
 class ClassRoom(models.Model):
     # Class for exampl: 8A, 7B, 10I etc
     school = models.ForeignKey(School, on_delete=models.CASCADE)
@@ -14,7 +12,6 @@ class ClassRoom(models.Model):
     teachers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     #students = models.ManyToManyField(User, related_name="course_students",blank=True)
 
-    
     class Meta:
         unique_together = ("school", "name")
     

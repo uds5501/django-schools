@@ -1,13 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse, HttpResponse
+from django.urls import reverse
 
 from teachers.decorators import teacher_required
 from .models import ClassRoom, Subject, Period
-
+from .forms import ClassroomForm
 
 # Create your views here.
 @method_decorator([login_required, teacher_required], name='dispatch')
@@ -30,13 +32,6 @@ class TimeTableView(View):
             'subjects': Subject.objects.filter(school = school),
             'teachers': get_user_model().objects.filter(school = school, user_type=2),
         }
-
-        
-
-            # events= Event.objects.filter(school = request.user.school)
-            # qs_json = [dict(id=et.id, title=et.title, start=str(et.startdatetime)) for et in events]
-            # return JsonResponse(qs_json,safe=False)
-
         
         return render(request,'classroom/timetable.html', resp)
 
@@ -46,3 +41,20 @@ class TimeTableView(View):
         """
         print(request.POST)
         return HttpResponse('success')
+
+
+def classroom_view(request):
+    if request.method == 'POST':
+        form = ClassroomForm(request.POST)
+        if form.is_valid():
+            classroom = form.save(commit=False)
+            classroom.school = request.user.school
+            classroom.save()
+            messages.success(request, 'ClassRoom saved with success!')
+            return redirect('classroom:classrooms')
+    else:
+        classroom = ClassRoom(school = request.user.school)
+        form = ClassroomForm(instance=classroom)
+
+    classrooms = ClassRoom.objects.filter(school = request.user.school)
+    return render(request,"classroom/classrooms.html", {'form': form, 'classrooms':classrooms })
