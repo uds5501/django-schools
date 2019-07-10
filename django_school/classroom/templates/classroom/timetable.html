@@ -12,55 +12,158 @@
 
 {% block content %}
 {% include 'classroom/_header.html' with active='timetable' %}
+<div class="form-group">
+  <label>Classroom:</label>
+  <select class="form-control" id="classroomSelect">
+    <option value="">--select--</option>
+    {% for classroom in classrooms %}
+    <option>{{classroom.name}}</option>
+    {% endfor %}
+  </select>
+</div>
+
 <div id='calendar'></div>
+
+<!-- Modal -->
+<div class="modal fade" id="addPeriodModel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Period:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="frm_addperiod">{% csrf_token %}
+        <div class="modal-body">
+          <div class="errormsg"></div>
+          <div class="form-group row">
+            <label class="col-sm-4 col-form-label">Classroom:</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" name="classroom" id="classRoom" disabled="">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-4 col-form-label">Subject:</label>
+            <div class="col-sm-8">
+              <select class="form-control">
+                <option value="">--select--</option>
+                {% for subject in subjects %}
+                <option>{{subject.name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-4 col-form-label">Teacher:</label>
+            <div class="col-sm-8">
+              <select class="form-control">
+                <option value="">--select--</option>
+                {% for teacher in teachers %}
+                <option>{{teacher.username}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-4 col-form-label">Day of the week:</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" name="date" id="weekDay" disabled="">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-4 col-form-label">Start Time:</label>
+            <div class="col-sm-8">
+              <input type="time" class="form-control" name="starttime" id="startTime" disabled="">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-4 col-form-label">End Time:</label>
+            <div class="col-sm-8">
+              <input type="time" class="form-control" name="endtime" required="">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" id="btn_add_period">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block extrajs %}
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src='{% static 'fullcalendar/moment.min.js' %}'></script>
 <script src='{% static 'fullcalendar/fullcalendar.min.js' %}'></script>
 <script>
 
 $(document).ready(function() {
-
-  var calendar = $('#calendar').fullCalendar({
-    //lang: 'de',
-    header: { // Display nothing at the top
-        left: '',
-        center: '',
-        right: ''
-    },
-    // eventSources: ['events.php'],
-    height: 680, // Fix height
-    columnFormat: 'dddd', // Display just full length of weekday, without dates 
-    defaultView: 'agendaWeek', // display week view
-    hiddenDays: [0,6], // hide Saturday and Sunday
-    weekNumbers:  false, // don't show week numbers
-    minTime: '08:00:00', // display from 16 to
-    maxTime: '17:00:00', // 23 
-    slotDuration: '00:15:00', // 15 minutes for each row
-    allDaySlot: false, // don't show "all day" at the top
-    select: function(start, end, allDay) {
-         // Code for creating new events.
-         alert("Create new event at " + start);
-    },
-    eventResize: function( event, delta, revertFunc, jsEvent, ui, view ) {
-         // Code when you resize an event (for example make it two hours longer
-         alert("I just got resized!");
-    },
-    events: [
-    {
-      title: 'Social',
-      start: '2019-01-01T13:30:00',
-      end: '2019-01-01T14:30:00'
-    }],
-    eventDrop: function( event, jsEvent, ui, view ) { 
-
-        // Code when you drop an element somewhere else
-        alert("I'm somewhere else now");
-    }
+  $('#classroomSelect').on('change', function() {
+    loadCalendar( this.value );
   });
 
-  $('#calendar').fullCalendar( 'gotoDate', '2019-01-01');
+  $("#btn_add_period").click(function(e) {
+    e.preventDefault();     
+    let addperiod=$('#addPeriodModel');    
+    let datas=$('#frm_addperiod').serializeArray();
+    // $('#frm_addperiod :input').attr('disabled', true);    
+    $.ajax({
+      type: "POST",
+      url: "{% url 'classroom:timetable' %}",
+      data: datas
+    }).done(function(resp){
+      // $('#frm_addevent :input').each(function(){this.disabled = false;});
+      if (resp == 'success'){ 
+        $('#calendar').fullCalendar('refetchEvents');
+        addperiod.modal('hide');
+        // $('#frm_addevent').trigger("reset");
+      }else{
+        addperiod.find('.errormsg').html('<div class="alert alert-danger">'+resp+'</div>');
+      }
+      
+    });
+  });
+
+  function loadCalendar(classroom) {
+    $('#classRoom').val(classroom);
+
+    var calendar = $('#calendar').fullCalendar({
+      //lang: 'de',
+      header: { // Display nothing at the top
+          left: '',
+          center: '',
+          right: ''
+      },
+      // eventSources: ['events.php'],
+      height: 680, // Fix height
+      columnFormat: 'dddd', // Display just full length of weekday, without dates 
+      defaultView: 'agendaWeek', // display week view
+      hiddenDays: [0,6], // hide Saturday and Sunday
+      weekNumbers:  false, // don't show week numbers
+      minTime: '08:00:00', // display from 16 to
+      maxTime: '17:00:00', // 23 
+      slotDuration: '00:30:00', // 15 minutes for each row
+      allDaySlot: false, // don't show "all day" at the top
+      timezone:'local', // https://stackoverflow.com/a/35863657/2351696
+      selectable: true,
+      select: function(start, end, allDay) {
+        // Code for creating new events.
+        // alert("Create new event at " + start);        
+        let date = new Date(start);
+        let weekday = moment(date);
+        $('#weekDay').val(weekday.format("dddd")); // weekday.day());
+        $('#startTime').val(weekday.format("HH:mm"));        
+        $('#addPeriodModel').modal('show');        
+      },
+      events: "{% url 'classroom:timetable' %}?classroom="+classroom,
+    });
+
+    $('#calendar').fullCalendar( 'gotoDate', '2019-01-01');
+  }
+  
 });
 
 </script>

@@ -38,6 +38,7 @@ class Period(models.Model):
     starttime = models.TimeField()
     endtime = models.TimeField()
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, null=True, blank=True)
+    teacher = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
 
     DAY_CHOICES = (
         (0, 'Monday'),

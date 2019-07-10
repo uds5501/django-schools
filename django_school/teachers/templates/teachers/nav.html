@@ -1,7 +1,7 @@
 {% url 'home' as home %}
 {% url 'teachers:user_list' 1 as student_list %}
 {% url 'teachers:user_list' 2 as teacher_list %}
-{% url 'classroom:timetable' as timetable %}
+{% url 'classroom:classrooms' as classroom %}
 {% url 'teachers:quiz_change_list' as quiz_change_list %}
 {% url 'teachers:events' as events %}
 {% url 'profile' as profile %}
@@ -21,7 +21,7 @@
   <a class="nav-link{% if request.path == attendance %} active{% endif %}" href="{{ attendance }}">Attendance</a>
 </li> -->
 <li class="nav-item">
-  <a class="nav-link{% if timetable in request.path  %} active{% endif %}" href="{{ timetable }}">Classroom</a>
+  <a class="nav-link{% if classroom in request.path  %} active{% endif %}" href="{{ classroom }}">Classroom</a>
 </li>
 <li class="nav-item">
   <a class="nav-link{% if request.path == quiz_change_list %} active{% endif %}" href="{{ quiz_change_list }}">Quizzes</a>
