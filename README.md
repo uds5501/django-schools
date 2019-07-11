@@ -1,7 +1,8 @@
 # Django School
 
 [![Python Version](https://img.shields.io/badge/python-3.6-brightgreen.svg)](https://python.org)
-[![Django Version](https://img.shields.io/badge/django-2.0-brightgreen.svg)](https://djangoproject.com)
+[![Django Version](https://img.shields.io/badge/django-2.2-brightgreen.svg)](https://djangoproject.com)
+[![CircleCI](https://circleci.com/gh/suhailvs/django-schools.svg?style=svg)](https://circleci.com/gh/suhailvs/django-schools)
 
 This is an school erp project forked from [django-schools](https://github.com/sibtc/django-multiple-user-types-example.git). In this Django app, teachers can create quizzes and students can sign up and take quizzes related to their interests.
 
@@ -11,12 +12,15 @@ This is an school erp project forked from [django-schools](https://github.com/si
 First, clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/suhailvs/django-schools.git
+git clone https://github.com/suhailvs/django-schools
 ```
 
-### Install the requirements:
+Create Virtual Env and Install the requirements:
 
 ```bash
+cd django-schools
+python3 -m venv env
+source ./env/bin/activate
 pip install -r requirements.txt
 ```
 

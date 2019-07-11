@@ -10,14 +10,16 @@ from django.contrib import messages
 from django.db import transaction
 from django.db.models import Count
 
+from django.http import JsonResponse
+from django.views import View
+
 from quizzes.forms import StudentInterestsForm, TakeQuizForm
 from .forms import StudentSignUpForm
 from .decorators import student_required
 from .models import Student,TakenQuiz
-from quizzes.models import Quiz
+from quizzes.models import Quiz, Question
 
-from django.http import JsonResponse
-from django.views import View
+
 from schools.models import Event
 
 class StudentSignUpView(CreateView):
@@ -82,6 +84,23 @@ class QuizListView(ListView):
 
 
 @method_decorator([login_required, student_required], name='dispatch')
+class QuizResultsView(View):
+    template_name = 'students/quiz_result.html'
+
+    def get(self, request, *args, **kwargs):        
+        quiz = Quiz.objects.get(id = kwargs['pk'])
+        if not TakenQuiz.objects.filter(student = request.user.student, quiz = quiz):
+            """
+            Don't show the result if the user didn't attempted the quiz
+            """
+            return render(request, '404.html')
+        questions = Question.objects.filter(quiz =quiz)
+        
+        # questions = self.form_class(initial=self.initial)
+        return render(request, self.template_name, {'questions':questions, 'quiz':quiz})
+
+
+@method_decorator([login_required, student_required], name='dispatch')
 class TakenQuizListView(ListView):
     model = TakenQuiz
     context_object_name = 'taken_quizzes'
@@ -134,5 +153,7 @@ def take_quiz(request, pk):
         'quiz': quiz,
         'question': question,
         'form': form,
-        'progress': progress
+        'progress': progress,
+        'answered_questions': total_questions - total_unanswered_questions,
+        'total_questions': total_questions
     })

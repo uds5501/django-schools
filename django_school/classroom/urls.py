@@ -8,3 +8,4 @@ urlpatterns = [
 	path('timetable/', TimeTableView.as_view(), name='timetable'),
 	# path('timetable', TemplateView.as_view(template_name="classroom/timetable.html"), name='timetable'),
 ]
+
