@@ -18,12 +18,15 @@ class TimeTableView(View):
         school = request.user.school
         classroom_name = request.GET.get('classroom','')
         if classroom_name: 
-            print(request.GET['start'],request.GET['end'])
             classroom = ClassRoom.objects.get(school = school, name = classroom_name)
-            periods = Period.objects.filter(classroom= classroom)
-            
-            qs_json = [{'id':p.id, 'title':p.subject.name, 'start':'2019-01-01T13:30:00','end':'2019-01-01T14:30:00'} for p in periods]
-            # print(qs_json)
+            periods = Period.objects.filter(classroom= classroom)            
+
+            qs_json = [{
+                'id':p.id, 
+                'title':'{0}\n{1}'.format(p.subject.name, p.teacher.username), 
+                'start':p.startdatetime,
+                'end':p.enddatetime
+                } for p in periods]
             return JsonResponse(qs_json,safe=False)
 
         
@@ -40,9 +43,10 @@ class TimeTableView(View):
         Save a Period of TimeTable
         """
         # classroom, subject, teacher, day, starttime,endtime
+        school = request.user.school
         DAY_CHOICES = {n[1]: n[0] for n in Period._meta.get_field('dayoftheweek').choices}
         updated_request = request.POST.copy()
-        updated_request['classroom'] = ClassRoom.objects.get(name=updated_request['classroom']).id
+        updated_request['classroom'] = ClassRoom.objects.get(school = school,name=updated_request['classroom']).id
         updated_request['dayoftheweek'] = DAY_CHOICES[updated_request['dayoftheweek']]
         form = PeriodForm(updated_request)
         if form.is_valid():

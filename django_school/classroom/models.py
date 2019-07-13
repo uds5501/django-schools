@@ -1,6 +1,8 @@
+from datetime import datetime, date, timedelta
 from django.db import models
-from schools.models import School
 from django.conf import settings
+
+from schools.models import School
 # Create your models here.
 
 class ClassRoom(models.Model):
@@ -47,6 +49,22 @@ class Period(models.Model):
         (6, 'Sunday'),
     )
     dayoftheweek = models.IntegerField(choices=DAY_CHOICES)
+
+    def getdatetime(self, time):
+        d = date(2018, 12, 31)
+        dayoftheweek = self.DAY_CHOICES[self.dayoftheweek][0]
+        d += timedelta(dayoftheweek)
+        dt = datetime.combine(d, time)
+        return dt.strftime('%Y-%m-%dT%H:%M:%S')
+
+
+    @property
+    def startdatetime(self):
+        return self.getdatetime(self.starttime)
+    
+    @property
+    def enddatetime(self):
+        return self.getdatetime(self.endtime)
 
     def __str__(self):
         # return f"{self.classroom.name} - {self.subject} on {self.DAY_CHOICES[self.dayoftheweek][1]} {self.starttime}"

@@ -101,8 +101,10 @@
 <script>
 
 $(document).ready(function() {
-  $('#classroomSelect').on('change', function() {
-    loadCalendar( this.value );
+  $('#classroomSelect').on('change', function() {    
+    $('input.classRoom').val(this.value);
+    $('#calendar').fullCalendar('removeEvents');
+    $('#calendar').fullCalendar('addEventSource', "{% url 'classroom:timetable' %}?classroom="+this.value);
   });
 
   $("#btn_add_period").click(function(e) {
@@ -127,9 +129,7 @@ $(document).ready(function() {
     });
   });
 
-  function loadCalendar(classroom) {
-    $('input.classRoom').val(classroom);
-
+  function loadCalendar() {   
     var calendar = $('#calendar').fullCalendar({
       //lang: 'de',
       header: { // Display nothing at the top
@@ -151,7 +151,6 @@ $(document).ready(function() {
       selectable: true,
       select: function(start, end, allDay) {
         // Code for creating new events.
-        // alert("Create new event at " + start);        
         let date = new Date(start);
         let weekday = moment(date);
         $('#weekDay').val(weekday.format("dddd")); // weekday.day());
@@ -159,12 +158,14 @@ $(document).ready(function() {
         $('#addPeriodModel').modal('show');
         $('#addPeriodModel').find('.errormsg').html('');   
       },
-      events: "{% url 'classroom:timetable' %}?classroom="+classroom,
+      events: [],
     });
 
     $('#calendar').fullCalendar( 'gotoDate', '2019-01-01');
   }
-  
+
+  loadCalendar();
+  $('#classroomSelect').val("");
 });
 
 </script>
