@@ -1,0 +1,62 @@
+[{
+    "model": "schools.basicinfo",
+    "pk": 1,
+    "fields": {
+        "establish_date": "Not Available",
+        "area": "5 hectare / acre",
+        "rooms": 43,
+        "teaching_staffs": 34,
+        "non_teaching_staffs": 5
+    }
+},{
+    "model": "schools.school",
+    "pk": 1,
+    "fields": {
+        "name": "G. H. S. S. Kizhakkanchery",
+        "code": 21006,
+        "district": "Palakkad",
+        "edu_district": "Palakkad",
+        "sub_district": "Alathur",
+        "url_id": 8475,
+        "basic_info": 1,
+        "created_on": "2018-07-28T12:59:39.001Z"
+    }
+}, {
+    "model": "schools.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$100000$fBZ6FNGxOrNT$O53zRTxQFRUSqX+THFIxWZn0evHJE0l32ST2BA0aKy4=",
+        "last_login": "2018-06-21T05:34:02.608Z",
+        "is_superuser": false,
+        "username": "suhail",
+        "first_name": "",
+        "last_name": "",
+        "email": "",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2018-06-21T04:47:59.795Z",
+        "user_type": 1,
+        "school":1, 
+        "groups": [],
+        "user_permissions": []
+    }
+}, {
+    "model": "schools.user",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$100000$qSn4XCPpb6Ry$XjIgpmcuUzajsPso6UWzDUSNDMbC6bwTQYUuUghk8PY=",
+        "last_login": "2018-06-21T05:35:05.133Z",
+        "is_superuser": false,
+        "username": "sumee",
+        "first_name": "",
+        "last_name": "",
+        "email": "",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2018-06-21T04:48:26.868Z",
+        "user_type": 2,
+        "school":1, 
+        "groups": [],
+        "user_permissions": []
+    }
+}]
