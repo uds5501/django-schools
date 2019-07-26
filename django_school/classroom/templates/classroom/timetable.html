@@ -101,10 +101,13 @@
 <script>
 
 $(document).ready(function() {
+  function fetchCalendar(classroom) {
+    $('#calendar').fullCalendar('removeEvents');
+    $('#calendar').fullCalendar('addEventSource', "{% url 'classroom:timetable' %}?classroom="+classroom);
+  }
   $('#classroomSelect').on('change', function() {    
     $('input.classRoom').val(this.value);
-    $('#calendar').fullCalendar('removeEvents');
-    $('#calendar').fullCalendar('addEventSource', "{% url 'classroom:timetable' %}?classroom="+this.value);
+    fetchCalendar(this.value);
   });
 
   $("#btn_add_period").click(function(e) {
@@ -119,7 +122,7 @@ $(document).ready(function() {
     }).done(function(resp){
       // $('#frm_addevent :input').each(function(){this.disabled = false;});
       if (resp == 'success'){ 
-        $('#calendar').fullCalendar('refetchEvents');
+        fetchCalendar($('#classroomSelect').val());
         addperiod.modal('hide');
         // $('#frm_addevent').trigger("reset");
       }else{
