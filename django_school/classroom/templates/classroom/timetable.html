@@ -134,13 +134,7 @@ $(document).ready(function() {
 
   function loadCalendar() {   
     var calendar = $('#calendar').fullCalendar({
-      //lang: 'de',
-      header: { // Display nothing at the top
-          left: '',
-          center: '',
-          right: ''
-      },
-      // eventSources: ['events.php'],
+      header: { left: '', center: '', right: '' },
       height: 680, // Fix height
       columnFormat: 'dddd', // Display just full length of weekday, without dates 
       defaultView: 'agendaWeek', // display week view
@@ -171,13 +165,6 @@ $(document).ready(function() {
           $.get("{% url 'classroom:deleteperiod' %}",{period: calEvent.id}).done(function(data) {
             $('#calendar').fullCalendar('removeEvents',calEvent._id);
           });
-          // $.ajax({
-          //   type: "DELETE",
-          //   url: "{% url 'classroom:deleteperiod' %}?period="+,
-          //   success: function(result) {
-          //     $('#calendar').fullCalendar('removeEvents',calEvent._id);
-          //   }
-          // });
         }
       },
       events: [],

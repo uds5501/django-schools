@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block content %}
+<!-- <h2>Time Table</h2> -->
 <div id='calendar'></div>
 {% endblock %}
 
@@ -20,19 +21,9 @@
 <script>
 
 $(document).ready(function() {
-  // function fetchCalendar(classroom) {
-  //   $('#calendar').fullCalendar('removeEvents');
-  //   $('#calendar').fullCalendar('addEventSource', "{% url 'classroom:timetable' %}?classroom="+classroom);
-  // }
-
   function loadCalendar() {   
     var calendar = $('#calendar').fullCalendar({
-      //lang: 'de',
-      header: { // Display nothing at the top
-          left: '',
-          center: '',
-          right: ''
-      },
+      header: { left: '', center: '', right: '' },
       eventSources: ["{% url 'students:timetable' %}"],
       height: 300, // Fix height
       columnFormat: 'dddd', // Display just full length of weekday, without dates 
@@ -49,8 +40,6 @@ $(document).ready(function() {
     });
 
     $('#calendar').fullCalendar( 'gotoDate', '2019-01-01');
-    $('#calendar').fullCalendar('removeEvents');
-    // $('#calendar').fullCalendar('addEventSource', "{% url 'classroom:timetable' %}?classroom=165");
   }
 
   loadCalendar();
