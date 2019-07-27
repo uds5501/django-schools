@@ -157,3 +157,12 @@ def take_quiz(request, pk):
         'answered_questions': total_questions - total_unanswered_questions,
         'total_questions': total_questions
     })
+
+from classroom.views import get_timetable_periods
+
+@method_decorator([login_required,student_required], name='dispatch')
+class TimeTableView(View):
+    def get(self, request):
+        qs_json = get_timetable_periods(request.user.student.classroom)
+        return JsonResponse(qs_json,safe=False)
+        

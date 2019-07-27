@@ -42,4 +42,4 @@ class TimeTablePageTest(TestCase):
 	def test_teacher_timetable(self):
 		self.client.login(username='sumee', password='sumee1910')
 		response = self.client.get('/classroom/timetable/')
-		print(response.content)
+		# print(response.content)

@@ -1,6 +1,60 @@
 {% extends 'base.html' %}
+
+{% load static %}
+{% block extracss %}
+<link href='{% static 'fullcalendar/fullcalendar.min.css' %}' rel='stylesheet' />
+<link href='{% static 'fullcalendar/fullcalendar.print.min.css' %}' rel='stylesheet' media='print' />
+<style type="text/css">
+  .fc-sat { color:red;  }
+  .fc-sun { color:red;  }
+</style>
+{% endblock %}
+
 {% block content %}
-  
-  <h2 class="mb-3">Dashboard</h2>
-  
+<div id='calendar'></div>
+{% endblock %}
+
+{% block extrajs %}
+<script src='{% static 'fullcalendar/moment.min.js' %}'></script>
+<script src='{% static 'fullcalendar/fullcalendar.min.js' %}'></script>
+<script>
+
+$(document).ready(function() {
+  // function fetchCalendar(classroom) {
+  //   $('#calendar').fullCalendar('removeEvents');
+  //   $('#calendar').fullCalendar('addEventSource', "{% url 'classroom:timetable' %}?classroom="+classroom);
+  // }
+
+  function loadCalendar() {   
+    var calendar = $('#calendar').fullCalendar({
+      //lang: 'de',
+      header: { // Display nothing at the top
+          left: '',
+          center: '',
+          right: ''
+      },
+      eventSources: ["{% url 'students:timetable' %}"],
+      height: 300, // Fix height
+      columnFormat: 'dddd', // Display just full length of weekday, without dates 
+      defaultView: 'agendaWeek', // display week view
+      hiddenDays: [0,6], // hide Saturday and Sunday
+      weekNumbers:  false, // don't show week numbers
+      minTime: '08:00:00', // display from 16 to
+      maxTime: '17:00:00', // 23 
+      slotDuration: '00:30:00', // 15 minutes for each row
+      allDaySlot: false, // don't show "all day" at the top
+      timezone:'local', // https://stackoverflow.com/a/35863657/2351696
+      selectable: true,
+      events: []
+    });
+
+    $('#calendar').fullCalendar( 'gotoDate', '2019-01-01');
+    $('#calendar').fullCalendar('removeEvents');
+    // $('#calendar').fullCalendar('addEventSource', "{% url 'classroom:timetable' %}?classroom=165");
+  }
+
+  loadCalendar();
+});
+
+</script>
 {% endblock %}
