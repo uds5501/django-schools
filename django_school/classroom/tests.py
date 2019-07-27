@@ -32,3 +32,14 @@ class LoginPageTest(TestCase):
 		# self.assertEqual(response.redirect_chain[1][0],reverse('teachers:quiz_change_list'))
 		self.assertIn(b'G. H. S. S. Kizhakkanchery', response.content)
 
+
+class TimeTablePageTest(TestCase):
+	fixtures = ["test_datas.json"]
+
+	def setUp(self):
+		self.client = Client()
+
+	def test_teacher_timetable(self):
+		self.client.login(username='sumee', password='sumee1910')
+		response = self.client.get('/classroom/timetable/')
+		print(response.content)

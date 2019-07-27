@@ -166,6 +166,20 @@ $(document).ready(function() {
 
         $('#addPeriodModel').modal('show');
       },
+      eventClick: function(calEvent, jsEvent, view) {
+        if (confirm("Are you sure want to delete the period?")) {
+          $.get("{% url 'classroom:deleteperiod' %}",{period: calEvent.id}).done(function(data) {
+            $('#calendar').fullCalendar('removeEvents',calEvent._id);
+          });
+          // $.ajax({
+          //   type: "DELETE",
+          //   url: "{% url 'classroom:deleteperiod' %}?period="+,
+          //   success: function(result) {
+          //     $('#calendar').fullCalendar('removeEvents',calEvent._id);
+          //   }
+          // });
+        }
+      },
       events: [],
     });
 

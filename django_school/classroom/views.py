@@ -17,15 +17,22 @@ class TimeTableView(View):
     def get(self, request):
         school = request.user.school
         classroom_name = request.GET.get('classroom','')
+        color_list = ['#008744','#0057e7','#d62d20','#ffa700','#ffffff',
+            '#96ceb4','#ffeead','#ff6f69','#ffcc5c','#88d8b0',
+            '#ffb3ba','#ffdfba','#ffffba','#baffc9','#bae1ff',]
         if classroom_name: 
             classroom = ClassRoom.objects.get(school = school, name = classroom_name)
             periods = Period.objects.filter(classroom= classroom)            
-
+            # subject_colors = {}
+            # for i,p in enumerate(periods):
+            #     if i<15:
+            #         subject_colors[p.subject.id] = color_list[i]
             qs_json = [{
                 'id':p.id, 
-                'title':'{0}\n{1}'.format(p.subject.name, p.teacher.username), 
+                'title':'{0} ({1})'.format(p.subject.name, p.teacher.username), 
                 'start':p.startdatetime,
-                'end':p.enddatetime
+                'end':p.enddatetime,
+                'color': color_list[p.subject.id % len(color_list)]
                 } for p in periods]
             return JsonResponse(qs_json,safe=False)
 
@@ -57,6 +64,9 @@ class TimeTableView(View):
 
         return HttpResponse(message)
 
+def delete_period(request):
+    p = Period.objects.get(id=request.GET['period']).delete()
+    return HttpResponse('success')
 
 def classroom_view(request):
     if request.method == 'POST':
