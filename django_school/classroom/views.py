@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -69,11 +71,22 @@ class TimeTableView(View):
 class AttendanceView(View):
     def get(self, request):
         school = request.user.school
-        classroom_name = request.GET.get('classroom','')
-        return render(request,'classroom/attendance.html')
+        classrooms = ClassRoom.objects.filter(school=school).order_by('name')
+        resp = {'classrooms': classrooms, 'periods': None}
+
+        att_classroom = request.GET.get('classroom','')
+        att_date = request.GET.get('date','')
+        print(att_date, att_classroom)
+        if att_classroom and att_date:
+            dt = datetime.strptime(att_date, "%d/%m/%Y")
+            print(dt)
+            resp['periods']=Period.objects.filter(classroom_id = request.GET['classroom'],
+                dayoftheweek = dt.weekday()).order_by('starttime')
+        
+        return render(request,'classroom/attendance.html', resp)
 
     def post(self,request):
-        return HttpResponse('')
+        return HttpResponse('')       
 
 
 @login_required
