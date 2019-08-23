@@ -51,7 +51,9 @@ The project will be available at <http://127.0.0.1:8000>
 
 #### Load Fixtures
 
-Read `schools/fixtures/README.md` for information about adding sample data
+For loading full fixtures read `schools/fixtures/README.md` for information about adding all school data
+
+you can load few datas by `./manage.py loaddata sampledata.json`
 
 #### Create Teacher 
 
