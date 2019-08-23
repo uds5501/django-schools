@@ -64,6 +64,18 @@ class TimeTableView(View):
 
         return HttpResponse(message)
 
+
+@method_decorator([login_required,teacher_required], name='dispatch')
+class AttendanceView(View):
+    def get(self, request):
+        school = request.user.school
+        classroom_name = request.GET.get('classroom','')
+        return render(request,'classroom/attendance.html')
+
+    def post(self,request):
+        return HttpResponse('')
+
+
 @login_required
 @teacher_required
 def delete_period(request):
