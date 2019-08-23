@@ -76,7 +76,9 @@ class AttendanceView(View):
 
         att_classroom = request.GET.get('classroom','')
         att_date = request.GET.get('date','')
-        print(att_date, att_classroom)
+        if att_classroom:
+            resp['att_classroom'] = int(att_classroom)
+        resp['att_date'] = att_date
         if att_classroom and att_date:
             dt = datetime.strptime(att_date, "%d/%m/%Y")
             print(dt)

@@ -30,19 +30,23 @@
   </div>
 </form> -->
 
+{% for classroom in classrooms %}
+{{att_classroom}} {{classroom.pk}}
+  ss{% if classroom.pk == att_classroom %} selected {{ classroom.name }}{% endif %}
+{% endfor %}
 <form class="form-inline">
   <div class="form-group mb-2">
     <label class="sr-only">Classroom</label>
     <select class="form-control" name="classroom">
-        <option value="" selected>Select Class</option>
+        <option value="">Select Class</option>
         {% for classroom in classrooms %}
-        	<option value="{{ classroom.pk }}">{{ classroom.name }}</option>
+        	<option value="{{ classroom.pk }}"{% if classroom.pk == att_classroom %} selected{% endif %}>{{ classroom.name }}</option>
         {% endfor %}
     </select>
   </div>
   <div class="form-group mx-sm-3 mb-2">
     <label class="sr-only">Date</label>
-    <input name="date" type='text' id="attendancedate" placeholder="Date" class='form-control' data-language='en' autocomplete="off" />
+    <input name="date" type='text' id="attendancedate" placeholder="Date" class='form-control' data-language='en' autocomplete="off" value="{{att_date}}" />
   </div>
   <button type="submit" class="btn btn-primary mb-2">Enter Attendance</button>
 </form>
@@ -60,10 +64,10 @@
 	    <td>{{period.subject.name}}</td>
 	    <td class="p-3 mb-2 bg-danger text-white">Not Marked</td>
 	    <td>
-            <a class="btn btn-primary" href="#" role="button">Enter Attendance</a>
-            <a class="btn btn-secondary" href="#" role="button">Edit Attendance</a>
-            <a class="btn btn-warning" href="#">Cancel Class</>
-        </td>
+          <a class="btn btn-primary" href="#" role="button">Enter Attendance</a>
+          <a class="btn btn-secondary" href="#" role="button">Edit Attendance</a>
+          <a class="btn btn-warning" href="#">Cancel Class</>
+      </td>
 	    {% comment %}
 	    {% if a.status == 0 %}
 	        <td class="p-3 mb-2 bg-danger text-white">Not Marked</td>
@@ -81,7 +85,7 @@
 	        <td><a class="btn btn-primary" href="{% url 't_attendance' a.id %}" role="button">Enter Attendance</a></td>
 	    {% endif %}
 	    {% endcomment %}
-	</tr>
+	   </tr>
     {% endfor %}
     
   </tbody>
