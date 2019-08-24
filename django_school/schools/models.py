@@ -103,6 +103,11 @@ class Event(models.Model):
     school = models.ForeignKey(School, on_delete=models.CASCADE)
 
 
+class AcademicYear(models.Model):
+    name = models.CharField(max_length=255)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    status = models.BooleanField(default=False)
 # class Period(models.Model):
 #     # A Period will just be a recurring Event(every week) related to a Classroom.
     

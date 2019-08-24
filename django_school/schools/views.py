@@ -7,8 +7,8 @@ class SignUpView(generic.TemplateView):
     template_name = 'registration/signup.html'
 
 def load_courses(request):
-    import time
-    time.sleep(3)
+    # import time
+    # time.sleep(3)
     school_id = request.GET.get('school')
     classrooms = ClassRoom.objects.filter(school_id=school_id).order_by('name')
     return render(request, 'registration/classroom_dropdown_list_options.html', {'classrooms': classrooms})
@@ -22,7 +22,7 @@ def home(request):
         return render(request,'registration/inactive_user.html')
          
     if request.user.is_teacher:
-        return redirect('classroom:classrooms')
+        return redirect('classroom:attendance')
         # return render(request,'teachers/home.html')
     elif request.user.is_student:        	
         #return redirect('quiz_list')

@@ -2,7 +2,8 @@ from datetime import datetime, date, timedelta
 from django.db import models
 from django.conf import settings
 
-from schools.models import School
+from schools.models import School, AcademicYear
+from students.models import Student
 # Create your models here.
 
 class ClassRoom(models.Model):
@@ -69,3 +70,27 @@ class Period(models.Model):
     def __str__(self):
         # return f"{self.classroom.name} - {self.subject} on {self.DAY_CHOICES[self.dayoftheweek][1]} {self.starttime}"
         return "{0} - {1} on {2} {3}".format(self.classroom.name, self.subject, self.DAY_CHOICES[self.dayoftheweek][1], self.starttime)
+
+
+class AttendanceClass(models.Model):
+    academicyear = models.ForeignKey(AcademicYear, on_delete=models.CASCADE)
+    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    date = models.DateField()
+
+
+class Attendance(models.Model):
+    ATTENDANCE_STATUS_CHOICES = [
+        ('P', 'Present'),
+        ('A', 'Absent'),
+        ('H', 'Half Day'),
+        ('L', 'Leave'),
+        ('N', 'Not Marked'),
+    ]
+
+    attendanceclass = models.ForeignKey(AttendanceClass, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=1,
+        choices=ATTENDANCE_STATUS_CHOICES,
+        default='N',
+    )

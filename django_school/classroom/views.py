@@ -10,7 +10,9 @@ from django.http import JsonResponse, HttpResponse
 from django.urls import reverse
 
 from teachers.decorators import teacher_required
-from .models import ClassRoom, Subject, Period
+from students.models import Student
+
+from .models import ClassRoom, Subject, Period, Attendance
 from .forms import ClassroomForm,PeriodForm, SubjectForm
 
 def get_timetable_periods(classroom):
@@ -72,7 +74,7 @@ class AttendanceView(View):
     def get(self, request):
         school = request.user.school
         classrooms = ClassRoom.objects.filter(school=school).order_by('name')
-        resp = {'classrooms': classrooms, 'periods': None}
+        resp = {'classrooms': classrooms, 'students': None}
 
         att_classroom = request.GET.get('classroom','')
         att_date = request.GET.get('date','')
@@ -80,15 +82,19 @@ class AttendanceView(View):
             resp['att_classroom'] = int(att_classroom)
         resp['att_date'] = att_date
         if att_classroom and att_date:
-            dt = datetime.strptime(att_date, "%d/%m/%Y")
-            print(dt)
-            resp['periods']=Period.objects.filter(classroom_id = request.GET['classroom'],
-                dayoftheweek = dt.weekday()).order_by('starttime')
-        
+            # dt = datetime.strptime(att_date, "%d/%m/%Y")
+            resp['students'] = Student.objects.filter(classroom_id = request.GET['classroom'])
+            # resp['attendance_status_choices'] = Attendance.ATTENDANCE_STATUS_CHOICES
+            # Period.objects.filter(classroom_id = request.GET['classroom'],
+            #    dayoftheweek = dt.weekday()).order_by('starttime')
+            # print(resp['students'].values())
         return render(request,'classroom/attendance.html', resp)
 
     def post(self,request):
-        return HttpResponse('')       
+        print(request.POST)
+        # for i, s in enumerate(cl.student_set.all()):
+        # status = request.POST[s.USN]
+        return redirect(reverse('classroom:attendance'))
 
 
 @login_required
