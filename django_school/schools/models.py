@@ -102,12 +102,22 @@ class Event(models.Model):
     title = models.CharField(max_length=255)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
 
-
+from django.core.exceptions import ValidationError
 class AcademicYear(models.Model):
     name = models.CharField(max_length=255)
-    start_date = models.DateField()
-    end_date = models.DateField()
+    # start_date = models.DateField()
+    # end_date = models.DateField()
     status = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.name} - {self.status}'
+
+    def clean(self):
+
+        if not self.status:
+            ay = AcademicYear.objects.get(status=True)
+            if self.id == ay.id:
+                raise ValidationError("Atleast 1 AcademicYear must be active")
 # class Period(models.Model):
 #     # A Period will just be a recurring Event(every week) related to a Classroom.
     

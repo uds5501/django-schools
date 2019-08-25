@@ -11,6 +11,7 @@ from django.urls import reverse
 
 from teachers.decorators import teacher_required
 from students.models import Student
+from schools.models import AcademicYear
 
 from .models import ClassRoom, Subject, Period, Attendance
 from .forms import ClassroomForm,PeriodForm, SubjectForm
@@ -83,7 +84,7 @@ class AttendanceView(View):
         resp['att_date'] = att_date
         if att_classroom and att_date:
             # dt = datetime.strptime(att_date, "%d/%m/%Y")
-            resp['students'] = Student.objects.filter(classroom_id = request.GET['classroom'])
+            resp['students'] = Student.objects.filter(classroom_id = att_classroom)
             # resp['attendance_status_choices'] = Attendance.ATTENDANCE_STATUS_CHOICES
             # Period.objects.filter(classroom_id = request.GET['classroom'],
             #    dayoftheweek = dt.weekday()).order_by('starttime')
@@ -91,9 +92,26 @@ class AttendanceView(View):
         return render(request,'classroom/attendance.html', resp)
 
     def post(self,request):
+        """
+        Add / Edit attendance entries
+        """        
+        att_classroom = request.POST['classroom']
+        att_date = request.POST['date']
+        attendance_config, _ = AttendanceClass.objects.get_or_create(
+            academicyear = AcademicYear.objects.get(status=True),
+            classroom_id = att_classroom,
+            date = att_date)
+        for student in Student.objects.filter(classroom_id = att_classroom):
+            status = request.POST.get(student.user.id, '')
+            if status == 'on':
+                status = 'P'
+            else:
+                status = 'A'
+        
         print(request.POST)
         # for i, s in enumerate(cl.student_set.all()):
         # status = request.POST[s.USN]
+        messages.success(request, 'Attendance details saved with success!')
         return redirect(reverse('classroom:attendance'))
 
 

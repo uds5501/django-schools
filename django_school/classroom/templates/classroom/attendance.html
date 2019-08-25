@@ -5,31 +5,11 @@
 
 {% block extracss %}
 <link href="{% static 'airdatepicker/datepicker.min.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'css/materialcheckbox.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block content %}
 {% include 'classroom/_header.html' with active='attendance' %}
-<!-- <form>
-  <div class="form-row">
-    <div class="form-group col-md-4">
-      <label>Classroom</label>
-      <select class="form-control">
-        <option selected>Choose...</option>
-        <option>...</option>
-      </select>
-  	</div>
-
-    <div class="form-group col-md-4">
-      <label>Date</label>
-      <input type='text' id="attendancedate" class='form-control' data-language='en'/>
-    </div>
-    <div class="form-group col-md-4">
-    	<br>
-    	<button type="submit" class="btn btn-primary">Enter Attendance</button>
-    </div>
-  </div>
-</form> -->
-
 <form class="form-inline">
   <div class="form-group mb-2">
     <label class="sr-only">Classroom</label>
@@ -52,32 +32,17 @@
 <div class="table-responsive">
   <input type="hidden" name="classroom" value="{{att_classroom}}">
   <input type="hidden" name="date" value="{{att_date}}">
-  <table class="table">
-    <!-- <thead>
-      <tr>
-          <th>Student name</th>
-          <th></th>
-      </tr>
-    </thead> -->
-      <tbody>
-      {% for s in students %}
-          <tr>
-          <td>{{s.user.get_full_name|default:s.user.username}}</td>
-          <td>
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-              <label class="btn btn-sm btn-outline-success active">
-                  <input type="radio" name="{{ s.user_id }}" value="P" checked> Present
-              </label>
-              <label class="btn btn-sm btn-outline-danger">
-                  <input type="radio" name="{{ s.user_id }}" value="A"> Absent
-              </label>
-            </div>
-          </td>
-          </tr>
-      {% endfor %}
-        <tr><td colspan="2"><input class="btn btn-success pull-right" type="submit" value="Save"></td></tr>
-      </tbody>
-  </table>
+  <ul style="list-style: none">
+  {% for s in students %}
+    <li>
+      <label class="pure-material-checkbox">
+        <input type="checkbox" name="{{ s.user.id }}" checked>
+        <span>{{s.user.get_full_name|default:s.user.username}}</span>
+      </label>
+    </li>
+  {% endfor %}
+    <li> <input class="btn btn-success btn-sm" type="submit" value="Save"></li>
+  </ul>
 </div>
 
 </form>
@@ -86,7 +51,6 @@
 {% endblock %}
 
 {% block extrajs %}
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src="{% static 'airdatepicker/datepicker.min.js' %}"></script>
 <script src="{% static 'airdatepicker/datepicker.en.js' %}"></script>
 <script type="text/javascript">

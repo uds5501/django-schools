@@ -57,7 +57,7 @@ For loading full fixtures read `schools/fixtures/README.md` **or** you can load 
 
 + Create a Teacher Account
 + Create super user `./manage.py createsuperuser`
-+ Login as Superuser and give `Staff status` to that user
++ Login as Superuser and give `Staff status` to teacher user & create an `AcademicYear`
 
 ## Deployment
 
