@@ -27,11 +27,51 @@
   <button type="submit" class="btn btn-sm btn-primary mb-2">Enter Attendance</button>
 </form>
 <hr>
-{% if students %}
+{% if attendances %}
+
+{% for attendance in attendances %}
+  <p>{{attendance.student.user}} - {% if attendance.status == 'P' %}&#10003;{%else%}x{% endif %}</p>
+{% endfor %}
+{% elif students %}
 <form action="{% url 'classroom:attendance' %}" method="post"> {% csrf_token %}
 <div class="table-responsive">
   <input type="hidden" name="classroom" value="{{att_classroom}}">
   <input type="hidden" name="date" value="{{att_date}}">
+
+  <div class="card mb-3">
+    <div class="card-header"><b>Enter Attendance</b></div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+                <th>Student name</th>
+                <th></th>
+            </tr>
+          </thead>
+            <tbody>
+            {% for s in students %}
+              <tr>
+              <td>{{s.user.get_full_name|default:s.user.username}}</td>
+              <td>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                  <label class="btn btn-outline-success active">
+                      <input type="radio" name="{{ s.user.id }}" autocomplete="off" value="present" checked> Present
+                  </label>
+                  <label class="btn btn-outline-danger">
+                      <input type="radio" name="{{ s.user.id }}" autocomplete="off" value="absent"> Absent
+                  </label>
+                </div>
+              </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+      </div>
+      <input class="btn btn-success btn-sm" type="submit" value="Save Attendance">
+    </div>
+  </div>
+  {% comment %}
   <ul style="list-style: none">
   {% for s in students %}
     <li>
@@ -43,6 +83,7 @@
   {% endfor %}
     <li> <input class="btn btn-success btn-sm" type="submit" value="Save"></li>
   </ul>
+  {% endcomment %}
 </div>
 
 </form>
@@ -51,6 +92,8 @@
 {% endblock %}
 
 {% block extrajs %}
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
 <script src="{% static 'airdatepicker/datepicker.min.js' %}"></script>
 <script src="{% static 'airdatepicker/datepicker.en.js' %}"></script>
 <script type="text/javascript">

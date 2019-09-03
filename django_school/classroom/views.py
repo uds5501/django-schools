@@ -13,7 +13,7 @@ from teachers.decorators import teacher_required
 from students.models import Student
 from schools.models import AcademicYear
 
-from .models import ClassRoom, Subject, Period, Attendance
+from .models import ClassRoom, Subject, Period, Attendance, AttendanceClass
 from .forms import ClassroomForm,PeriodForm, SubjectForm
 
 def get_timetable_periods(classroom):
@@ -75,7 +75,7 @@ class AttendanceView(View):
     def get(self, request):
         school = request.user.school
         classrooms = ClassRoom.objects.filter(school=school).order_by('name')
-        resp = {'classrooms': classrooms, 'students': None}
+        resp = {'classrooms': classrooms, 'students': None, 'attendances': None}
 
         att_classroom = request.GET.get('classroom','')
         att_date = request.GET.get('date','')
@@ -84,7 +84,16 @@ class AttendanceView(View):
         resp['att_date'] = att_date
         if att_classroom and att_date:
             # dt = datetime.strptime(att_date, "%d/%m/%Y")
+            attendance_config = AttendanceClass.objects.filter(
+                academicyear__status = True,
+                classroom_id = att_classroom,
+                date = datetime.strptime(att_date, '%d/%m/%Y')
+            )
             resp['students'] = Student.objects.filter(classroom_id = att_classroom)
+            if attendance_config:
+
+                resp['attendances'] = attendance_config[0].attendance_set.all()
+
             # resp['attendance_status_choices'] = Attendance.ATTENDANCE_STATUS_CHOICES
             # Period.objects.filter(classroom_id = request.GET['classroom'],
             #    dayoftheweek = dt.weekday()).order_by('starttime')
@@ -94,21 +103,29 @@ class AttendanceView(View):
     def post(self,request):
         """
         Add / Edit attendance entries
-        """        
+        """
+        print(request.POST)     
         att_classroom = request.POST['classroom']
         att_date = request.POST['date']
+        # datetime.strptime("2013-1-25", '%d/%m/%Y').strftime('%Y-%m-%d')
         attendance_config, _ = AttendanceClass.objects.get_or_create(
             academicyear = AcademicYear.objects.get(status=True),
             classroom_id = att_classroom,
-            date = att_date)
+            date = datetime.strptime(att_date, '%d/%m/%Y')
+            )
         for student in Student.objects.filter(classroom_id = att_classroom):
-            status = request.POST.get(student.user.id, '')
-            if status == 'on':
+            status = request.POST[str(student.user.id)]
+            if status == 'present':
                 status = 'P'
             else:
                 status = 'A'
+
+            Attendance.objects.update_or_create(
+                attendanceclass=attendance_config,
+                student=student,
+                defaults={'status':status})
+        # Attendance
         
-        print(request.POST)
         # for i, s in enumerate(cl.student_set.all()):
         # status = request.POST[s.USN]
         messages.success(request, 'Attendance details saved with success!')
