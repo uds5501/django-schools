@@ -10,6 +10,15 @@
 
 {% block content %}
 {% include 'classroom/_header.html' with active='attendance' %}
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" href="{% url 'classroom:attendance' %}">Enter Attendance</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'classroom:attendancereport' %}">Attendance Report</a>
+  </li>
+</ul>
+<br>
 <form class="form-inline">
   <div class="form-group mb-2">
     <label class="sr-only">Classroom</label>

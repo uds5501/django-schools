@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+{% include 'classroom/_header.html' with active='attendance' %}
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'classroom:attendance' %}">Enter Attendance</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="{% url 'classroom:attendancereport' %}">Attendance Report</a>
+  </li>
+</ul>
+<br>
+<form class="form-inline">
+  <div class="form-group mb-3">
+    <label class="sr-only">Academic Year</label>
+    <select class="form-control form-control-sm" name="academicyear">
+        <option value="">Select Academic Year</option>
+        {% for academicyear in academicyears %}
+          <option value="{{ academicyear.pk }}"{% if academicyear.pk == att_year %} selected{% endif %}>{{ academicyear.name }}</option>
+        {% endfor %}
+        
+    </select>
+  </div>
+  <div class="form-group mb-3">
+    <label class="sr-only">Classroom</label>
+    <select class="form-control form-control-sm" name="classroom">
+        <option value="">Select Class</option>
+        {% for classroom in classrooms %}
+          <option value="{{ classroom.pk }}"{% if classroom.pk == att_classroom %} selected{% endif %}>{{ classroom.name }}</option>
+        {% endfor %}
+    </select>
+  </div>
+  <div class="form-group mb-3">
+    <label class="sr-only">Month</label>
+    <select class="form-control form-control-sm" name="month">
+        <option value="">Select Month</option>
+        {% for month in months %}
+          <option value="{{ forloop.counter }}"{% if forloop.counter == att_month %} selected{% endif %}>{{ month }}</option>
+        {% endfor %}
+    </select>
+  </div>
+  
+  <button type="submit" class="btn btn-sm btn-primary mb-3">Show Attendance Report</button>
+</form>
+<hr>
+{% if attendances %}
+<table class="table table-bordered">
+  <thead>
+    <tr>
+        <th>Student name</th>
+        {% for a in attendances %}<th>{{a.date}}</th>{% endfor %}
+    </tr>
+  </thead>
+    <tbody>
+    {% for a in attendances %}
+      <tr>
+        <td>{{a.date}}</td>
+        {% for s in a.attendance_set.all %}
+        <td>{{s.status}}</td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+{% endblock %}
+
+{% block extrajs %}
+{% endblock %}

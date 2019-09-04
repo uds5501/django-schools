@@ -103,8 +103,7 @@ class AttendanceView(View):
     def post(self,request):
         """
         Add / Edit attendance entries
-        """
-        print(request.POST)     
+        """ 
         att_classroom = request.POST['classroom']
         att_date = request.POST['date']
         # datetime.strptime("2013-1-25", '%d/%m/%Y').strftime('%Y-%m-%d')
@@ -131,6 +130,47 @@ class AttendanceView(View):
         messages.success(request, 'Attendance details saved with success!')
         return redirect(reverse('classroom:attendance'))
 
+@method_decorator([login_required,teacher_required], name='dispatch')
+class AttendanceReportView(View):
+    def generate_report(self,att_class):
+        from collections import defaultdict
+        #[
+        #   {'1': ['Suhail', 'a', 'p', 'p']]}
+        attendances = defaultdict(list)
+        for att in att_class:
+            for attendance in att.attendance_set.all():
+                print('day:', att.date.day,attendance.student.user.username, attendance.status)
+                attendances[attendance.student.user.id].insert(att.date.day,attendance.status)
+
+        
+        print(attendances)
+        return att_class
+
+    def get(self, request):
+        school = request.user.school
+        classrooms = ClassRoom.objects.filter(school=school).order_by('name')
+        resp = {'classrooms': classrooms, 'academicyears': AcademicYear.objects.all(), 'attendances': None,
+            'months': ['January','February','March','April','May','June','July','August','September','October','November','December']}
+
+        att_classroom = request.GET.get('classroom','')
+        att_year = request.GET.get('academicyear','')
+        att_month = request.GET.get('month','')
+        if att_classroom:
+            resp['att_classroom'] = int(att_classroom)
+        if att_year:
+            resp['att_year'] = int(att_year)
+        if att_month:
+            resp['att_month'] = int(att_month)
+
+        if att_classroom and att_year and att_month:
+            # dt = datetime.strptime(att_date, "%d/%m/%Y")
+            att_class = AttendanceClass.objects.filter(
+                academicyear_id = att_year,
+                classroom_id = att_classroom,
+                date__month = att_month
+            ).order_by('date')
+            resp['attendances'] = self.generate_report(att_class)
+        return render(request,'classroom/attendancereport.html', resp)
 
 @login_required
 @teacher_required
