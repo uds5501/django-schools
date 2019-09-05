@@ -133,18 +133,18 @@ class AttendanceView(View):
 @method_decorator([login_required,teacher_required], name='dispatch')
 class AttendanceReportView(View):
     def generate_report(self,att_class):
-        from collections import defaultdict
-        #[
-        #   {'1': ['Suhail', 'a', 'p', 'p']]}
-        attendances = defaultdict(list)
+        """
+        {'suhail': {2: 'A', 3: 'P', 4: 'P'}, 'sufail': {2: 'P', 4: 'P'}, 'sulaiman': {2: 'P', 4: 'P'}}
+        """
+        
+        transposed = {}
+
         for att in att_class:
             for attendance in att.attendance_set.all():
-                print('day:', att.date.day,attendance.student.user.username, attendance.status)
-                attendances[attendance.student.user.id].insert(att.date.day,attendance.status)
-
-        
-        print(attendances)
-        return att_class
+                transposed.setdefault(attendance.student.user.username, {}).update(
+                                {att.date.day: attendance.status})
+        print('trans:', transposed)
+        return transposed
 
     def get(self, request):
         school = request.user.school
@@ -170,6 +170,7 @@ class AttendanceReportView(View):
                 date__month = att_month
             ).order_by('date')
             resp['attendances'] = self.generate_report(att_class)
+            resp['days'] = range(1,32)
         return render(request,'classroom/attendancereport.html', resp)
 
 @login_required

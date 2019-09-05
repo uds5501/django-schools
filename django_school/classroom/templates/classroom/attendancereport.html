@@ -2,7 +2,7 @@
 
 {% load static %}
 {% load crispy_forms_tags %}
-
+{% load classroom_tags %}
 
 {% block content %}
 {% include 'classroom/_header.html' with active='attendance' %}
@@ -48,6 +48,7 @@
   <button type="submit" class="btn btn-sm btn-primary mb-3">Show Attendance Report</button>
 </form>
 <hr>
+{% comment %}
 {% if attendances %}
 <table class="table table-bordered">
   <thead>
@@ -68,6 +69,15 @@
     </tbody>
 </table>
 {% endif %}
+{% endcomment %}
+
+<table class="table table-bordered">
+  <tr><th>Student Name</th>{% for day in days %}<td>{{ day }}</td>{% endfor %}</tr>
+  {% for name, statuses in attendances.items %}
+    <tr><td>{{name}}</td>{% for day in days %}<td>{{ statuses|dict_key:day }}</td>{% endfor %}</tr>
+  {% endfor %}
+</table>  
+
 
 {% endblock %}
 
