@@ -48,37 +48,17 @@
   <button type="submit" class="btn btn-sm btn-primary mb-3">Show Attendance Report</button>
 </form>
 <hr>
-{% comment %}
-{% if attendances %}
-<table class="table table-bordered">
-  <thead>
-    <tr>
-        <th>Student name</th>
-        {% for a in attendances %}<th>{{a.date}}</th>{% endfor %}
-    </tr>
-  </thead>
-    <tbody>
-    {% for a in attendances %}
-      <tr>
-        <td>{{a.date}}</td>
-        {% for s in a.attendance_set.all %}
-        <td>{{s.status}}</td>
-        {% endfor %}
-      </tr>
-    {% endfor %}
-    </tbody>
-</table>
-{% endif %}
-{% endcomment %}
 
-<table class="table table-bordered">
-  <tr><th>Student Name</th>{% for day in days %}<td>{{ day }}</td>{% endfor %}</tr>
+{% if attendances %}
+<div class="table-responsive">
+<table class="table table-sm table-bordered">
+  <tr><th>Student</th>{% for day in days %}<td>{{ day }}</td>{% endfor %}</tr>
   {% for name, statuses in attendances.items %}
     <tr><td>{{name}}</td>{% for day in days %}<td>{{ statuses|dict_key:day }}</td>{% endfor %}</tr>
   {% endfor %}
 </table>  
-
-
+</div>
+{% endif %}
 {% endblock %}
 
 {% block extrajs %}

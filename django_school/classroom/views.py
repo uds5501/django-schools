@@ -123,27 +123,21 @@ class AttendanceView(View):
                 attendanceclass=attendance_config,
                 student=student,
                 defaults={'status':status})
-        # Attendance
-        
-        # for i, s in enumerate(cl.student_set.all()):
-        # status = request.POST[s.USN]
         messages.success(request, 'Attendance details saved with success!')
-        return redirect(reverse('classroom:attendance'))
+        urlparams = "?classroom={}&date={}".format(att_classroom,att_date)
+        return redirect(reverse('classroom:attendance')+urlparams)
 
 @method_decorator([login_required,teacher_required], name='dispatch')
 class AttendanceReportView(View):
     def generate_report(self,att_class):
         """
         {'suhail': {2: 'A', 3: 'P', 4: 'P'}, 'sufail': {2: 'P', 4: 'P'}, 'sulaiman': {2: 'P', 4: 'P'}}
-        """
-        
+        """        
         transposed = {}
-
         for att in att_class:
             for attendance in att.attendance_set.all():
                 transposed.setdefault(attendance.student.user.username, {}).update(
                                 {att.date.day: attendance.status})
-        print('trans:', transposed)
         return transposed
 
     def get(self, request):

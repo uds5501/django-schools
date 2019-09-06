@@ -51,7 +51,7 @@
     <div class="card-header"><b>Enter Attendance</b></div>
     <div class="card-body">
       <div class="table-responsive">
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <table class="table table-sm table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
                 <th>Student name</th>
@@ -64,10 +64,10 @@
               <td>{{s.user.get_full_name|default:s.user.username}}</td>
               <td>
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                  <label class="btn btn-outline-success active">
+                  <label class="btn btn-sm btn-outline-success active">
                       <input type="radio" name="{{ s.user.id }}" autocomplete="off" value="present" checked> Present
                   </label>
-                  <label class="btn btn-outline-danger">
+                  <label class="btn btn-sm btn-outline-danger">
                       <input type="radio" name="{{ s.user.id }}" autocomplete="off" value="absent"> Absent
                   </label>
                 </div>
@@ -108,18 +108,20 @@
 <script type="text/javascript">
 	$(document).ready(function () {
 		$('#attendancedate').datepicker({
-	        dateFormat: "dd/mm/yyyy",
-	        autoClose: true,
-	        onRenderCell: function (date, cellType) {
-		        if (cellType == 'day') {
-		            var day = date.getDay(),
-		                isDisabled = [0, 6].indexOf(day) != -1;
-		            return {
-		                disabled: isDisabled
-		            }
-		        }
-		    }
-    	});
-    });
+      dateFormat: "dd/mm/yyyy",
+      autoClose: true,
+      onRenderCell: function (date, cellType) {
+        if (cellType == 'day') {
+            var day = date.getDay(),
+            isDisabled = [0, 6].indexOf(day) != -1;
+            return {
+                disabled: isDisabled
+            }
+        }
+      }
+  	});
+    // dp.selectDate(new Date());
+  });
+
 </script>
 {% endblock %}
