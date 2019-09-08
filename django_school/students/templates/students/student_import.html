@@ -7,7 +7,17 @@
 
 {% block content %}
 {% include 'students/_header.html' with active='student_import' %}
-<p>Import students. Note: Date of Birth is a required field</p>
+
+
+<div class="form-group mb-2">
+    <label>Classroom</label>
+    <select id="sel_classroom" class="form-control form-control-sm" name="classroom">
+        <option value="">Select Class</option>
+        {% for classroom in classrooms %}
+        	<option value="{{ classroom.pk }}">{{ classroom.name }}</option>
+        {% endfor %}
+    </select>
+ </div>
 <div id="student_table"></div><br>
 <button class="btn btn-success float-right" id="btn_save">Save Students</button>
 {% endblock %}
@@ -16,7 +26,7 @@
 <script src="{% static 'handsontable/handsontable.full.min.js' %}"></script>
 <script type="text/javascript">
 var container = document.getElementById('student_table');
-var save = document.getElementById('btn_save');
+// var save = document.getElementById('btn_save');
 var student_table = new Handsontable(container, {
 	columns: [ {}, {}, {}, {data: 'dob',type: 'date',dateFormat: 'DD/MM/YYYY' ,defaultDate: '01/01/2000'}],
     startCols: 4,
@@ -33,9 +43,16 @@ var student_table = new Handsontable(container, {
 });
 $("#btn_save").click(function() {	
 	$.post("{% url 'students:student_import' %}", { 
+		classroom: $("#sel_classroom option:selected").val(),
 		data: JSON.stringify(student_table.getData()),
 		csrfmiddlewaretoken: '{{ csrf_token }}'} 
-	);
+	).done(function( message ) {
+	    alert(message);
+	    if (message === 'success') {
+	    	// student_table.render();
+	    	alert('need to refresh table');
+	    }
+	});
 });
 </script>
 {% endblock %}

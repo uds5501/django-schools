@@ -9,11 +9,13 @@ from django.views import View
 from django.contrib.auth import get_user_model
 
 from schools.models import Event
+from classroom.models import ClassRoom
 from classroom.views.timetable import get_timetable_periods
 from teachers.decorators import teacher_required
 
 from .decorators import student_required
 from .forms import StudentSignUpForm
+from .models import Student
 
 class StudentSignUpView(CreateView):
     model = settings.AUTH_USER_MODEL
@@ -72,10 +74,41 @@ class UserList(View):
 @method_decorator([login_required, teacher_required], name='dispatch')
 class StudentImport(View):
     def get(self, request):
-        return render(request,'students/student_import.html')
+        classrooms = ClassRoom.objects.filter(school = request.user.school)
+        return render(request,'students/student_import.html',{'classrooms':classrooms })
 
     def post(self,request):
         import json
+        classroom = request.POST['classroom']
+        if not classroom:
+            return HttpResponse('Please select a ClassRoom.')
+        User = get_user_model()
+        users = []
         for row in json.loads(request.POST['data']):
-            print(row)
+            if any(row):
+
+                fname,lname,email,dob = row
+                # if fname and lname and dob and email:
+                if all(row):
+                    if User.objects.filter(username=email):
+                        return HttpResponse('Email:<{}> already exists. Please provide different email.'.format(email))
+                    user = User(
+                        first_name=fname,
+                        last_name=lname,
+                        is_staff=True,
+                        username=email,
+                        user_type=1,
+                        school=request.user.school
+                    )
+                    user.set_password(dob)
+                    users.append(user)
+                    # user = get_user_model().objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+                else:
+                    return HttpResponse('All fields are required.')
+
+        for user in users:
+            user.save()
+            student = Student.objects.create(user=user,classroom_id = classroom)
+
+        # User.objects.bulk_create(users)            
         return HttpResponse('success')
