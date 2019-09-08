@@ -1,16 +1,15 @@
 from django.urls import include, path,re_path
 
 from . import views as teacher_views
-from quizzes import views as quizzes_views
-from django.views.generic import TemplateView
+
 
 urlpatterns = [
     # students
     # re_path('^(students|teachers)/$', teacher_views.UserList.as_view(), name='user_list'),
-    re_path(r'^users/(?P<usertype>[0-9])/$', teacher_views.UserList.as_view(), name='user_list'),
+    
     #path('students/', teacher_views.StudentList.as_view(), name='student_list'),
     path('events/', teacher_views.EventList.as_view(), name='events'),
-    path('attendance/', teacher_views.Attendance.as_view(), name='attendance'),
+    # path('attendance/', teacher_views.Attendance.as_view(), name='attendance'),
 
     # quiz urls
 	# path('quizzes/', quizzes_views.QuizListView.as_view(), name='quiz_change_list'),

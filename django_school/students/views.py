@@ -6,9 +6,11 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views import View
+from django.contrib.auth import get_user_model
 
 from schools.models import Event
 from classroom.views.timetable import get_timetable_periods
+from teachers.decorators import teacher_required
 
 from .decorators import student_required
 from .forms import StudentSignUpForm
@@ -39,10 +41,35 @@ class EventList(View):
 
         return render(request,'students/events.html')
 
-
 @method_decorator([login_required,student_required], name='dispatch')
 class TimeTableView(View):
     def get(self, request):
         qs_json = get_timetable_periods(request.user.student.classroom)
         return JsonResponse(qs_json,safe=False)
-        
+
+@method_decorator([login_required, teacher_required], name='dispatch')
+class UserList(View):
+    def get(self, request, usertype="1"):
+        # if not usertype: usertype = 1
+        queryset = get_user_model().objects.filter(school = request.user.school, user_type = usertype)
+        return render(request,'students/user_list.html',{'users':queryset,'page': usertype})
+
+    def post(self,request, usertype="1"):
+        user_id = request.POST.get('user','')
+        verified = request.POST.get('verified', '')
+        if user_id:
+            user = get_user_model().objects.get(id = user_id)
+            if verified == 'on': 
+                user.is_staff = True
+            else:
+                user.is_staff = False
+            user.save()
+
+        if usertype=="1":
+            return redirect('students:user_list')
+        return redirect('students:user_list', usertype)
+
+@method_decorator([login_required, teacher_required], name='dispatch')
+class StudentImport(View):
+    def get(self, request):
+        return render(request,'students/student_import.html')

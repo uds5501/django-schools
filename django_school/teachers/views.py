@@ -1,5 +1,5 @@
 from django.views import View
-from django.contrib.auth import get_user_model
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.contrib.auth import login
@@ -28,29 +28,6 @@ class TeacherSignUpView(CreateView):
         user = form.save()
         login(self.request, user)
         return redirect('home')
-
-@method_decorator([login_required, teacher_required], name='dispatch')
-class UserList(View):
-    def get(self, request, usertype):
-        queryset = get_user_model().objects.filter(school = request.user.school, user_type = usertype)
-        #Student.objects.filter(user__school = request.user.school)
-        return render(request,'teachers/users.html',{'users':queryset,'page': usertype})
-
-    def post(self,request, usertype):
-        user_id = request.POST.get('user','')
-        verified = request.POST.get('verified', '')
-        if user_id:
-            user = get_user_model().objects.get(id = user_id)
-            if verified == 'on': 
-                # user.is_verified = True
-                user.is_staff = True
-            else:
-                user.is_staff = False
-                # user.is_verified = False
-            user.save()
-
-        return redirect('teachers:user_list', usertype)
-
 
 
 
@@ -81,9 +58,3 @@ class EventList(View):
             msg = 'success'
 
         return HttpResponse(msg)
-
-@method_decorator([login_required, teacher_required], name='dispatch')
-class Attendance(View):
-    def get(self, request):
-        queryset = Student.objects.filter(user__school = request.user.school)
-        return render(request,'teachers/attendance.html',{'students':queryset})

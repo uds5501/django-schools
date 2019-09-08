@@ -15,9 +15,9 @@ class TeacherTestCase(TestCase):
             response = self.client.get(reverse(f'teachers:{u}'))            
             self.assertEqual(200,response.status_code)
 
-        for usertype in [1,2]:
+        for usertype in [2]:
             # teacher list & student list
-            self.client.get(reverse(f'teachers:user_list', args=(usertype,)))
+            self.client.get(reverse(f'students:user_list', args=(usertype,)))
             self.assertEqual(200,response.status_code)
 
     def test_classroom_tab_active(self):
