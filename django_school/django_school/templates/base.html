@@ -44,9 +44,9 @@
         <div class="card-header">
           
           {% if user.is_teacher and user.is_staff %}
-            {% include 'teachers/nav.html' %}
+            {% include 'teacher_nav.html' %}
           {% elif user.is_student and user.is_staff %}
-            {% include 'students/nav.html' %}
+            {% include 'student_nav.html' %}
           {% endif %}
          
         </div>

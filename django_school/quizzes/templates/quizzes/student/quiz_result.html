@@ -2,7 +2,7 @@
 {% load quiz_extras %}
 
 {% block content %}
-{% include 'students/_header.html' %}
+{% include 'quizzes/student/_header.html' %}
 
 <h2>{{quiz.name}}</h2>
 {{ quiz.subject.get_html_badge }}

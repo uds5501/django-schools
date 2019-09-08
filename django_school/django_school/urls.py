@@ -13,6 +13,8 @@ urlpatterns = [
     path('students/', include(('students.urls','students'),namespace='students')),
     path('teachers/', include(('teachers.urls','teachers'),namespace='teachers')),
     path('classroom/', include(('classroom.urls','classroom'),namespace='classroom')),
+    path('quizzes/', include(('quizzes.urls','quizzes'),namespace='quizzes')),
+
     path('accounts/login/', auth_views.LoginView.as_view(redirect_authenticated_user=True), name='login'),
     path('accounts/', include('django.contrib.auth.urls')),    
     path('settings/profile/', Profile.as_view(), name='profile'),

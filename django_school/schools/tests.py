@@ -15,7 +15,7 @@ class UserPermissionTests(BaseTestCase):
     # only teacher can change quiz
     for u in ['sumee','suhail']:
       self.client.login(username=u, password='sumee1910')
-      response = self.client.get(reverse('teachers:quiz_change_list'))
+      response = self.client.get(reverse('quizzes:quiz_change_list'))
       if u=='sumee': self.assertEqual(200,response.status_code)
       else: self.assertEqual(302,response.status_code)
 

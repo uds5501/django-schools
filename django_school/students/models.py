@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from quizzes.models import Quiz,Answer,Subject
+from quizzes.models import Quiz,Subject
 
 class StudentManager(models.Manager):
     def get_queryset(self):
@@ -9,10 +9,11 @@ class StudentManager(models.Manager):
 # Create your models here.
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True)
-    quizzes = models.ManyToManyField(Quiz, through='TakenQuiz')
+    quizzes = models.ManyToManyField(Quiz, through='quizzes.TakenQuiz')
     interests = models.ManyToManyField(Subject, related_name='interested_students')
     classroom = models.ForeignKey('classroom.ClassRoom', on_delete=models.CASCADE)
 
+    objects = models.Manager() # The default manager.
     active_objects = StudentManager() # The Only Active Students manager.
 
     def get_unanswered_questions(self, quiz):
@@ -26,13 +27,3 @@ class Student(models.Model):
         return self.user.username
 
 
-class TakenQuiz(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='taken_quizzes')
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='taken_quizzes')
-    score = models.FloatField()
-    date = models.DateTimeField(auto_now_add=True)
-
-
-class StudentAnswer(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='quiz_answers')
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='+')

@@ -11,7 +11,7 @@ class TeacherTestCase(TestCase):
 
     def test_homepage_urls(self):
         self.client.login(username='sumee', password='sumee1910')
-        for u in ['quiz_change_list','events']: #'teachers','attendence','events','dashboard',]:            
+        for u in ['events']: #'teachers','attendence','events','dashboard',]:            
             response = self.client.get(reverse(f'teachers:{u}'))            
             self.assertEqual(200,response.status_code)
 

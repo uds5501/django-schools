@@ -1,8 +1,8 @@
 from django import forms
 from django.forms.utils import ValidationError
 
-from .models import Question,Answer
-from students.models import Student, StudentAnswer
+from .models import Question,Answer, StudentAnswer
+from students.models import Student
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question

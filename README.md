@@ -4,7 +4,7 @@
 [![Django Version](https://img.shields.io/badge/django-2.2-brightgreen.svg)](https://djangoproject.com)
 [![CircleCI](https://circleci.com/gh/suhailvs/django-schools.svg?style=svg)](https://circleci.com/gh/suhailvs/django-schools)
 
-This is an school erp project forked from [django-schools](https://github.com/sibtc/django-multiple-user-types-example.git). In this Django app, teachers can create quizzes and students can sign up and take quizzes related to their interests.
+This is an school erp project forked from [django-schools](https://github.com/sibtc/django-multiple-user-types-example.git).
 
 
 ## Running the Project Locally

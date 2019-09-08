@@ -1,20 +1,14 @@
 {% url 'home' as home %}
-{% url 'students:attendance' as attendance %}
-{% url 'students:quiz_list' as quiz_list %}
+
+{% url 'quizzes:quiz_list' as quiz_list %}
 {% url 'students:events' as events %}
 {% url 'profile' as profile %}
 <ul class="nav nav-tabs card-header-tabs">
 <li class="nav-item">
   <a class="nav-link{% if request.path == home %} active{% endif %}" href="{{ home }}">Dashboard </a>
 </li>
-<!-- <li class="nav-item">
-  <a class="nav-link" href="#">Students</a>
-</li>
 <li class="nav-item">
-  <a class="nav-link{% if request.path == attendance %} active{% endif %}" href="{{ attendance }}">Attendance</a>
-</li> -->
-<li class="nav-item">
-  <a class="nav-link{% if request.path == quiz_list %} active{% endif %}" href="{{ quiz_list }}">Quizzes</a>
+  <a class="nav-link{% if quiz_list in request.path %} active{% endif %}" href="{{ quiz_list }}">Quizzes</a>
 </li>
 <li class="nav-item">
   <a class="nav-link{% if request.path == events %} active{% endif %}" href="{{ events }}">Events</a>

@@ -1,5 +1,5 @@
 from django import template
-from students.models import StudentAnswer
+from quizzes.models import StudentAnswer
 register = template.Library()
 
 
