@@ -4,7 +4,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth import login
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views import View
 from django.contrib.auth import get_user_model
 
@@ -73,3 +73,9 @@ class UserList(View):
 class StudentImport(View):
     def get(self, request):
         return render(request,'students/student_import.html')
+
+    def post(self,request):
+        import json
+        for row in json.loads(request.POST['data']):
+            print(row)
+        return HttpResponse('success')

@@ -2,13 +2,40 @@
 
 {% load static %}
 {% block extracss %}
-
+<link rel="stylesheet" type="text/css" href="{% static 'handsontable/handsontable.full.min.css' %}">
 {% endblock %}
 
 {% block content %}
 {% include 'students/_header.html' with active='student_import' %}
-
+<p>Import students. Note: Date of Birth is a required field</p>
+<div id="student_table"></div><br>
+<button class="btn btn-success float-right" id="btn_save">Save Students</button>
 {% endblock %}
 
 {% block extrajs %}
+<script src="{% static 'handsontable/handsontable.full.min.js' %}"></script>
+<script type="text/javascript">
+var container = document.getElementById('student_table');
+var save = document.getElementById('btn_save');
+var student_table = new Handsontable(container, {
+	columns: [ {}, {}, {}, {data: 'dob',type: 'date',dateFormat: 'DD/MM/YYYY' ,defaultDate: '01/01/2000'}],
+    startCols: 4,
+    startRows: 30,
+    rowHeaders: true,
+    colHeaders: [
+	    'First Name',
+	    'Last Name',
+	    'Email',
+	    'DOB(dd/mm/yyyy)'
+  	],
+  	licenseKey: 'non-commercial-and-evaluation',
+    stretchH: 'all'
+});
+$("#btn_save").click(function() {	
+	$.post("{% url 'students:student_import' %}", { 
+		data: JSON.stringify(student_table.getData()),
+		csrfmiddlewaretoken: '{{ csrf_token }}'} 
+	);
+});
+</script>
 {% endblock %}
