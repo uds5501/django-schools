@@ -33,6 +33,22 @@ class LoginPageTest(TestCase):
 		self.assertIn(b'G. H. S. S. Kizhakkanchery', response.content)
 
 
+class UserPermissionsTest(TestCase):
+	fixtures = ["test_datas.json"]
+
+	def setUp(self):
+		self.client = Client()
+
+	def test_anonymous_user_will_not_visit_teacher_pages(self):
+		response = self.client.get(reverse('classroom:timetable'), follow=True)
+		self.assertIn(b'<button type="submit" class="btn btn-primary">Log in</button>', response.content)
+
+	def test_teacher_can_visit_timetable(self):
+		self.client.login(username='sumee', password='sumee1910')
+		response = self.client.get(reverse('classroom:timetable'))
+		self.assertIn(b'<a class="nav-link active" href="/classroom/timetable/">Timetable</a>', response.content)
+
+
 class TimeTablePageTest(TestCase):
 	fixtures = ["test_datas.json"]
 
@@ -41,5 +57,18 @@ class TimeTablePageTest(TestCase):
 
 	def test_teacher_timetable(self):
 		self.client.login(username='sumee', password='sumee1910')
-		response = self.client.get('/classroom/timetable/')
+		response = self.client.get(reverse('classroom:timetable'))
 		# print(response.content)
+
+
+
+class AttendanceTest(TestCase):
+	fixtures = ["test_datas.json"]
+
+	def setUp(self):
+		self.client = Client()
+
+	def test_only_verified_user_show_in_attendance(self):
+		self.client.login(username='sumee', password='sumee1910')
+		response = self.client.get(reverse('classroom:attendance'),{'classroom':1,'date':'04/09/2019'})
+		self.assertNotIn(b'<td>sufail</td>', response.content)

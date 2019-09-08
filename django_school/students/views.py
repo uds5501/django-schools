@@ -158,7 +158,7 @@ def take_quiz(request, pk):
         'total_questions': total_questions
     })
 
-from classroom.views import get_timetable_periods
+from classroom.views.timetable import get_timetable_periods
 
 @method_decorator([login_required,student_required], name='dispatch')
 class TimeTableView(View):

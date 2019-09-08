@@ -2,12 +2,18 @@ from django.db import models
 from django.conf import settings
 from quizzes.models import Quiz,Answer,Subject
 
+class StudentManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(user__is_staff=True)
+
 # Create your models here.
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True)
     quizzes = models.ManyToManyField(Quiz, through='TakenQuiz')
     interests = models.ManyToManyField(Subject, related_name='interested_students')
     classroom = models.ForeignKey('classroom.ClassRoom', on_delete=models.CASCADE)
+
+    active_objects = StudentManager() # The Only Active Students manager.
 
     def get_unanswered_questions(self, quiz):
         answered_questions = self.quiz_answers \

@@ -83,7 +83,7 @@ class User(AbstractUser):
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES,default=1)
     school = models.ForeignKey(School,on_delete=models.CASCADE, related_name='users',null=True,blank=True)
     # location = models.ForeignKey(Location,on_delete=models.CASCADE,null=True,blank=True)
-    is_verified = models.BooleanField(default=False)
+    # is_verified = models.BooleanField(default=False)
     
     @property
     def is_student(self):

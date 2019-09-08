@@ -16,17 +16,18 @@
 </ul>
 <br>
 <form class="form-inline">
-  <div class="form-group mb-3">
+  <div class="form-group mb-3" style="padding-right: 10px">
     <label class="sr-only">Academic Year</label>
     <select class="form-control form-control-sm" name="academicyear">
         <option value="">Select Academic Year</option>
         {% for academicyear in academicyears %}
-          <option value="{{ academicyear.pk }}"{% if academicyear.pk == att_year %} selected{% endif %}>{{ academicyear.name }}</option>
+          <option value="{{ academicyear.pk }}"
+          {% if academicyear.pk == att_year %} selected{% endif %}>{{ academicyear.name }}</option>
         {% endfor %}
         
     </select>
   </div>
-  <div class="form-group mb-3">
+  <div class="form-group mb-3" style="padding-right: 10px">
     <label class="sr-only">Classroom</label>
     <select class="form-control form-control-sm" name="classroom">
         <option value="">Select Class</option>
@@ -35,7 +36,7 @@
         {% endfor %}
     </select>
   </div>
-  <div class="form-group mb-3">
+  <div class="form-group mb-3" style="padding-right: 10px">
     <label class="sr-only">Month</label>
     <select class="form-control form-control-sm" name="month">
         <option value="">Select Month</option>
