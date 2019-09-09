@@ -23,10 +23,13 @@ def home(request):
          
     if request.user.is_teacher:
         return redirect('classroom:attendance')
-        # return render(request,'teachers/home.html')
+        
     elif request.user.is_student:        	
-        #return redirect('quiz_list')
-        return render(request,'students/home.html')    
+        from datetime import datetime
+        import json
+        caldate = datetime.strptime("15/02/2019", '%d/%m/%Y')
+        sample = int(caldate.strftime("%s%f"))/1000000
+        return render(request,'students/home.html',{'data':{str(sample):1} })    
 
     # some other users, eg: principal,admin
     return render(request, 'home.html')

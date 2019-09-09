@@ -42,6 +42,7 @@ var student_table = new Handsontable(container, {
     stretchH: 'all'
 });
 $("#btn_save").click(function() {	
+	// alert(JSON.stringify(student_table.getData()));
 	$.post("{% url 'students:student_import' %}", { 
 		classroom: $("#sel_classroom option:selected").val(),
 		data: JSON.stringify(student_table.getData()),
@@ -50,7 +51,7 @@ $("#btn_save").click(function() {
 	    alert(message);
 	    if (message === 'success') {
 	    	// student_table.render();
-	    	alert('need to refresh table');
+	    	window.location.replace("{% url 'students:user_list' %}");
 	    }
 	});
 });

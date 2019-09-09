@@ -91,7 +91,7 @@ class StudentImport(View):
                 # if fname and lname and dob and email:
                 if all(row):
                     if User.objects.filter(username=email):
-                        return HttpResponse('Email:<{}> already exists. Please provide different email.'.format(email))
+                        return HttpResponse('Email:{} already exists. Please provide different email.'.format(email))
                     user = User(
                         first_name=fname,
                         last_name=lname,

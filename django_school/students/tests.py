@@ -1,15 +1,34 @@
 from django.test import TestCase
 from django.test import Client
+from django.urls import reverse
 
-class QuizTestCase(TestCase):
+class StudentImportTestCase(TestCase):
+    fixtures = ["test_datas.json"]
+
     def setUp(self):
-    	self.c = Client()
+        self.client = Client()
+        self.url = reverse('students:student_import')
+        self.client.login(username='sumee', password='sumee1910')
 
-    def test_signup(self):
-        response = self.c.post('/accounts/signup/student/',	{
-        	"username": "admin",
-            "password": 999,
-        })
-        self.assertIn('Usernames such as admin,students,teachers,quizzes,accounts are not allowed',
-        	response.content.decode())
-        self.assertEqual(response.status_code, 200)
+    def test_student_import_handsontable(self):
+        
+        handsontable_data = '[["Suhail","Vs","{}","04/12/1988"]]'
+
+        # Blank Email
+        response = self.client.post(self.url, {'classroom':1, 'data':handsontable_data.format('')})
+        self.assertIn(b'All fields are required.', response.content)
+        # 'All fields are required.'
+
+        # Existing Email
+        response = self.client.post(self.url, {'classroom':1, 'data':handsontable_data.format('suhail')})
+        self.assertIn(b'Email:suhail already exists. Please provide different email.', response.content)
+        # 'Email:<{}> already exists. Please provide different email.'.format(email)
+
+        # Save Successfully
+        response = self.client.post(self.url, {'classroom':1, 'data':handsontable_data.format('suhail@gmail.com')})
+        self.assertIn(b'success', response.content)
+
+    def test_check_student_tab_is_active(self):
+        response = self.client.get(self.url)
+        self.assertIn('<a class="nav-link active" href="{}">Students</a>'.format(reverse('students:user_list')).encode(), response.content)
+

@@ -2,6 +2,8 @@
 
 {% load static %}
 {% block extracss %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
+
 <link href='{% static 'fullcalendar/fullcalendar.min.css' %}' rel='stylesheet' />
 <link href='{% static 'fullcalendar/fullcalendar.print.min.css' %}' rel='stylesheet' media='print' />
 <style type="text/css">
@@ -12,15 +14,39 @@
 
 {% block content %}
 <!-- <h2>Time Table</h2> -->
+<!-- <p>TimeTable</p> -->
 <div id='calendar'></div>
+<hr>
+<p>Attendance</p>
+<div id="cal-heatmap"></div>
 {% endblock %}
 
 {% block extrajs %}
 <script src='{% static 'fullcalendar/moment.min.js' %}'></script>
 <script src='{% static 'fullcalendar/fullcalendar.min.js' %}'></script>
-<script>
+
+<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
+
+<script type="text/javascript">
 
 $(document).ready(function() {
+
+  function loadHeatMap() {
+    var cal = new CalHeatMap();
+    cal.init({
+      start: new Date(new Date().getFullYear(), 0, 1),
+      domain: "month",
+      subDomain: "x_day",
+      cellSize: 20,
+      range: 4,
+      displayLegend: false,
+      subDomainTextFormat: "%d",
+      nextSelector: "#domainDynamicDimension-next",
+      previousSelector: "#domainDynamicDimension-previous",
+      data: {{ data | safe }} //{"1550188800":2} // 
+    });
+  }
   function loadCalendar() {   
     var calendar = $('#calendar').fullCalendar({
       header: { left: '', center: '', right: '' },
@@ -43,6 +69,7 @@ $(document).ready(function() {
   }
 
   loadCalendar();
+  loadHeatMap();
 });
 
 </script>

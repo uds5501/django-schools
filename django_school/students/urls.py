@@ -1,7 +1,7 @@
 from django.urls import include, path, re_path
 
 from . import views as students
-from django.views.generic import TemplateView
+# from django.views.generic import TemplateView
 
 urlpatterns = [
 	path('student_import/', students.StudentImport.as_view(), name='student_import'),
@@ -10,6 +10,6 @@ urlpatterns = [
 	path('', students.UserList.as_view(), name='user_list'),
 	# other urls
 	path('events/', students.EventList.as_view(), name='events'),
-	path('attendance/', TemplateView.as_view(template_name="students/attendance.html"), name='attendance'),
+	# path('attendance/', TemplateView.as_view(template_name="students/attendance.html"), name='attendance'),
     path('timetable/', students.TimeTableView.as_view(), name='timetable'),
 ]
