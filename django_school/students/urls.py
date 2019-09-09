@@ -10,6 +10,7 @@ urlpatterns = [
 	path('', students.UserList.as_view(), name='user_list'),
 	# other urls
 	path('events/', students.EventList.as_view(), name='events'),
-	# path('attendance/', TemplateView.as_view(template_name="students/attendance.html"), name='attendance'),
+
+	path('attendance/', students.AttendanceView.as_view(), name='attendance'),
     path('timetable/', students.TimeTableView.as_view(), name='timetable'),
 ]

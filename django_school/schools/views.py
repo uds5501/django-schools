@@ -1,8 +1,11 @@
+from datetime import date
 from django.shortcuts import redirect, render
 from django.views import View, generic
 from django.contrib import messages
+
 from .models import School
 from classroom.models import ClassRoom
+
 class SignUpView(generic.TemplateView):
     template_name = 'registration/signup.html'
 
@@ -25,11 +28,8 @@ def home(request):
         return redirect('classroom:attendance')
         
     elif request.user.is_student:        	
-        from datetime import datetime
-        import json
-        caldate = datetime.strptime("15/02/2019", '%d/%m/%Y')
-        sample = int(caldate.strftime("%s%f"))/1000000
-        return render(request,'students/home.html',{'data':{str(sample):1} })    
+        
+        return render(request,'students/home.html',{'year': date.today().year, 'month': date.today().month -1})    
 
     # some other users, eg: principal,admin
     return render(request, 'home.html')

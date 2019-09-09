@@ -9,6 +9,8 @@
 <style type="text/css">
   .fc-sat { color:red;  }
   .fc-sun { color:red;  }
+
+  .q2 { fill: red }
 </style>
 {% endblock %}
 
@@ -18,12 +20,15 @@
 <div id='calendar'></div>
 <hr>
 <p>Attendance</p>
-<div id="cal-heatmap"></div>
+<button class="btn btn-sm" id="attendanceHeatmap-previous">&lt;</button>
+<button class="btn btn-sm" id="attendanceHeatmap-next">&gt;</button>
+<div id="attendanceHeatmap"></div>
+
 {% endblock %}
 
 {% block extrajs %}
-<script src='{% static 'fullcalendar/moment.min.js' %}'></script>
-<script src='{% static 'fullcalendar/fullcalendar.min.js' %}'></script>
+<script src="{% static 'fullcalendar/moment.min.js' %}"></script>
+<script src="{% static 'fullcalendar/fullcalendar.min.js' %}"></script>
 
 <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
@@ -35,18 +40,24 @@ $(document).ready(function() {
   function loadHeatMap() {
     var cal = new CalHeatMap();
     cal.init({
-      start: new Date(new Date().getFullYear(), 0, 1),
+      itemSelector: "#attendanceHeatmap",
+      maxDate: new Date({{year}},{{month}}),
+      start: new Date({{year}}, {{month}}, 1),
       domain: "month",
       subDomain: "x_day",
       cellSize: 20,
-      range: 4,
+      range: 1,
       displayLegend: false,
       subDomainTextFormat: "%d",
-      nextSelector: "#domainDynamicDimension-next",
-      previousSelector: "#domainDynamicDimension-previous",
-      data: {{ data | safe }} //{"1550188800":2} // 
+      nextSelector: "#attendanceHeatmap-next",
+      previousSelector: "#attendanceHeatmap-previous",
+      legend: [2, 4], // https://github.com/wa0x6e/cal-heatmap/issues/142#issuecomment-89276421
+      // subDomainTitleFormat: {format: function(params){''}}
+      data: "{% url 'students:attendance' %}?start={% verbatim %}{{t:start}}&end={{t:end}}{% endverbatim %}"
     });
   }
+
+
   function loadCalendar() {   
     var calendar = $('#calendar').fullCalendar({
       header: { left: '', center: '', right: '' },
