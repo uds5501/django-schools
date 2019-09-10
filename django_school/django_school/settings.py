@@ -33,13 +33,15 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-'classroom.apps.ClassroomConfig',
-'schools.apps.SchoolsConfig',
-'students',
-'teachers',
-'quizzes',
-'django.contrib.postgres',
-'django.contrib.admin',
+    'dashboard.apps.DashboardConfig',
+    'classroom.apps.ClassroomConfig',
+    'schools.apps.SchoolsConfig',
+    'students',
+    'teachers',
+    'quizzes',
+
+    'django.contrib.postgres',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

@@ -11,6 +11,6 @@ urlpatterns = [
 	# other urls
 	path('events/', students.EventList.as_view(), name='events'),
 
-	path('attendance/', students.AttendanceView.as_view(), name='attendance'),
-    path('timetable/', students.TimeTableView.as_view(), name='timetable'),
+	# path('attendance/', students.AttendanceView.as_view(), name='attendance'),
+    # path('timetable/', students.TimeTableView.as_view(), name='timetable'),
 ]

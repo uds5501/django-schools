@@ -1,4 +1,3 @@
-from datetime import datetime
 import json
 
 from django.conf import settings
@@ -47,11 +46,6 @@ class EventList(View):
 
         return render(request,'students/events.html')
 
-@method_decorator([login_required,student_required], name='dispatch')
-class TimeTableView(View):
-    def get(self, request):
-        qs_json = get_timetable_periods(request.user.student.classroom)
-        return JsonResponse(qs_json,safe=False)
 
 @method_decorator([login_required, teacher_required], name='dispatch')
 class UserList(View):
@@ -82,7 +76,6 @@ class StudentImport(View):
         return render(request,'students/student_import.html',{'classrooms':classrooms })
 
     def post(self,request):
-        import json
         classroom = request.POST['classroom']
         if not classroom:
             return HttpResponse('Please select a ClassRoom.')
@@ -90,19 +83,13 @@ class StudentImport(View):
         users = []
         for row in json.loads(request.POST['data']):
             if any(row):
-
-                fname,lname,email,dob = row
-                # if fname and lname and dob and email:
                 if all(row):
+                    fname,lname,email,dob = row
                     if User.objects.filter(username=email):
                         return HttpResponse('Email:{} already exists. Please provide different email.'.format(email))
                     user = User(
-                        first_name=fname,
-                        last_name=lname,
-                        is_staff=True,
-                        username=email,
-                        user_type=1,
-                        school=request.user.school
+                        first_name=fname, last_name=lname, is_staff=True,
+                        username=email, email=email, user_type=1, school=request.user.school
                     )
                     user.set_password(dob)
                     users.append(user)
@@ -116,30 +103,3 @@ class StudentImport(View):
 
         # User.objects.bulk_create(users)            
         return HttpResponse('success')
-
-
-
-
-from django.http import JsonResponse
-from datetime import date, datetime,timedelta
-from classroom.models import Attendance
-
-class AttendanceView(StudentRequiredMixin, View):
-
-    def get(self, request):
-        middle  = timedelta(days=15)
-        start = datetime.fromtimestamp(int(request.GET['start'])) + middle
-        attendances = Attendance.objects.filter(
-            student__user=request.user, 
-            attendanceclass__date__year = start.year,
-            attendanceclass__date__month = start.month,
-        )
-        # print(attendances)
-        resp = {}
-        for attendance in attendances:
-            item = int(attendance.attendanceclass.date.strftime("%s%f"))/1000000
-            status = 2 if attendance.status == 'P' else 3
-            resp[str(item)]=status
-        # present = int(date(2019,1,15).strftime("%s%f"))/1000000
-        
-        return JsonResponse(resp,safe=False)

@@ -53,7 +53,7 @@ $(document).ready(function() {
       previousSelector: "#attendanceHeatmap-previous",
       legend: [2, 4], // https://github.com/wa0x6e/cal-heatmap/issues/142#issuecomment-89276421
       // subDomainTitleFormat: {format: function(params){''}}
-      data: "{% url 'students:attendance' %}?start={% verbatim %}{{t:start}}&end={{t:end}}{% endverbatim %}"
+      data: "{% url 'dashboard:attendance' %}?start={% verbatim %}{{t:start}}&end={{t:end}}{% endverbatim %}"
     });
   }
 
@@ -61,7 +61,7 @@ $(document).ready(function() {
   function loadCalendar() {   
     var calendar = $('#calendar').fullCalendar({
       header: { left: '', center: '', right: '' },
-      eventSources: ["{% url 'students:timetable' %}"],
+      eventSources: ["{% url 'dashboard:timetable' %}"],
       height: 300, // Fix height
       columnFormat: 'dddd', // Display just full length of weekday, without dates 
       defaultView: 'agendaWeek', // display week view

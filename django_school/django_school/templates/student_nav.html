@@ -1,11 +1,11 @@
-{% url 'home' as home %}
+{% url 'dashboard:home' as dashboard %}
 
 {% url 'quizzes:quiz_list' as quiz_list %}
 {% url 'students:events' as events %}
 {% url 'profile' as profile %}
 <ul class="nav nav-tabs card-header-tabs">
 <li class="nav-item">
-  <a class="nav-link{% if request.path == home %} active{% endif %}" href="{{ home }}">Dashboard </a>
+  <a class="nav-link{% if request.path == dashboard %} active{% endif %}" href="{{ dashboard }}">Dashboard </a>
 </li>
 <li class="nav-item">
   <a class="nav-link{% if quiz_list in request.path %} active{% endif %}" href="{{ quiz_list }}">Quizzes</a>

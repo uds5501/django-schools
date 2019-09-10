@@ -29,8 +29,8 @@ def home(request):
         
     elif request.user.is_student:        	
         
-        return render(request,'students/home.html',{'year': date.today().year, 'month': date.today().month -1})    
-
+        # return render(request,'students/home.html',{'year': date.today().year, 'month': date.today().month -1})    
+        return redirect('dashboard:home')
     # some other users, eg: principal,admin
     return render(request, 'home.html')
 
