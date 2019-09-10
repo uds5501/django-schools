@@ -18,7 +18,7 @@
       <th>Last Name</th>
       <th>Is Verified</th>
       <th>Joined On</th>
-      <th>Class</th>
+      {% if page == "1" %}<th>Class</th>{% endif %}      
     </tr>
   </thead>
   <tbody>
@@ -51,11 +51,7 @@
         {% endif %}
       </td>
       <td>{{user.date_joined|date:"d M Y"}}</td>
-      {% if page == "1" %}
-        <td>{{user.student.classroom.name}}</td>
-      {% else %}
-        <td>{% for classroom in user.classroom_set.all %}{{classroom.name}}{% endfor %}</td>
-      {% endif %}
+      {% if page == "1" %}<td>{{user.student.classroom.name}}</td>{% endif %}
     </tr>
     {% endfor %}
   </tbody>

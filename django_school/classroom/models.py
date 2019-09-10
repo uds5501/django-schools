@@ -12,8 +12,8 @@ class ClassRoom(models.Model):
     name = models.CharField(max_length=50)
     #teacher = models.ForeignKey(User,on_delete=models.CASCADE)
     # i don't know whether the below things are required or not
-    teachers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
-    #students = models.ManyToManyField(User, related_name="course_students",blank=True)
+    # teachers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+    # students = models.ManyToManyField(User, related_name="course_students",blank=True)
 
     class Meta:
         unique_together = ("school", "name")

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Count
 
 from teachers.decorators import teacher_required
 
@@ -22,5 +23,5 @@ def classroom_view(request):
         classroom = ClassRoom(school = request.user.school)
         form = ClassroomForm(instance=classroom)
 
-    classrooms = ClassRoom.objects.filter(school = request.user.school)
+    classrooms = ClassRoom.objects.filter(school = request.user.school).annotate(Count('student'))
     return render(request,"classroom/classrooms.html", {'form': form, 'classrooms':classrooms })

@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-{% include 'classroom/_header.html' with active='classrooms' %}
+{% include 'exams/_header.html' with active='exams' %}
 
 <div class="row">
   <div class="col-12 col-md-8">
@@ -17,10 +17,10 @@
         <form method="post" novalidate>
             {% csrf_token %}
             {{ form|crispy }}
-            <button type="submit" class="btn btn-success">Add New Classroom</button>
+            <button type="submit" class="btn btn-success">Add New Exam</button>
         </form>
         <hr>
-        <table id="clasroomlist" class="table table-striped table-bordered" style="width:100%">
+        <table id="examlist" class="table table-striped table-bordered" style="width:100%">
           <thead>
             <tr> <th>SL</th><th>Class Room</th> <th>Students</th></tr>
           </thead>
@@ -41,7 +41,7 @@
 <script src="{% static 'datatables/dataTables.bootstrap4.min.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#clasroomlist').DataTable();
+    $('#examlist').DataTable();
 });
 </script>
 {% endblock %}

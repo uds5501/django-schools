@@ -22,9 +22,9 @@
         "created_on": "2018-07-28T12:59:39.001Z"
     }
 },
-{"model": "classroom.classroom", "pk": 1, "fields": {"school": 1, "name": "10A", "teachers": []}}, 
-{"model": "classroom.classroom", "pk": 2, "fields": {"school": 1, "name": "9A", "teachers": []}}, 
-{"model": "classroom.classroom", "pk": 3, "fields": {"school": 1, "name": "8A", "teachers": []}},
+{"model": "classroom.classroom", "pk": 1, "fields": {"school": 1, "name": "10A"}}, 
+{"model": "classroom.classroom", "pk": 2, "fields": {"school": 1, "name": "9A"}}, 
+{"model": "classroom.classroom", "pk": 3, "fields": {"school": 1, "name": "8A"}},
 
 {"model": "schools.user", "pk": 1, "fields": {"password": "pbkdf2_sha256$150000$3rjZ4PrU3h5e$6VTBp5TSJIMQeHw19lsJGfDT3GUCftNqyrIp77neXJc=", "last_login": "2019-09-07T22:28:18.276Z", "is_superuser": false, "username": "sumee", "first_name": "Sumayya", "last_name": "VS", "email": "sumee@gmail.com", "is_staff": true, "is_active": true, "date_joined": "2019-08-23T04:53:44Z", "user_type": 2, "school": 1, "groups": [], "user_permissions": []}}, 
 {"model": "schools.user", "pk": 2, "fields": {"password": "pbkdf2_sha256$150000$6Mgop0A5NcWp$AceJgr/0JC7SVGKCuk6/UZf0mYIeAF0MI/MHfIiDovQ=", "last_login": "2019-08-25T00:40:46.628Z", "is_superuser": true, "username": "admin", "first_name": "", "last_name": "", "email": "", "is_staff": true, "is_active": true, "date_joined": "2019-08-23T04:54:12.955Z", "user_type": 1, "school": null, "groups": [], "user_permissions": []}}, 

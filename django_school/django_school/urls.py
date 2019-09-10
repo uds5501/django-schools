@@ -15,6 +15,7 @@ urlpatterns = [
     path('classroom/', include(('classroom.urls','classroom'),namespace='classroom')),
     path('quizzes/', include(('quizzes.urls','quizzes'),namespace='quizzes')),
     path('dashboard/', include(('dashboard.urls','dashboard'),namespace='dashboard')),
+    path('exams/', include(('exams.urls','exams'),namespace='exams')),
 
     path('accounts/login/', auth_views.LoginView.as_view(redirect_authenticated_user=True), name='login'),
     path('accounts/', include('django.contrib.auth.urls')),    
