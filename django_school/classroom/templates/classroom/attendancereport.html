@@ -53,9 +53,9 @@
 {% if attendances %}
 <div class="table-responsive">
 <table class="table table-sm table-bordered">
-  <tr><th>Student</th>{% for day in days %}<td>{{ day }}</td>{% endfor %}</tr>
+  <tr><th>Student</th>{% for day in days %}<th style="font-size: 11px">{{ day }}</th>{% endfor %}</tr>
   {% for name, statuses in attendances.items %}
-    <tr><td>{{name}}</td>{% for day in days %}<td>{{ statuses|dict_key:day }}</td>{% endfor %}</tr>
+    <tr><td>{{ statuses|dict_key:'name' }}</td>{% for day in days %}<td style="font-size: 11px">{{ statuses|dict_key:day }}</td>{% endfor %}</tr>
   {% endfor %}
 </table>  
 </div>

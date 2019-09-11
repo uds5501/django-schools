@@ -7,7 +7,7 @@ class ExamTestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.url = reverse('exams:exam')
+        self.url = reverse('exams:exams')
         self.client.login(username='sumee', password='sumee1910')
 
     def test_check_exams_tab_is_active(self):

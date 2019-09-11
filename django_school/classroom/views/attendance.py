@@ -78,8 +78,9 @@ class AttendanceReportView(TeacherRequiredMixin, View):
         transposed = {}
         for att in att_class:
             for attendance in att.attendance_set.all():
-                transposed.setdefault(attendance.student.user.username, {}).update(
-                                {att.date.day: attendance.status})
+                transposed.setdefault(
+                    attendance.student.user.username, {'name':attendance.student.user.get_full_name()}
+                ).update({att.date.day: attendance.status})
         return transposed
 
     def get(self, request):

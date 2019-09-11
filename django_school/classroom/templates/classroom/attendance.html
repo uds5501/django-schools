@@ -39,7 +39,7 @@
 {% if attendances %}
 
 {% for attendance in attendances %}
-  <p>{{attendance.student.user}} - {% if attendance.status == 'P' %}&#10003;{%else%}x{% endif %}</p>
+  <p>{{attendance.student.user.get_full_name}} - {% if attendance.status == 'P' %}&#10003;{%else%}x{% endif %}</p>
 {% endfor %}
 {% elif students %}
 <form action="{% url 'classroom:attendance' %}" method="post"> {% csrf_token %}

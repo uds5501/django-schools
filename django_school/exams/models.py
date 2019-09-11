@@ -6,7 +6,7 @@ class Exam(models.Model):
     academicyear = models.ForeignKey('schools.AcademicYear', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     
-    exam_type = models.CharField(max_length=255, blank=True)
+    # exam_type = models.CharField(max_length=255, blank=True)
     exam_class = models.SmallIntegerField() # standard
     exam_date = models.DateTimeField()
     is_grade = models.BooleanField(default=False)
@@ -22,9 +22,10 @@ class Marks(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
     subject = models.ForeignKey('classroom.Subject', on_delete=models.CASCADE)
     student = models.ForeignKey('students.Student', on_delete=models.CASCADE)
-    ce =  models.IntegerField(default=0, blank=True, null=True)
-    theory = models.IntegerField(default=0, blank=True, null=True)
-    practical = models.IntegerField(default=0, blank=True, null=True)
+    # ce =  models.IntegerField(default=0, blank=True, null=True)
+    # theory = models.IntegerField(default=0, blank=True, null=True)
+    # practical = models.IntegerField(default=0, blank=True, null=True)
+    mark = models.IntegerField(default=0, blank=True, null=True)
     grade = models.CharField(max_length=10, blank=True)
     
 
