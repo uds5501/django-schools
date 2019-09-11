@@ -2,10 +2,10 @@
 
 {% load static %}
 {% block extracss %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
+<link rel="stylesheet" href="{% static 'cal-heatmap/cal-heatmap.css' %}" />
 
-<link href='{% static 'fullcalendar/fullcalendar.min.css' %}' rel='stylesheet' />
-<link href='{% static 'fullcalendar/fullcalendar.print.min.css' %}' rel='stylesheet' media='print' />
+<link href="{% static 'fullcalendar/fullcalendar.min.css' %}" rel='stylesheet' />
+<link href="{% static 'fullcalendar/fullcalendar.print.min.css' %}" rel='stylesheet' media='print' />
 <style type="text/css">
   .fc-sat { color:red;  }
   .fc-sun { color:red;  }
@@ -30,8 +30,8 @@
 <script src="{% static 'fullcalendar/moment.min.js' %}"></script>
 <script src="{% static 'fullcalendar/fullcalendar.min.js' %}"></script>
 
-<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
+<script type="text/javascript" src="{% static 'cal-heatmap/d3.v3.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'cal-heatmap/cal-heatmap.min.js' %}"></script>
 
 <script type="text/javascript">
 

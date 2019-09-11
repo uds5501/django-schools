@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from schools.mixins import TeacherRequiredMixin
 from teachers.decorators import teacher_required
 from schools.models import AcademicYear
+from students.models import Student
 from classroom.models import Subject, ClassRoom
 from .forms import ExamForm
 from .models import Exam
@@ -43,8 +44,18 @@ class MarkEntry(TeacherRequiredMixin, View):
         }        
         return render(request,'exams/markentry.html', resp)
 
-class getDivisions(TeacherRequiredMixin, View):
+class getAjaxJson(TeacherRequiredMixin, View):
     def get(self, request):
-        exam = Exam.objects.get(id=request.GET['exam'])
-        classes = [c.division for c in ClassRoom.objects.filter(school = request.user.school, name=exam.exam_class)]
-        return JsonResponse({'classes':classes,'is_grade':exam.is_grade},safe=False)
+        school = request.user.school
+        exam = Exam.objects.get(school=school, id=request.GET['exam'])
+        division = request.GET.get('division',None)
+        resp = {'is_grade':exam.is_grade}
+        if division:
+            classroom = ClassRoom.objects.get(school = school, name=exam.exam_class, division = division)
+            resp['students']=[
+                [s.user.id, s.user.get_full_name(), ''] 
+                for s in Student.objects.filter(classroom=classroom)
+            ]
+        else:
+            resp['classes']= [c.division for c in ClassRoom.objects.filter(school = school, name=exam.exam_class)]
+        return JsonResponse(resp,safe=False)

@@ -5,6 +5,6 @@ from . import views
 urlpatterns = [
     path('', views.exam_view, name='exams'),
     path('markentry/', views.MarkEntry.as_view(), name='markentry'),
-    path('getdivisions/', views.getDivisions.as_view(), name='getdivisions'),
+    path('getajaxdata/', views.getAjaxJson.as_view(), name='getajaxdata'),
     
 ]

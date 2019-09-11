@@ -57,40 +57,46 @@
 <script src="{% static 'handsontable/handsontable.full.min.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-  function loadHandsontable(markgrade = 'Mark') {
-    var student_table = new Handsontable(document.getElementById('markentry_table'), {
-      startCols: 2,
-      startRows: 5,
-      rowHeaders: true,
-      colHeaders: [
-        'Student',
-        markgrade
-      ],
-      licenseKey: 'non-commercial-and-evaluation',
-      stretchH: 'all'
-    });
-  }
-  
+  var student_table = new Handsontable(document.getElementById('markentry_table'), {
+    startCols: 0,
+    startRows: 0,
+    rowHeaders: true,
+    columns: [{ readOnly: true }, { readOnly: true }, {}],
+    colHeaders: ['ID', 'Student', 'Mark/Grade'],
+    licenseKey: 'non-commercial-and-evaluation',
+    stretchH: 'all'
+  });
 
   $("#exam_select").change(function() {
     const exam = $(this).find("option:selected").val();
     if (exam) {
-      $.get("{% url 'exams:getdivisions' %}",{exam}).done(function(data) {
+      $.get("{% url 'exams:getajaxdata' %}",{exam}).done(function(data) {
         let sel = $('<select class="form-control form-control-sm" name="classroom">');
+        sel.append($("<option>").attr('value',"").text("Select Division"));
         $(data.classes).each(function() {
          sel.append($("<option>").attr('value',this).text(this));
         });
         $("#class_div").html(sel);
-        if (data.is_grade) {
-          $(".markgrade_input").show();
-        } else {
+        if (data.is_grade) {          
           $(".markgrade_input").hide();
+        } else {
+          $(".markgrade_input").show();
         }
 
-        // loadHandsontable();
+        student_table.loadData([]);
       });
     } else {
       $("#class_div").html('');
+    }
+  });
+
+  $('#class_div').on('change', 'select', function (e) {
+    const val = $(e.target).val();
+    if (val) {
+      $.get("{% url 'exams:getajaxdata' %}",{exam: $("#exam_select").val(), division: val})
+      .done(function(data) {
+        student_table.loadData(data.students);
+      });
     }
   });
 });
