@@ -12,7 +12,7 @@ add classes::
     >>> from classroom.models import ClassRoom
 	>>> rooms = []
     >>> for student in StudentStrength.objects.all():
-    ...  rooms.append(ClassRoom(school = student.school, name = "{0}A".format(student.course)))
+    ...  rooms.append(ClassRoom(school = student.school, name = student.course, division='A'))
     >>> ClassRoom.objects.bulk_create(rooms)
 
 school name fix::

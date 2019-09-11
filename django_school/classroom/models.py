@@ -9,17 +9,19 @@ from students.models import Student
 class ClassRoom(models.Model):
     # Class for exampl: 8A, 7B, 10I etc
     school = models.ForeignKey(School, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
+    
+    name = models.SmallIntegerField()
+    division = models.CharField(max_length=2)
     #teacher = models.ForeignKey(User,on_delete=models.CASCADE)
     # i don't know whether the below things are required or not
     # teachers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     # students = models.ManyToManyField(User, related_name="course_students",blank=True)
 
     class Meta:
-        unique_together = ("school", "name")
+        unique_together = ("school", "name", "division")
     
     def __str__(self):
-        return self.name
+        return f'{self.name}-{self.division}'
 
     #def get_absolute_url(self):
     #    return reverse('course_detail', args=[str(self.id)])

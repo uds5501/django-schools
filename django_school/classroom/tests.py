@@ -72,3 +72,16 @@ class AttendanceTest(TestCase):
 		self.client.login(username='sumee', password='sumee1910')
 		response = self.client.get(reverse('classroom:attendance'),{'classroom':1,'date':'04/09/2019'})
 		self.assertNotIn(b'<td>sufail</td>', response.content)
+
+
+# class ClassroomTest(TestCase):
+# 	fixtures = ["test_datas.json"]
+
+# 	def setUp(self):
+# 		self.client = Client()
+# 		self.client.login(username='sumee', password='sumee1910')
+
+# 	def test_only_verified_user_show_in_attendance(self):
+		
+# 		response = self.client.post(reverse('classroom:classrooms'),{'name':1,'division':'04/09/2019'})
+# 		self.assertNotIn(b'<td>sufail</td>', response.content)

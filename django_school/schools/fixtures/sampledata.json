@@ -7,11 +7,11 @@
 {"model": "schools.studentstrength", "pk": 1, "fields": {"school": 1, "course": 5, "strength": 31, "sampoorna": 31, "available_uid": 31,"valid_uid": 26, "partialy_match_uid": 0, "invalid_uid": 3, "none": 0}}, 
 {"model": "schools.studentstrength", "pk": 2, "fields": {"school": 1, "course": 6, "strength": 31, "sampoorna": 31, "available_uid": 30, "valid_uid": 24, "partialy_match_uid": 2, "invalid_uid": 3, "none": 1}},
 
-{"model": "classroom.classroom", "pk": 1, "fields": {"school": 1, "name": "10A"}},
-{"model": "classroom.classroom", "pk": 2, "fields": {"school": 1, "name": "9A"}},
-{"model": "classroom.classroom", "pk": 3, "fields": {"school": 1, "name": "8A"}},
-{"model": "classroom.classroom", "pk": 4, "fields": {"school": 2, "name": "10A"}},
-{"model": "classroom.classroom", "pk": 5, "fields": {"school": 2, "name": "9A"}},
+{"model": "classroom.classroom", "pk": 1, "fields": {"school": 1, "name": 10, "division":"A"}},
+{"model": "classroom.classroom", "pk": 2, "fields": {"school": 1, "name": 9, "division":"A"}},
+{"model": "classroom.classroom", "pk": 3, "fields": {"school": 1, "name": 8, "division":"A"}},
+{"model": "classroom.classroom", "pk": 4, "fields": {"school": 2, "name": 10, "division":"A"}},
+{"model": "classroom.classroom", "pk": 5, "fields": {"school": 2, "name": 9, "division":"A"}},
 
 {"model": "schools.staff", "pk": 1, "fields": {"school": 1, "name": "M.ARUNKUMAR", "designation": "Clerk", "date_of_join": "2000-07-10"}}, 
 {"model": "schools.staff", "pk": 2, "fields": {"school": 1, "name": "SUDEVAN.K", "designation": "F.T.C.M", "date_of_join": "2007-10-08"}}, 

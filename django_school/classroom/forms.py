@@ -2,15 +2,15 @@ from django import forms
 from .models import ClassRoom, Period, Subject
 
 class ClassroomForm(forms.ModelForm):
-    def clean_name(self):
+    def clean_division(self):
         """To prevent classroom names 10A, 10a"""
-        data = self.cleaned_data['name']
+        data = self.cleaned_data['division']
         return data.upper()
 
     class Meta:
         model = ClassRoom
         widgets = {'school': forms.HiddenInput()}
-        fields = ('school', 'name', ) # '__all__' #('name', )
+        fields = ('school', 'name','division' ) # '__all__' #('name', )
 
 class PeriodForm(forms.ModelForm):
     class Meta:
