@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block extracss %}
+<link rel="stylesheet" type="text/css" href="{% static 'handsontable/handsontable.full.min.css' %}">
+<style type="text/css">
+  .markgrade_input {
+    display: none
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+{% include 'exams/_header.html' with active='markentry' %}
+
+<form>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label class="sr-only">Subject</label>
+      <select class="form-control form-control-sm" name="subject">
+          <option value="">Select Subject</option>
+          {% for subject in subjects %}
+            <option value="{{ subject.pk }}">{{ subject.name }}</option>
+          {% endfor %}        
+      </select>
+    </div>
+    <div class="form-group col-md-6">
+      <label class="sr-only">Exam</label>
+      <select class="form-control form-control-sm" name="exam" id="exam_select">
+          <option value="">Select Exam</option>
+          {% for exam in exams %}
+            <option value="{{ exam.pk }}">{{ exam.name }} ({{exam.exam_class}})</option>
+          {% endfor %}        
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-4" id="class_div">
+    </div>
+    <div class="form-group col-md-4 markgrade_input">
+      <input name="max_mark" type='text' placeholder="Maximum Marks" class='form-control form-control-sm' />
+    </div>
+    <div class="form-group col-md-4 markgrade_input">
+      <input name="pass_mark" type='text' placeholder="Pass Marks" class='form-control form-control-sm' />
+    </div>
+  </div>
+</form>
+<hr>
+
+
+
+<div id="markentry_table"></div><br>
+{% endblock %}
+
+
+{% block extrajs %}
+<script src="{% static 'handsontable/handsontable.full.min.js' %}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  function loadHandsontable(markgrade = 'Mark') {
+    var student_table = new Handsontable(document.getElementById('markentry_table'), {
+      startCols: 2,
+      startRows: 5,
+      rowHeaders: true,
+      colHeaders: [
+        'Student',
+        markgrade
+      ],
+      licenseKey: 'non-commercial-and-evaluation',
+      stretchH: 'all'
+    });
+  }
+  
+
+  $("#exam_select").change(function() {
+    const exam = $(this).find("option:selected").val();
+    if (exam) {
+      $.get("{% url 'exams:getdivisions' %}",{exam}).done(function(data) {
+        let sel = $('<select class="form-control form-control-sm" name="classroom">');
+        $(data.classes).each(function() {
+         sel.append($("<option>").attr('value',this).text(this));
+        });
+        $("#class_div").html(sel);
+        if (data.is_grade) {
+          $(".markgrade_input").show();
+        } else {
+          $(".markgrade_input").hide();
+        }
+
+        // loadHandsontable();
+      });
+    } else {
+      $("#class_div").html('');
+    }
+  });
+});
+
+</script>
+{% endblock %}

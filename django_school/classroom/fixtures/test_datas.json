@@ -32,5 +32,6 @@
 {"model": "schools.user", "pk": 4, "fields": {"password": "pbkdf2_sha256$150000$9aso48r7pq9v$Jz9sixvn77l1pWAEbRbHR0lFbtBSITfKlcPnqu+4MP0=", "last_login": "2019-08-24T23:53:35.378Z", "is_superuser": false, "username": "sufail", "first_name": "", "last_name": "", "email": "", "is_staff": false, "is_active": true, "date_joined": "2019-08-24T23:53:35.072Z", "user_type": 1, "school": 1, "groups": [], "user_permissions": []}},
 
 {"model": "students.student", "pk": 3, "fields": {"classroom": 1, "interests": []}}, 
-{"model": "students.student", "pk": 4, "fields": {"classroom": 1, "interests": []}}
+{"model": "students.student", "pk": 4, "fields": {"classroom": 1, "interests": []}},
+{"model": "schools.academicyear", "pk": 1, "fields": {"name": "2019-2020", "status": true}}
 ]
