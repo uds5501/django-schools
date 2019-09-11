@@ -67,21 +67,35 @@ class AttendanceTest(TestCase):
 
 	def setUp(self):
 		self.client = Client()
-
-	def test_only_verified_user_show_in_attendance(self):
 		self.client.login(username='sumee', password='sumee1910')
+
+	def test_only_verified_user_show_in_attendance(self):		
 		response = self.client.get(reverse('classroom:attendance'),{'classroom':1,'date':'04/09/2019'})
 		self.assertNotIn(b'<td>sufail</td>', response.content)
 
+	def test_class_selectbox_in_attendance(self):
+		opt = b'<option value="1" selected>10A</option>'
 
-# class ClassroomTest(TestCase):
-# 	fixtures = ["test_datas.json"]
+		# In EnterAttendance and AttendanceReport, Class Selectboxes has option 10A
+		for url in ['attendance','attendancereport']:
+			response = self.client.get(reverse(f'classroom:{url}'),{'classroom':1})		
+			self.assertIn(opt, response.content)
 
-# 	def setUp(self):
-# 		self.client = Client()
-# 		self.client.login(username='sumee', password='sumee1910')
 
-# 	def test_only_verified_user_show_in_attendance(self):
+class ClassroomTest(TestCase):
+	fixtures = ["test_datas.json"]
+
+	def setUp(self):
+		self.client = Client()
+		self.client.login(username='sumee', password='sumee1910')
+
+	def test_create_classroom(self):
+		# existing division
+		response = self.client.post(reverse('classroom:classrooms'),{'school':1, 'name':10,'division':'A'}, follow=True)
+		self.assertIn(b'Class room with this School, Name and Division already exists.', response.content)
+		# self.assertNotIn(b'<td>10A</td>', response.content)
+
+		response = self.client.post(reverse('classroom:classrooms'),{'school':1, 'name':10,'division':'B'}, follow=True)
+		self.assertNotIn(b'Class room with this School, Name and Division already exists.', response.content)
+		self.assertIn(b'<td>10B</td>', response.content)
 		
-# 		response = self.client.post(reverse('classroom:classrooms'),{'name':1,'division':'04/09/2019'})
-# 		self.assertNotIn(b'<td>sufail</td>', response.content)

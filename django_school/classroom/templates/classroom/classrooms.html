@@ -26,7 +26,7 @@
           </thead>
           <tbody>
             {% for classroom in classrooms %}
-            <tr><td>{{forloop.counter}}</td><td>{{classroom}}</td> <td>{{classroom.student__count}}</td></tr>
+            <tr><td>{{forloop.counter}}</td><td>{{classroom.classname}}</td> <td>{{classroom.student__count}}</td></tr>
             {% endfor %}
           </tbody>
         </table>

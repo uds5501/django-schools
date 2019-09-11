@@ -9,6 +9,7 @@ class ClassroomForm(forms.ModelForm):
 
     class Meta:
         model = ClassRoom
+        # this is required for unique together validation
         widgets = {'school': forms.HiddenInput()}
         fields = ('school', 'name','division' ) # '__all__' #('name', )
 

@@ -14,7 +14,7 @@
     <select id="sel_classroom" class="form-control form-control-sm" name="classroom">
         <option value="">Select Class</option>
         {% for classroom in classrooms %}
-        	<option value="{{ classroom.pk }}">{{ classroom.name }}</option>
+        	<option value="{{ classroom.pk }}">{{ classroom.classname }}</option>
         {% endfor %}
     </select>
  </div>

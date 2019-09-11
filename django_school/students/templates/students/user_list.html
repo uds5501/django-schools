@@ -51,7 +51,7 @@
         {% endif %}
       </td>
       <td>{{user.date_joined|date:"d M Y"}}</td>
-      {% if page == "1" %}<td>{{user.student.classroom.name}}</td>{% endif %}
+      {% if page == "1" %}<td>{{user.student.classroom.classname}}</td>{% endif %}
     </tr>
     {% endfor %}
   </tbody>

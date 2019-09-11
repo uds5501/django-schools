@@ -1,3 +1,5 @@
+import re
+
 from django.views import View
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse, HttpResponse
@@ -28,7 +30,8 @@ class TimeTableView(TeacherRequiredMixin,View):
         classroom_name = request.GET.get('classroom','')
         
         if classroom_name: 
-            classroom = ClassRoom.objects.get(school = school, name = classroom_name)
+            name,division = re.split(r'(\d+)', classroom_name)[1:3]
+            classroom = ClassRoom.objects.get(school = school, name = name, division=division)
             qs_json = get_timetable_periods(classroom)
             return JsonResponse(qs_json,safe=False)
         
@@ -45,10 +48,12 @@ class TimeTableView(TeacherRequiredMixin,View):
         Save a Period of TimeTable
         """
         # classroom, subject, teacher, day, starttime,endtime
+        
         school = request.user.school
         DAY_CHOICES = {n[1]: n[0] for n in Period._meta.get_field('dayoftheweek').choices}
         updated_request = request.POST.copy()
-        updated_request['classroom'] = ClassRoom.objects.get(school = school,name=updated_request['classroom']).id
+        name,division = re.split(r'(\d+)', updated_request['classroom'])[1:3]
+        updated_request['classroom'] = ClassRoom.objects.get(school = school,name=name,division=division).id
         updated_request['dayoftheweek'] = DAY_CHOICES[updated_request['dayoftheweek']]
         form = PeriodForm(updated_request)
         if form.is_valid():

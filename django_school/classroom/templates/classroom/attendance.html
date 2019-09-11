@@ -25,7 +25,7 @@
     <select class="form-control form-control-sm" name="classroom">
         <option value="">Select Class</option>
         {% for classroom in classrooms %}
-        	<option value="{{ classroom.pk }}"{% if classroom.pk == att_classroom %} selected{% endif %}>{{ classroom.name }}</option>
+        	<option value="{{ classroom.pk }}"{% if classroom.pk == att_classroom %} selected{% endif %}>{{ classroom.classname }}</option>
         {% endfor %}
     </select>
   </div>

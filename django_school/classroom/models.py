@@ -23,6 +23,10 @@ class ClassRoom(models.Model):
     def __str__(self):
         return f'{self.name}-{self.division}'
 
+    @property
+    def classname(self):
+        return f'{self.name}{self.division}'
+
     #def get_absolute_url(self):
     #    return reverse('course_detail', args=[str(self.id)])
 
@@ -32,6 +36,9 @@ class Subject(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        unique_together = ("school", "name")
 
 class Period(models.Model):
     # A Period will just be a recurring Event(every week) related to a Classroom.
