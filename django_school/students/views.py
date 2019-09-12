@@ -101,5 +101,5 @@ class StudentImport(View):
             user.save()
             student = Student.objects.create(user=user,classroom_id = classroom)
 
-        # User.objects.bulk_create(users)            
+        # User.objects.bulk_create(users)
         return HttpResponse('success')

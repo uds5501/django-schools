@@ -16,20 +16,20 @@
 <form>
   <div class="form-row">
     <div class="form-group col-md-6">
-      <label class="sr-only">Subject</label>
-      <select class="form-control form-control-sm" name="subject">
-          <option value="">Select Subject</option>
-          {% for subject in subjects %}
-            <option value="{{ subject.pk }}">{{ subject.name }}</option>
+      <label class="col-form-label col-form-label-sm">Exam</label>
+      <select class="form-control form-control-sm" id="exam_select">
+          <option value="">Select Exam</option>
+          {% for exam in exams %}
+            <option value="{{ exam.pk }}">{{ exam.name }} ({{exam.exam_class}})</option>
           {% endfor %}        
       </select>
     </div>
     <div class="form-group col-md-6">
-      <label class="sr-only">Exam</label>
-      <select class="form-control form-control-sm" name="exam" id="exam_select">
-          <option value="">Select Exam</option>
-          {% for exam in exams %}
-            <option value="{{ exam.pk }}">{{ exam.name }} ({{exam.exam_class}})</option>
+      <label class="col-form-label col-form-label-sm">Subject</label>
+      <select class="form-control form-control-sm" id="sel_subject">
+          <option value="">Select Subject</option>
+          {% for subject in subjects %}
+            <option value="{{ subject.pk }}">{{ subject.name }}</option>
           {% endfor %}        
       </select>
     </div>
@@ -38,20 +38,18 @@
     <div class="form-group col-md-4" id="class_div">
     </div>
     <div class="form-group col-md-4 markgrade_input">
-      <input name="max_mark" type='text' placeholder="Maximum Marks" class='form-control form-control-sm' />
+      <input id="max_mark" type='text' placeholder="Maximum Marks" class='form-control form-control-sm' />
     </div>
     <div class="form-group col-md-4 markgrade_input">
-      <input name="pass_mark" type='text' placeholder="Pass Marks" class='form-control form-control-sm' />
+      <input id="pass_mark" type='text' placeholder="Pass Marks" class='form-control form-control-sm' />
     </div>
   </div>
 </form>
 <hr>
 
-
-
 <div id="markentry_table"></div><br>
+<button class="btn btn-success float-right" id="btn_save">Save Marks</button>
 {% endblock %}
-
 
 {% block extrajs %}
 <script src="{% static 'handsontable/handsontable.full.min.js' %}"></script>
@@ -67,11 +65,12 @@ $(document).ready(function() {
     stretchH: 'all'
   });
 
-  $("#exam_select").change(function() {
-    const exam = $(this).find("option:selected").val();
-    if (exam) {
+  function createDivisionSelect(){
+    const exam = $("#exam_select").val();
+    const subject = $("#sel_subject").val();
+    if (exam && subject) {
       $.get("{% url 'exams:getajaxdata' %}",{exam}).done(function(data) {
-        let sel = $('<select class="form-control form-control-sm" name="classroom">');
+        let sel = $('<select class="form-control form-control-sm" id="sel_division">');
         sel.append($("<option>").attr('value',"").text("Select Division"));
         $(data.classes).each(function() {
          sel.append($("<option>").attr('value',this).text(this));
@@ -87,17 +86,50 @@ $(document).ready(function() {
       });
     } else {
       $("#class_div").html('');
+      $(".markgrade_input").hide();
     }
+  }
+
+  $("#sel_subject").change(function() {
+    createDivisionSelect();
+  });
+  $("#exam_select").change(function() {
+    createDivisionSelect();
   });
 
   $('#class_div').on('change', 'select', function (e) {
     const val = $(e.target).val();
     if (val) {
-      $.get("{% url 'exams:getajaxdata' %}",{exam: $("#exam_select").val(), division: val})
+      $.get("{% url 'exams:getajaxdata' %}",
+        {exam: $("#exam_select").val(), division: val, subject:$("#sel_subject").val()})
       .done(function(data) {
         student_table.loadData(data.students);
       });
     }
+  });
+
+  $("#btn_save").click(function() { 
+    let params = {data: JSON.stringify(student_table.getData()), csrfmiddlewaretoken: '{{ csrf_token }}'};
+    params['exam'] = $("#exam_select").val();
+    params['subject'] = $("#sel_subject").val();
+
+    if($('.markgrade_input').is(':visible')) {
+      // grade = false;
+      params['max_mark'] = $("#max_mark").val();
+      params['pass_mark'] = $("#pass_mark").val();
+    }
+    if (params['exam'] && params['subject'] && $("#sel_division").val()){
+      $.post("{% url 'exams:markentry' %}", params)
+      .done(function( message ) {
+          alert(message);
+          // if (message === 'success') {
+          //   window.location.replace("{% url 'students:user_list' %}");
+          // }
+      });      
+    } else {
+      alert('Exam, Division and Subject is required.')
+    }    
+    
   });
 });
 

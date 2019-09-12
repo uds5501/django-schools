@@ -27,6 +27,12 @@ class Marks(models.Model):
     # practical = models.IntegerField(default=0, blank=True, null=True)
     mark = models.IntegerField(default=0, blank=True, null=True)
     grade = models.CharField(max_length=10, blank=True)
+
+    @property
+    def markgrade(self):
+        if self.exam.is_grade:
+            return self.grade
+        return self.mark
     
 
 # class Exam(models.Model):
