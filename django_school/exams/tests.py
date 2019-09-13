@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.test import Client
 from django.urls import reverse
 
+from .models import Marks
+
 class ExamTestCase(TestCase):
     fixtures = ["test_datas.json"]
 
@@ -22,11 +24,7 @@ class ExamTestCase(TestCase):
         response = self.client.post(self.url,params, follow=True)
         self.assertIn(b'09 Jun 2019', response.content)
 
-        # test get divisions of class for an exam
-        # response = self.client.get(f"{reverse('exams:getdivisions')}?exam=15")
-        # data = response.json()
-        # self.assertEqual(data['is_grade'], False)
-        # self.assertEqual(data['classes'], ['A'])
+        
 
 class MarkEntryTestCase(TestCase):
     fixtures = ["test_datas.json"]
@@ -36,7 +34,7 @@ class MarkEntryTestCase(TestCase):
         self.url = reverse('exams:markentry')
         self.client.login(username='sumee', password='sumee1910')
         # create an exam
-        self.client.post(reverse('exams:exams'),{'name':'Class Test November','exam_class':10,'exam_date':'6/9/2019' })
+        # self.client.post(reverse('exams:exams'),{'name':'Class Test November','exam_class':10,'exam_date':'6/9/2019' })
 
     def test_check_markentry_tab_is_active(self):
         response = self.client.get(self.url)
@@ -46,4 +44,60 @@ class MarkEntryTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertIn(b'Class Test November (10)', response.content)
 
+    def test_get_divisions_ajax(self):
+        # test get divisions of class for an exam
+        response = self.client.get(reverse('exams:getajaxdata'), {'exam':1})
+        data = response.json()
+        self.assertEqual(data['is_grade'], True)
+        self.assertEqual(data['classes'], [{'classroom':'10A','division':'A'}])
+
+        # handsontable load student data 
+        response = self.client.get(reverse('exams:getajaxdata'), {'exam':1, 'division':'A','subject':1})
+        data = response.json()
+        self.assertIn([3, 'Suhail VS', ''],data['students'])
+        # inactive student not in list
+        self.assertNotIn([4, 'Sufail VS', ''],data['students'])
+
+    def test_save_markentry(self):
+        handsontable_data = '[["3","Suhail VS","{}"]]'
+        # Blank Grade
+        response = self.client.post(self.url, {'exam':1,'subject':1, 'data':handsontable_data.format('')})
+        self.assertEqual(Marks.objects.filter(exam=1,subject=1,student__user=3).count(), 0)
+
+        # Valid Grade
+        response = self.client.post(self.url, {'exam':1,'subject':1, 'data':handsontable_data.format('a+')})
+        markentry = Marks.objects.filter(exam=1,subject=1,student__user=3)
+        self.assertEqual(markentry.count(), 1)
+        self.assertEqual(markentry[0].grade, 'A+')
+
+        # Edit Grade
+        response = self.client.post(self.url, {'exam':1,'subject':1, 'data':handsontable_data.format('c+')})
+        markentry = Marks.objects.filter(exam=1,subject=1,student__user=3)
+        self.assertEqual(markentry.count(), 1)
+        self.assertEqual(markentry[0].grade, 'C+')
     
+        # Mark
+        params = {'exam':2,'subject':1,'data':handsontable_data.format('')}
+        # Blank Mark
+        response = self.client.post(self.url, params)
+        self.assertIn(b'Max Mark and Pass Mark is required.', response.content)
+
+        params['max_mark'] = 50
+        params['pass_mark'] = 20
+        params['data'] = handsontable_data.format('20')
+        # Valid Mark
+        response = self.client.post(self.url, params)
+        self.assertIn(b'success', response.content)
+        markentry = Marks.objects.filter(exam=params['exam'],subject=params['subject'],student__user=3)
+        self.assertEqual(markentry.count(), 1)
+        self.assertEqual(markentry[0].mark, 20)
+
+        # Mark greater than Max Marks
+        params['data'] = handsontable_data.format('100')
+        response = self.client.post(self.url,params)
+        self.assertIn(b'Error: Student mark is greater than Maximum Mark.', response.content)
+
+        # Prevent entering Grade for an Exam with Marks
+        params['data'] = handsontable_data.format('c+')
+        response = self.client.post(self.url,params)
+        self.assertIn(b'Please provide mark as Interger.', response.content)

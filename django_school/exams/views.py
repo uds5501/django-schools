@@ -46,58 +46,87 @@ class MarkEntry(TeacherRequiredMixin, View):
         }        
         return render(request,'exams/markentry.html', resp)
 
-    
+    # def set_mark_grade(self):
+    #     pass
+
     def post(self,request):
         school = request.user.school
         exam = Exam.objects.get(school=school, id=request.POST['exam'])
         subject = request.POST['subject']
-        # classroom = ClassRoom.objects.get(school = school, name=exam.exam_class, division = request.POST['division'])
         if not exam.is_grade:
             if (request.POST.get('max_mark','') == '') or (request.POST.get('pass_mark','') == ''):
-                return HttpResponse('Max Mark and Pass Mark is required.')            
+                return HttpResponse('Max Mark and Pass Mark is required.')
 
         marks = []
+        marks_update = []
         for row in json.loads(request.POST['data']):
             if any(row):
-                if all(row):
-                    # userid,name,marks = row
-                    mark = Marks(exam=exam, subject_id=subject)
-                    mark.student = get_user_model().objects.get(id =row[0]).student
+                markgrade = row[2]
+                if markgrade:
+                    student = get_user_model().objects.get(id =row[0]).student
+                    is_update = Marks.objects.filter(exam=exam,subject=subject,student = student)
+                    if (is_update):
+                        mark = is_update[0]
+                    else:                        
+                        mark = Marks(exam=exam, subject_id=subject, student = student)
+
                     if exam.is_grade:
-                        mark.grade = row[2].capitalize()
+                        mark.grade = markgrade.capitalize()
                     else:
-                        mark.mark = row[2]
-                    marks.append(mark)
-                else:
-                    return HttpResponse('All fields are required.')
+                        if not markgrade.isdigit():
+                            return HttpResponse('Please provide mark as Interger.')
+                        if int(markgrade) > int(request.POST['max_mark']):
+                            return HttpResponse('Error: Student mark is greater than Maximum Mark.')                            
+                        mark.mark = markgrade
+
+                    if (is_update):
+                        marks_update.append(mark)
+                    else:
+                        marks.append(mark)
 
         if not exam.is_grade:
-            SubjectMarkConf.objects.create(
-                exam=exam, subject_id=subject, max_mark = request.POST['max_mark'], pass_mark = request.POST['pass_mark']) 
+            if not SubjectMarkConf.objects.filter(exam=exam, subject_id=subject):
+                SubjectMarkConf.objects.create(
+                    exam=exam, subject_id=subject, max_mark = request.POST['max_mark'], pass_mark = request.POST['pass_mark']) 
 
+        # Bulk Update
+        if exam.is_grade:
+            Marks.objects.bulk_update(marks_update, ['grade'])
+        else:
+            Marks.objects.bulk_update(marks_update, ['mark'])
         Marks.objects.bulk_create(marks)
         return HttpResponse('success')
 
 class getAjaxJson(TeacherRequiredMixin, View):
+    """
+    Used for
+    * When Exam or Subject select box change fill Division select box
+    * When Division select box change load students in Handsontable
+    """
     def get(self, request):
         school = request.user.school
         exam = Exam.objects.get(school=school, id=request.GET['exam'])
         division = request.GET.get('division',None)
         resp = {'is_grade':exam.is_grade}
         if division:
+            # fill handsontable 
             classroom = ClassRoom.objects.get(school = school, name=exam.exam_class, division = division)
             marks = Marks.objects.filter(exam=exam,subject=request.GET['subject'])
             resp['students']=[]
-            for s in Student.objects.filter(classroom=classroom):
+            for s in Student.objects.filter(classroom=classroom, user__is_staff=True):
                 data = [s.user.id, s.user.get_full_name(), '']
                 has_mark = marks.filter(student=s)
                 if has_mark:
                     data[2] = has_mark[0].markgrade
                 resp['students'].append(data)
-            # resp['students']=[
-            #     [s.user.id, s.user.get_full_name(), marks.get(student=s).markgrade ] 
-            #     for s in Student.objects.filter(classroom=classroom)
-            # ]
         else:
-            resp['classes']= [c.division for c in ClassRoom.objects.filter(school = school, name=exam.exam_class)]
+            # fill division select box
+            if not exam.is_grade:
+                # to fill maxmark and passmark input boxes
+                sub_conf = SubjectMarkConf.objects.filter(exam=exam,subject=request.GET['subject'])
+                if sub_conf:
+                    resp['sub_conf'] = [sub_conf[0].max_mark, sub_conf[0].pass_mark]
+                else:
+                    resp['sub_conf'] = ['','']
+            resp['classes']= [{'classroom':c.classname,'division' :c.division} for c in ClassRoom.objects.filter(school = school, name=exam.exam_class)]
         return JsonResponse(resp,safe=False)
