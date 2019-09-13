@@ -2,6 +2,11 @@
   <li class="nav-item">
     <a class="nav-link{% if active == 'exams' %} active{% endif %}" href="{% url 'exams:exams' %}">Exams</a>
   </li>
-  
+  <li class="nav-item">
+    <a class="nav-link{% if active == 'markentry' %} active{% endif %}" href="{% url 'exams:markentry' %}">Mark Entry</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link{% if active == 'examreports' %} active{% endif %}" href="{% url 'exams:examreports' %}">Exam Reports</a>
+  </li>
 </ul>
 <hr>

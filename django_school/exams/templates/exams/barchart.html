@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% include 'exams/_header.html' %}
+<div id="container" style="min-width: 300px; height: 400px; margin: 0 auto"></div>
+{% endblock %}
+
+{% block extrajs %}
+<script src="{% static 'highcharts/highcharts.js' %}"></script>
+<script type="text/javascript">
+  Highcharts.chart('container', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: '{{exam.name}}'
+    },
+    subtitle: {
+        text: '{{student.user.get_full_name}}'
+    },
+    xAxis: {
+        type: 'category',
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Marks'
+        }
+    },
+    legend: {
+        enabled: false
+    },
+    tooltip: {
+        pointFormat: '<b>{point.y} Marks</b>'
+    },
+    series: [{
+        name: 'Exam',
+        data: {{ subjectmarks|safe }}
+    }]
+});
+</script>
+{% endblock %}

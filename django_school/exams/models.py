@@ -25,8 +25,17 @@ class Marks(models.Model):
     # ce =  models.IntegerField(default=0, blank=True, null=True)
     # theory = models.IntegerField(default=0, blank=True, null=True)
     # practical = models.IntegerField(default=0, blank=True, null=True)
-    mark = models.IntegerField(default=0, blank=True, null=True)
+    mark = models.IntegerField( blank=True, null=True)
     grade = models.CharField(max_length=10, blank=True)
+
+    class Meta:
+        unique_together = ("exam", "subject", "student")
+
+    @property
+    def markgrade(self):
+        if self.exam.is_grade:
+            return self.grade
+        return self.mark
     
 
 # class Exam(models.Model):

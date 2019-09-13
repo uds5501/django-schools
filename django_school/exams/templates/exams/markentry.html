@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block extracss %}
+<link rel="stylesheet" type="text/css" href="{% static 'handsontable/handsontable.full.min.css' %}">
+<style type="text/css">
+  .passmark_input {
+    display: none
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+{% include 'exams/_header.html' with active='markentry' %}
+
+<form>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label class="col-form-label col-form-label-sm">Exam</label>
+      <select class="form-control form-control-sm" id="exam_select">
+          <option value="">Select Exam</option>
+          {% for exam in exams %}
+            <option value="{{ exam.pk }}">{{ exam.name }} ({{exam.exam_class}})</option>
+          {% endfor %}        
+      </select>
+    </div>
+    <div class="form-group col-md-6">
+      <label class="col-form-label col-form-label-sm">Subject</label>
+      <select class="form-control form-control-sm" id="sel_subject">
+          <option value="">Select Subject</option>
+          {% for subject in subjects %}
+            <option value="{{ subject.pk }}">{{ subject.name }}</option>
+          {% endfor %}        
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-2 passmark_input">
+      <label class="col-form-label col-form-label-sm float-right">Maximum Marks:</label>
+    </div>
+    <div class="form-group col-md-2 passmark_input">
+      <input id="max_mark" type='text' placeholder="Maximum Marks" class='form-control form-control-sm' />
+    </div>
+    <div class="form-group col-md-2 passmark_input">
+      <label class="col-form-label col-form-label-sm float-right">Pass Marks:</label>
+    </div>
+    <div class="form-group col-md-2 passmark_input">
+      <input id="pass_mark" type='text' placeholder="Pass Marks" class='form-control form-control-sm' />
+    </div>    
+    <div class="form-group col-md-4" id="class_div">
+    </div>
+  </div>
+</form>
+<hr>
+
+<div id="markentry_table"></div><br>
+<button class="btn btn-success float-right" id="btn_save">Save Marks</button>
+{% endblock %}
+
+{% block extrajs %}
+<script src="{% static 'handsontable/handsontable.full.min.js' %}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  var student_table = new Handsontable(document.getElementById('markentry_table'), {
+    startCols: 0,
+    startRows: 0,
+    rowHeaders: true,
+    columns: [{ readOnly: true }, { readOnly: true }, {}],
+    colHeaders: ['ID', 'Student', 'Mark/Grade'],
+    licenseKey: 'non-commercial-and-evaluation',
+    stretchH: 'all'
+  });
+
+  function createClassRoomSelect(){
+    const exam = $("#exam_select").val();
+    const subject = $("#sel_subject").val();
+    if (exam && subject) {
+      $.get("{% url 'exams:getajaxdata' %}",{exam,subject}).done(function(data) {
+        let sel = $('<select class="form-control form-control-sm" id="sel_division">');
+        sel.append($("<option>").attr('value',"").text("Select ClassRoom"));
+        $(data.classes).each(function() {
+         sel.append($("<option>").attr('value',this.id).text(this.classroom));
+        });
+        $("#class_div").html(sel);
+        if (data.is_grade) {          
+          $(".passmark_input").hide();
+        } else {
+          $(".passmark_input").show();
+          $("#max_mark").val(data.sub_conf[0]);
+          $("#pass_mark").val(data.sub_conf[1]);
+          if (data.sub_conf[0]){
+            //disable input boxes
+            $("#max_mark").prop('readonly',true);
+            $("#pass_mark").prop('readonly',true);
+          } else {
+            $("#max_mark").prop('readonly',false);
+            $("#pass_mark").prop('readonly',false);
+          }
+        }
+
+        student_table.loadData([]);
+      });
+    } else {
+      $("#class_div").html('');
+      $(".passmark_input").hide();
+    }
+  }
+
+  $("#sel_subject").change(function() {
+    createClassRoomSelect();
+  });
+  $("#exam_select").change(function() {
+    createClassRoomSelect();
+  });
+
+  $('#class_div').on('change', 'select', function (e) {
+    const val = $(e.target).val();
+    if (val) {
+      $.get("{% url 'exams:getajaxdata' %}",
+        {exam: $("#exam_select").val(), classroom: val, subject:$("#sel_subject").val()})
+      .done(function(data) {        
+        // set handsontable colomn Headers
+        let h_markgrade = 'Grade';
+        if($('.passmark_input').is(':visible')) {
+          h_markgrade = 'Mark';
+        }
+        student_table.updateSettings({colHeaders:['ID','Student',h_markgrade] });
+        student_table.loadData(data.students);
+      });
+    }
+  });
+
+  $("#btn_save").click(function() { 
+    let params = {data: JSON.stringify(student_table.getData()), csrfmiddlewaretoken: '{{ csrf_token }}'};
+    params['exam'] = $("#exam_select").val();
+    params['subject'] = $("#sel_subject").val();
+
+    if($('.passmark_input').is(':visible')) {
+      // grade = false;
+      params['max_mark'] = $("#max_mark").val();
+      params['pass_mark'] = $("#pass_mark").val();
+    }
+    if (params['exam'] && params['subject'] && $("#sel_division").val()){
+      $.post("{% url 'exams:markentry' %}", params)
+      .done(function( message ) {
+          alert(message);
+          if (message === 'success') {
+            window.location.replace("{% url 'exams:markentry' %}");
+          }
+      });      
+    } else {
+      alert('Exam, Subject and ClassRoom is required.')
+    }    
+    
+  });
+});
+
+</script>
+{% endblock %}

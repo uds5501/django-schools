@@ -17,7 +17,7 @@
       <th>First Name</th>
       <th>Last Name</th>
       <th>Is Verified</th>
-      <th>Joined On</th>
+      <!-- <th>Joined On</th> -->
       {% if page == "1" %}<th>Class</th>{% endif %}      
     </tr>
   </thead>
@@ -26,20 +26,8 @@
     <tr{% if not user.is_staff %} style="color: red"{% endif %}>
       <td>{{user.username}}</td>
       <td>{{user.email}}</td>
-      <td>
-        {% if user.first_name %}
-          {{user.first_name}}
-        {% else %}
-          -
-        {% endif %}
-      </td>
-      <td>
-        {% if user.last_name %}
-          {{user.last_name}}
-        {% else %}
-          -
-        {% endif %}
-      </td>
+      <td>{{user.first_name}}</td>
+      <td>{{user.last_name}}</td>
       <td>
         {% if user != request.user %}
           <form method="post">
@@ -50,7 +38,7 @@
           </form>
         {% endif %}
       </td>
-      <td>{{user.date_joined|date:"d M Y"}}</td>
+      <!-- <td>{{user.date_joined|date:"d M Y"}}</td> -->
       {% if page == "1" %}<td>{{user.student.classroom.classname}}</td>{% endif %}
     </tr>
     {% endfor %}
