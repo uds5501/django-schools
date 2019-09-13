@@ -110,7 +110,9 @@ class ExamReportTestCase(TestCase):
         self.client = Client()
         self.url = reverse('exams:examreports')
         self.client.login(username='sumee', password='sumee1910')
-        Marks.objects.create(exam_id=2,subject_id=1,student=Student.objects.get(user=3),mark=20)
+        student = Student.objects.get(user=3)
+        Marks.objects.create(exam_id=2,subject_id=1,student=student,mark=20)
+        Marks.objects.create(exam_id=2,subject_id=2,student=student,mark=42)
 
     def test_examreport_forms(self):
         response = self.client.get(self.url)
@@ -121,4 +123,4 @@ class ExamReportTestCase(TestCase):
     def test_examreport_of_class(self):
         response = self.client.get(self.url,{'classroom':1,'exam':2})
         self.assertIn(b'<td>Suhail VS</td>', response.content)
-        self.assertIn(b'<td>20</td>', response.content)
+        self.assertIn(b'<td>62</td>', response.content)

@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.views import View
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import get_user_model
+from django.db.models import Sum
 
 from schools.mixins import TeacherRequiredMixin
 from teachers.decorators import teacher_required
@@ -138,26 +139,18 @@ class getAjaxJson(TeacherRequiredMixin, View):
 
 class ExamReports(TeacherRequiredMixin, View):
     def get(self, request):
-        
-        resp ={
-            
-            'academicyears': AcademicYear.objects.all(),
-        }        
+        resp ={'academicyears': AcademicYear.objects.all()}        
         rep_year = request.GET.get('academicyear','')
-        rep_classroom = request.GET.get('classroom','')
-        rep_exam = request.GET.get('exam','')
-        if rep_classroom:
-            resp['rep_classroom'] = int(rep_classroom)
-        if rep_exam:
-            resp['rep_exam'] = int(rep_exam)
+        resp['rep_classroom'] = request.GET.get('classroom','')
+        resp['rep_exam'] = request.GET.get('exam','')
         if rep_year:
             resp['rep_year'] = int(rep_year)
 
-        if rep_classroom and rep_exam:
-            print(rep_exam)
-            # dt = datetime.strptime(rep_date, "%d/%m/%Y")
-            # rep_class = AttendanceClass.objects.filter(
-
+        if resp['rep_classroom'] and resp['rep_exam']:
+            resp['markitems'] = Marks.objects.filter(exam = resp['rep_exam'], 
+                student__classroom= resp['rep_classroom']) \
+                .annotate(Sum('mark')).order_by('student__user__first_name')
+            print(resp['markitems'].values())
         return render(request,'exams/examreports.html', resp)
 
 class getExams(TeacherRequiredMixin, View):

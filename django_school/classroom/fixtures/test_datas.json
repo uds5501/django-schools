@@ -39,5 +39,6 @@
 {"model": "exams.exam", "pk": 1, "fields": {"school": 1, "academicyear": 1, "name": "Class Test November", "exam_class": 10, "exam_date": "2019-06-09T00:00:00Z", "is_grade": true, "results_published": false}}, 
 {"model": "exams.exam", "pk": 2, "fields": {"school": 1, "academicyear": 1, "name": "Social Class November Test Marks", "exam_class": 10, "exam_date": "2019-06-09T00:00:00Z", "is_grade": false, "results_published": false}},
 
-{"model": "classroom.subject", "pk": 1, "fields": {"school": 1, "name": "Social"}}
+{"model": "classroom.subject", "pk": 1, "fields": {"school": 1, "name": "Social"}},
+{"model": "classroom.subject", "pk": 2, "fields": {"school": 1, "name": "Mathematics"}}
 ]

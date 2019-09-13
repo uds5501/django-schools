@@ -28,6 +28,9 @@ class Marks(models.Model):
     mark = models.IntegerField( blank=True, null=True)
     grade = models.CharField(max_length=10, blank=True)
 
+    class Meta:
+        unique_together = ("exam", "subject", "student")
+
     @property
     def markgrade(self):
         if self.exam.is_grade:
