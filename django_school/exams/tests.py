@@ -124,3 +124,10 @@ class ExamReportTestCase(TestCase):
         response = self.client.get(self.url,{'classroom':1,'exam':2})
         self.assertIn(b'<td>Suhail VS</td>', response.content)
         self.assertIn(b'<td>62</td>', response.content)
+
+    def test_barchart_of_student(self):
+        # {% url 'exams:barchart' exam=v1 student=v2 %}
+        url = reverse('exams:barchart', kwargs={'exam':2,'student':3})
+        response = self.client.get(url)
+        
+        self.assertIn(b'Social Class November Test Marks', response.content)

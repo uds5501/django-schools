@@ -32,12 +32,12 @@
 </form>
 <hr>
 
-{% if markitems %}
+{% if students %}
 <div class="table-responsive">
 <table class="table table-sm table-bordered">
   <tr><th>Student</th><th>Total Marks</th><th></th></tr>
-  {% for item in markitems %}
-    <tr><td>{{ item.student.user.get_full_name }}</td><td>{{item.mark__sum}}</td><td><a class="btn btn-info btn-sm">Graph</a></td></tr>
+  {% for student in students %}
+    <tr><td>{{ student.name }}</td><td>{{student.totalmarks}}</td><td><a class="btn btn-info btn-sm" href="{% url 'exams:barchart' exam=rep_exam student=student.id %}">Graph</a></td></tr>
   {% endfor %}
 </table>  
 </div>

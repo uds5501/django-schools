@@ -7,7 +7,7 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
 
-from schools.mixins import TeacherRequiredMixin
+from schools.mixins import TeacherRequiredMixin, StudentRequiredMixin
 from teachers.decorators import teacher_required
 from schools.models import AcademicYear
 from students.models import Student
@@ -95,11 +95,52 @@ class MarkEntry(TeacherRequiredMixin, View):
         Marks.objects.bulk_create(marks)
         return HttpResponse('success')
 
+
+class ExamReports(TeacherRequiredMixin, View):
+    def get(self, request):
+        resp ={'academicyears': AcademicYear.objects.all()}        
+        rep_year = request.GET.get('academicyear','')
+        resp['rep_classroom'] = request.GET.get('classroom','')
+        resp['rep_exam'] = request.GET.get('exam','')
+        if rep_year:
+            resp['rep_year'] = int(rep_year)
+
+        if resp['rep_classroom'] and resp['rep_exam']:
+            resp['students'] = []
+            for student in Student.objects.filter(classroom=resp['rep_classroom']):
+                totalmarks = Marks.objects.filter(exam = resp['rep_exam'],
+                        student=student).aggregate(Sum('mark'))['mark__sum']
+                if totalmarks != None:
+                    resp['students'].append({
+                        'id': student.user.id,
+                        'name': student.user.get_full_name(),
+                        'totalmarks': totalmarks
+                    })
+        return render(request,'exams/examreports.html', resp)
+
+class BarChart(TeacherRequiredMixin, View):
+    def get(self, request, **kwargs):
+        # Marks(exam, subject,student, mark)
+        exam = Exam.objects.get(id = kwargs['exam'])
+        student = Student.objects.get(user_id = kwargs['student'])
+        subjectmarks = [
+            [mark.subject.name, mark.mark]
+            for mark in Marks.objects.filter(exam=exam,student=student)
+        ]
+        # subjectmarks = [['Shanghai', 24.2],['Beijing', 20.8]]
+        resp = {'subjectmarks':subjectmarks,'exam':exam, 'student': student}
+        
+        return render(request,'exams/barchart.html', resp)
+
+
+
 class getAjaxJson(TeacherRequiredMixin, View):
     """
-    Used for
+    Used in Markentry
     * When Exam or Subject select box change fill Division select box
     * When Division select box change load students in Handsontable
+    Used in ExamReport
+    * To fill Classroom select box
     """
     def getHandsontableData(self, school,exam, classroomid, subject):
         # fill handsontable 
@@ -136,24 +177,11 @@ class getAjaxJson(TeacherRequiredMixin, View):
                 for c in ClassRoom.objects.filter(school = school, name=exam.exam_class)]
         return JsonResponse(resp,safe=False)
 
-
-class ExamReports(TeacherRequiredMixin, View):
-    def get(self, request):
-        resp ={'academicyears': AcademicYear.objects.all()}        
-        rep_year = request.GET.get('academicyear','')
-        resp['rep_classroom'] = request.GET.get('classroom','')
-        resp['rep_exam'] = request.GET.get('exam','')
-        if rep_year:
-            resp['rep_year'] = int(rep_year)
-
-        if resp['rep_classroom'] and resp['rep_exam']:
-            resp['markitems'] = Marks.objects.filter(exam = resp['rep_exam'], 
-                student__classroom= resp['rep_classroom']) \
-                .annotate(Sum('mark')).order_by('student__user__first_name')
-            print(resp['markitems'].values())
-        return render(request,'exams/examreports.html', resp)
-
 class getExams(TeacherRequiredMixin, View):
+    """
+    Used in ExamReport
+    * To fill Exams select box
+    """
     def get(self, request):
         exams = [{'id':e.id,'name':e.name} for e in 
             Exam.objects.filter(school=request.user.school, 
