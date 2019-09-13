@@ -3,6 +3,7 @@ from django.test import Client
 from django.urls import reverse
 
 from .models import Marks
+from students.models import Student
 
 class ExamTestCase(TestCase):
     fixtures = ["test_datas.json"]
@@ -44,15 +45,15 @@ class MarkEntryTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertIn(b'Class Test November (10)', response.content)
 
-    def test_get_divisions_ajax(self):
-        # test get divisions of class for an exam
+    def test_get_classrooms_ajax(self):
+        # test get classrooms for an exam
         response = self.client.get(reverse('exams:getajaxdata'), {'exam':1})
         data = response.json()
         self.assertEqual(data['is_grade'], True)
-        self.assertEqual(data['classes'], [{'classroom':'10A','division':'A'}])
+        self.assertEqual(data['classes'], [{'classroom':'10A','id':1}])
 
         # handsontable load student data 
-        response = self.client.get(reverse('exams:getajaxdata'), {'exam':1, 'division':'A','subject':1})
+        response = self.client.get(reverse('exams:getajaxdata'), {'exam':1, 'classroom':1,'subject':1})
         data = response.json()
         self.assertIn([3, 'Suhail VS', ''],data['students'])
         # inactive student not in list
@@ -101,3 +102,23 @@ class MarkEntryTestCase(TestCase):
         params['data'] = handsontable_data.format('c+')
         response = self.client.post(self.url,params)
         self.assertIn(b'Please provide mark as Interger.', response.content)
+
+class ExamReportTestCase(TestCase):
+    fixtures = ["test_datas.json"]
+
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse('exams:examreports')
+        self.client.login(username='sumee', password='sumee1910')
+        Marks.objects.create(exam_id=2,subject_id=1,student=Student.objects.get(user=3),mark=20)
+
+    def test_examreport_forms(self):
+        response = self.client.get(self.url)
+        self.assertIn('<a class="nav-link active" href="{}">Exam Reports</a>'.format(self.url).encode(), response.content)
+        # Exam Select box has option 'Class Test November (10)'
+        # self.assertIn(b'Class Test November (10)', response.content)
+
+    def test_examreport_of_class(self):
+        response = self.client.get(self.url,{'classroom':1,'exam':2})
+        self.assertIn(b'<td>Suhail VS</td>', response.content)
+        self.assertIn(b'<td>20</td>', response.content)

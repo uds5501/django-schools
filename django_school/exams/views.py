@@ -46,9 +46,6 @@ class MarkEntry(TeacherRequiredMixin, View):
         }        
         return render(request,'exams/markentry.html', resp)
 
-    # def set_mark_grade(self):
-    #     pass
-
     def post(self,request):
         school = request.user.school
         exam = Exam.objects.get(school=school, id=request.POST['exam'])
@@ -103,30 +100,69 @@ class getAjaxJson(TeacherRequiredMixin, View):
     * When Exam or Subject select box change fill Division select box
     * When Division select box change load students in Handsontable
     """
+    def getHandsontableData(self, school,exam, classroomid, subject):
+        # fill handsontable 
+        classroom = ClassRoom.objects.get(school = school, id = classroomid)
+        marks = Marks.objects.filter(exam=exam,subject=subject)
+        students=[]
+        for s in Student.objects.filter(classroom=classroom, user__is_staff=True):
+            data = [s.user.id, s.user.get_full_name(), '']
+            has_mark = marks.filter(student=s)
+            if has_mark:
+                data[2] = has_mark[0].markgrade
+            students.append(data)
+        return students
+
+    
     def get(self, request):
         school = request.user.school
         exam = Exam.objects.get(school=school, id=request.GET['exam'])
-        division = request.GET.get('division',None)
+        classroom = request.GET.get('classroom',None)
         resp = {'is_grade':exam.is_grade}
-        if division:
-            # fill handsontable 
-            classroom = ClassRoom.objects.get(school = school, name=exam.exam_class, division = division)
-            marks = Marks.objects.filter(exam=exam,subject=request.GET['subject'])
-            resp['students']=[]
-            for s in Student.objects.filter(classroom=classroom, user__is_staff=True):
-                data = [s.user.id, s.user.get_full_name(), '']
-                has_mark = marks.filter(student=s)
-                if has_mark:
-                    data[2] = has_mark[0].markgrade
-                resp['students'].append(data)
+        if classroom:
+            resp['students'] = self.getHandsontableData(school, exam,classroom, request.GET['subject'])
         else:
-            # fill division select box
-            if not exam.is_grade:
+            # fill ClassRoom select box
+            subject = request.GET.get('subject',None)
+            if not exam.is_grade and subject:
                 # to fill maxmark and passmark input boxes
-                sub_conf = SubjectMarkConf.objects.filter(exam=exam,subject=request.GET['subject'])
+                sub_conf = SubjectMarkConf.objects.filter(exam=exam,subject=subject)
                 if sub_conf:
                     resp['sub_conf'] = [sub_conf[0].max_mark, sub_conf[0].pass_mark]
                 else:
                     resp['sub_conf'] = ['','']
-            resp['classes']= [{'classroom':c.classname,'division' :c.division} for c in ClassRoom.objects.filter(school = school, name=exam.exam_class)]
+            resp['classes']= [{'classroom':c.classname,'id' :c.id} 
+                for c in ClassRoom.objects.filter(school = school, name=exam.exam_class)]
         return JsonResponse(resp,safe=False)
+
+
+class ExamReports(TeacherRequiredMixin, View):
+    def get(self, request):
+        
+        resp ={
+            
+            'academicyears': AcademicYear.objects.all(),
+        }        
+        rep_year = request.GET.get('academicyear','')
+        rep_classroom = request.GET.get('classroom','')
+        rep_exam = request.GET.get('exam','')
+        if rep_classroom:
+            resp['rep_classroom'] = int(rep_classroom)
+        if rep_exam:
+            resp['rep_exam'] = int(rep_exam)
+        if rep_year:
+            resp['rep_year'] = int(rep_year)
+
+        if rep_classroom and rep_exam:
+            print(rep_exam)
+            # dt = datetime.strptime(rep_date, "%d/%m/%Y")
+            # rep_class = AttendanceClass.objects.filter(
+
+        return render(request,'exams/examreports.html', resp)
+
+class getExams(TeacherRequiredMixin, View):
+    def get(self, request):
+        exams = [{'id':e.id,'name':e.name} for e in 
+            Exam.objects.filter(school=request.user.school, 
+                academicyear=request.GET['ayear']).order_by('exam_date')]
+        return JsonResponse({'exams':exams},safe=False)

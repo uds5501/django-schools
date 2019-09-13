@@ -71,7 +71,7 @@ $(document).ready(function() {
     stretchH: 'all'
   });
 
-  function createDivisionSelect(){
+  function createClassRoomSelect(){
     const exam = $("#exam_select").val();
     const subject = $("#sel_subject").val();
     if (exam && subject) {
@@ -79,7 +79,7 @@ $(document).ready(function() {
         let sel = $('<select class="form-control form-control-sm" id="sel_division">');
         sel.append($("<option>").attr('value',"").text("Select ClassRoom"));
         $(data.classes).each(function() {
-         sel.append($("<option>").attr('value',this.division).text(this.classroom));
+         sel.append($("<option>").attr('value',this.id).text(this.classroom));
         });
         $("#class_div").html(sel);
         if (data.is_grade) {          
@@ -107,17 +107,17 @@ $(document).ready(function() {
   }
 
   $("#sel_subject").change(function() {
-    createDivisionSelect();
+    createClassRoomSelect();
   });
   $("#exam_select").change(function() {
-    createDivisionSelect();
+    createClassRoomSelect();
   });
 
   $('#class_div').on('change', 'select', function (e) {
     const val = $(e.target).val();
     if (val) {
       $.get("{% url 'exams:getajaxdata' %}",
-        {exam: $("#exam_select").val(), division: val, subject:$("#sel_subject").val()})
+        {exam: $("#exam_select").val(), classroom: val, subject:$("#sel_subject").val()})
       .done(function(data) {        
         // set handsontable colomn Headers
         let h_markgrade = 'Grade';

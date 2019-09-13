@@ -18,7 +18,7 @@
 <form class="form-inline">
   <div class="form-group mb-3" style="padding-right: 10px">
     <label class="sr-only">Academic Year</label>
-    <select class="form-control form-control-sm" name="academicyear">
+    <select class="form-control form-control-sm" name="academicyear" required>
         <option value="">Select Academic Year</option>
         {% for academicyear in academicyears %}
           <option value="{{ academicyear.pk }}"
@@ -29,7 +29,7 @@
   </div>
   <div class="form-group mb-3" style="padding-right: 10px">
     <label class="sr-only">Classroom</label>
-    <select class="form-control form-control-sm" name="classroom">
+    <select class="form-control form-control-sm" name="classroom" required>
         <option value="">Select Class</option>
         {% for classroom in classrooms %}
           <option value="{{ classroom.pk }}"{% if classroom.pk == att_classroom %} selected{% endif %}>{{ classroom.classname }}</option>
@@ -38,7 +38,7 @@
   </div>
   <div class="form-group mb-3" style="padding-right: 10px">
     <label class="sr-only">Month</label>
-    <select class="form-control form-control-sm" name="month">
+    <select class="form-control form-control-sm" name="month" required>
         <option value="">Select Month</option>
         {% for month in months %}
           <option value="{{ forloop.counter }}"{% if forloop.counter == att_month %} selected{% endif %}>{{ month }}</option>
