@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block extracss %}
+<link rel="stylesheet" type="text/css" href="{% static 'handsontable/handsontable.full.min.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'students/_header.html' with active='student_migration' %}
+<p>Note: This tool is used for migrating student from one class to another</p>
+<form class="form-inline">
+  <label class="my-1 mr-2">Classroom</label>
+  <select class="custom-select my-1 mr-sm-2" name="classroom"  id="sel_classroom">
+    <option value="">Select Class</option>
+    {% for classroom in classrooms %}
+    	{% if classroom.pk == resp_classroom %} selected{% endif %}
+    	<option value="{{ classroom.pk }}"{% if classroom.pk == resp_classroom %} selected{% endif %}>{{ classroom.classname }}</option>
+    {% endfor %}
+  </select>
+</form>
+<hr>
+<div id="migration_table"></div><br>
+<button class="btn btn-success float-right" id="btn_save">Migrate Students</button>
+
+{% endblock %}
+
+{% block extrajs %}
+<script src="{% static 'handsontable/handsontable.full.min.js' %}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  var migration_table = new Handsontable(document.getElementById('migration_table'), {
+    startCols: 0,
+    startRows: 0,
+    rowHeaders: true,
+    columns: [
+      { readOnly: true }, 
+      { readOnly: true }, 
+      {
+        editor: 'select',
+        selectOptions: ['Failed', 'Passed', 'Passed Out']
+      },
+      {}
+    ],
+    colHeaders: ['ID', 'Student', 'Status','Migrating Classroom'],
+    licenseKey: 'non-commercial-and-evaluation',
+    stretchH: 'all'
+  });
+  $("#sel_classroom").change(function() {
+    const classroom = $(this).val();
+    if (classroom) {
+      $.get("{% url 'students:getajaxstudents' %}",{classroom}).done(function(data) {
+        // alert(data.students);
+        migration_table.loadData(data.students);
+      });
+    }
+  });
+
+  $("#btn_save").click(function() { 
+    let params = {data: JSON.stringify(migration_table.getData()), csrfmiddlewaretoken: '{{ csrf_token }}'};
+    $.post("{% url 'students:student_migration' %}", params)
+    .done(function( message ) {
+        alert(message);
+        if (message === 'success') {
+          window.location.replace("{% url 'students:student_migration' %}");
+        }
+    });
+  });
+});
+</script>
+{% endblock %}

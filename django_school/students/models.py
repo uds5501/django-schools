@@ -26,8 +26,14 @@ class Student(models.Model):
     def __str__(self):
         return self.user.username
 
-
 class StudentMigration(models.Model):
+    STATUS_CHOICES = [
+        ('Passed', 'Passed'),
+        ('Passout', 'Pass Out'),
+        ('Failed', 'Failed')
+    ]
+
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     academicyear =  models.ForeignKey('schools.AcademicYear', on_delete=models.CASCADE)
-    classroom = models.ForeignKey('classroom.ClassRoom', on_delete=models.CASCADE)
+    classroom = models.ForeignKey('classroom.ClassRoom', on_delete=models.CASCADE, null=True)
+    status = models.CharField(max_length=10,choices=STATUS_CHOICES, default='Passed')

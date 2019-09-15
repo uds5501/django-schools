@@ -120,18 +120,17 @@ class ExamReportTestCase(TestCase):
         # self.assertIn(b'Class Test November (10)', response.content)
 
     def test_examreport_of_class(self):
-        response = self.client.get(self.url,{'classroom':1,'exam':2})
+        response = self.client.get(self.url,{'classroom':1,'exam':2, 'academicyear':2})
         self.assertIn(b'<td>Suhail VS</td>', response.content)
         self.assertIn(b'<td>62</td>', response.content)
 
     def test_examreport_of_class_old_academicyear(self):
         """
         Exam report of an old academicyear of a passout student
-
         """
-        exam = Exam.objects.create(school_id = 1, academicyear_id =1, name='Old Exam', exam_class=10, exam_date="2019-06-09")
+        exam = Exam.objects.create(school_id = 1, academicyear_id =1, name='Old Exam', exam_class=10, exam_date="2019-06-09T23:53:35.378Z")
         Marks.objects.create(exam=exam, subject_id=1, student=Student.objects.get(user=5), mark=20)
-        response = self.client.get(self.url,{'classroom':1,'exam':exam.id})
+        response = self.client.get(self.url,{'classroom':1,'exam':exam.id, 'academicyear':1})
         self.assertIn(b'<td>Saji S</td>', response.content)
 
     def test_barchart_of_student(self):
