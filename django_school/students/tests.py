@@ -32,3 +32,19 @@ class StudentImportTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertIn('<a class="nav-link active" href="{}">Students</a>'.format(reverse('students:user_list')).encode(), response.content)
 
+
+
+class StudentMigrationTestCase(TestCase):
+    fixtures = ["test_datas.json"]
+
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse('students:student_migration')
+        self.client.login(username='sumee', password='sumee1910')
+        # student = Student.objects.get(user=3)
+        # Marks.objects.create(exam_id=2,subject_id=1,student=student,mark=20)
+        # Marks.objects.create(exam_id=2,subject_id=2,student=student,mark=42)
+
+    def test_studentmigration_forms(self):
+        response = self.client.get(self.url)
+        self.assertIn('<a class="nav-link active" href="{}">Student Migration</a>'.format(self.url).encode(), response.content)

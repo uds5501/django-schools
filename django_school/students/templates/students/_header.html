@@ -6,5 +6,9 @@
   <li class="nav-item">
     <a class="nav-link{% if active == 'student_import' %} active{% endif %}" href="{% url 'students:student_import' %}">Student Import</a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link{% if active == 'student_migration' %} active{% endif %}" href="{% url 'students:student_migration' %}">Student Migration</a>
+  </li>
+  
 </ul>
 <hr>

@@ -10,7 +10,7 @@ from django.db.models import Sum
 from schools.mixins import TeacherRequiredMixin, StudentRequiredMixin
 from teachers.decorators import teacher_required
 from schools.models import AcademicYear
-from students.models import Student
+from students.models import Student, StudentMigration
 from classroom.models import Subject, ClassRoom
 from .forms import ExamForm
 from .models import Exam, SubjectMarkConf, Marks
@@ -98,25 +98,36 @@ class MarkEntry(TeacherRequiredMixin, View):
 
 class ExamReports(TeacherRequiredMixin, View):
     def get(self, request):
-        resp ={'academicyears': AcademicYear.objects.all()}        
+        # resp ={}        
         rep_year = request.GET.get('academicyear','')
-        resp['rep_classroom'] = request.GET.get('classroom','')
-        resp['rep_exam'] = request.GET.get('exam','')
-        if rep_year:
-            resp['rep_year'] = int(rep_year)
+        classroom = request.GET.get('classroom','')
+        exam = request.GET.get('exam','')
 
-        if resp['rep_classroom'] and resp['rep_exam']:
-            resp['students'] = []
-            for student in Student.objects.filter(classroom=resp['rep_classroom']):
-                totalmarks = Marks.objects.filter(exam = resp['rep_exam'],
-                        student=student).aggregate(Sum('mark'))['mark__sum']
+        if rep_year:
+            rep_year = int(rep_year)
+
+        students = []
+        if rep_year and classroom and exam:            
+            # for student in Student.objects.filter(classroom=classroom):
+            for sm in StudentMigration.objects.filter(academicyear=rep_year, 
+                classroom=classroom):
+                totalmarks = Marks.objects.filter(exam = exam,
+                        student=sm.student).aggregate(Sum('mark'))['mark__sum']
                 if totalmarks != None:
-                    resp['students'].append({
-                        'id': student.user.id,
-                        'name': student.user.get_full_name(),
+                    students.append({
+                        'id': sm.student.user.id,
+                        'name': sm.student.user.get_full_name(),
                         'totalmarks': totalmarks
                     })
-        return render(request,'exams/examreports.html', resp)
+
+        #         if resp['rep_classroom'] and resp['rep_exam']:
+        # +            resp['markitems'] = Marks.objects.filter(exam = resp['rep_exam'], 
+        # +                student__classroom= resp['rep_classroom']) \
+        # +                .annotate(Sum('mark')).order_by('student__user__first_name')
+        # +            print(resp['markitems'].values())
+        
+        return render(request,'exams/examreports.html', {'academicyears': AcademicYear.objects.all(),
+            'rep_year':rep_year, 'rep_classroom':classroom, 'rep_exam':exam, 'students':students})
 
 class BarChart(TeacherRequiredMixin, View):
     def get(self, request, **kwargs):

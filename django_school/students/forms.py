@@ -1,9 +1,12 @@
 from django import forms
-from schools.forms import CustomUserCreationForm
-from quizzes.models import Subject
 from django.db import transaction
-from .models import Student
+
+from schools.forms import CustomUserCreationForm
 from classroom.models import ClassRoom
+from quizzes.models import Subject
+from schools.models import AcademicYear
+
+from .models import Student, StudentMigration
 
 class StudentSignUpForm(CustomUserCreationForm):
     classroom = forms.CharField(required=True,
@@ -19,14 +22,17 @@ class StudentSignUpForm(CustomUserCreationForm):
 
     @transaction.atomic
     def save(self):
+        classroom = ClassRoom.objects.get(id= self.cleaned_data.get('classroom'))
+        academicyear = AcademicYear.objects.get(status=True)     
+
         user = super().save(commit=False)
         user.user_type = 1 # student
         #user.is_active = False
         #user.school = self.cleaned_data.get('school')
         user.save()
-        classroom = ClassRoom.objects.get(id= self.cleaned_data.get('classroom'))
-        student = Student.objects.create(user=user,classroom = classroom)
-        # student.interests.add(*self.cleaned_data.get('interests'))
         
+        student = Student.objects.create(user=user,classroom = classroom)
+        StudentMigration.objects.create(student = student, classroom = classroom, academicyear = academicyear)
+        # student.interests.add(*self.cleaned_data.get('interests'))        
         # course.students.add(user)
         return user
