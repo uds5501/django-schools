@@ -105,7 +105,7 @@ class ExamReports(TeacherRequiredMixin, View):
         if rep_year:
             resp['rep_year'] = int(rep_year)
 
-        if resp['rep_classroom'] and resp['rep_exam']:
+        if rep_year and resp['rep_classroom'] and resp['rep_exam']:
             resp['students'] = []
             for student in Student.objects.filter(classroom=resp['rep_classroom']):
                 totalmarks = Marks.objects.filter(exam = resp['rep_exam'],
@@ -116,6 +116,16 @@ class ExamReports(TeacherRequiredMixin, View):
                         'name': student.user.get_full_name(),
                         'totalmarks': totalmarks
                     })
+
+            # for sm in StudentMigration.objects.filter(academicyear=rep_year, 
+            #     classroom=resp['rep_classroom']):
+                
+        #         if resp['rep_classroom'] and resp['rep_exam']:
+        # +            resp['markitems'] = Marks.objects.filter(exam = resp['rep_exam'], 
+        # +                student__classroom= resp['rep_classroom']) \
+        # +                .annotate(Sum('mark')).order_by('student__user__first_name')
+        # +            print(resp['markitems'].values())
+        
         return render(request,'exams/examreports.html', resp)
 
 class BarChart(TeacherRequiredMixin, View):

@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.test import Client
 from django.urls import reverse
 
-from .models import Marks
+from .models import Marks, Exam
 from students.models import Student
 
 class ExamTestCase(TestCase):
@@ -25,7 +25,6 @@ class ExamTestCase(TestCase):
         response = self.client.post(self.url,params, follow=True)
         self.assertIn(b'09 Jun 2019', response.content)
 
-        
 
 class MarkEntryTestCase(TestCase):
     fixtures = ["test_datas.json"]
@@ -125,9 +124,20 @@ class ExamReportTestCase(TestCase):
         self.assertIn(b'<td>Suhail VS</td>', response.content)
         self.assertIn(b'<td>62</td>', response.content)
 
+    def test_examreport_of_class_old_academicyear(self):
+        """
+        Exam report of an old academicyear of a passout student
+
+        """
+        exam = Exam.objects.create(school_id = 1, academicyear_id =1, name='Old Exam', exam_class=10, exam_date="2019-06-09")
+        Marks.objects.create(exam=exam, subject_id=1, student=Student.objects.get(user=5), mark=20)
+        response = self.client.get(self.url,{'classroom':1,'exam':exam.id})
+        self.assertIn(b'<td>Saji S</td>', response.content)
+
     def test_barchart_of_student(self):
         # {% url 'exams:barchart' exam=v1 student=v2 %}
         url = reverse('exams:barchart', kwargs={'exam':2,'student':3})
         response = self.client.get(url)
         
         self.assertIn(b'Social Class November Test Marks', response.content)
+

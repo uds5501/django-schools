@@ -1,27 +1,7 @@
-[{
-    "model": "schools.basicinfo",
-    "pk": 1,
-    "fields": {
-        "establish_date": "Not Available",
-        "area": "5 hectare / acre",
-        "rooms": 43,
-        "teaching_staffs": 34,
-        "non_teaching_staffs": 5
-    }
-},{
-    "model": "schools.school",
-    "pk": 1,
-    "fields": {
-        "name": "G. H. S. S. Kizhakkanchery",
-        "code": 21006,
-        "district": "Palakkad",
-        "edu_district": "Palakkad",
-        "sub_district": "Alathur",
-        "url_id": 8475,
-        "basic_info": 1,
-        "created_on": "2018-07-28T12:59:39.001Z"
-    }
-},
+[
+{"model": "schools.basicinfo", "pk": 1,"fields": {"establish_date": "Not Available","area": "5 hectare / acre","rooms": 43,"teaching_staffs": 34,"non_teaching_staffs": 5 }},
+{"model": "schools.school","pk": 1,"fields": {"name": "G. H. S. S. Kizhakkanchery","code": 21006,"district": "Palakkad","edu_district": "Palakkad","sub_district": "Alathur","url_id": 8475,"basic_info": 1,"created_on": "2018-07-28T12:59:39.001Z"}},
+
 {"model": "classroom.classroom", "pk": 1, "fields": {"school": 1, "name": 10, "division":"A"}}, 
 {"model": "classroom.classroom", "pk": 2, "fields": {"school": 1, "name": 9, "division":"A"}}, 
 {"model": "classroom.classroom", "pk": 3, "fields": {"school": 1, "name": 8, "division":"A"}},
@@ -30,14 +10,17 @@
 {"model": "schools.user", "pk": 2, "fields": {"password": "pbkdf2_sha256$150000$6Mgop0A5NcWp$AceJgr/0JC7SVGKCuk6/UZf0mYIeAF0MI/MHfIiDovQ=", "last_login": "2019-08-25T00:40:46.628Z", "is_superuser": true, "username": "admin", "first_name": "", "last_name": "", "email": "", "is_staff": true, "is_active": true, "date_joined": "2019-08-23T04:54:12.955Z", "user_type": 1, "school": null, "groups": [], "user_permissions": []}}, 
 {"model": "schools.user", "pk": 3, "fields": {"password": "pbkdf2_sha256$150000$FrsE1oIk6eT6$VwSce+UPEaUoYK/1ffbCGMFSgU2s6Gff/aUpOFwaOd0=", "last_login": "2019-08-24T16:21:46.348Z", "is_superuser": false, "username": "suhail", "first_name": "Suhail", "last_name": "VS", "email": "", "is_staff": true, "is_active": true, "date_joined": "2019-08-24T16:21:46.085Z", "user_type": 1, "school": 1, "groups": [], "user_permissions": []}}, 
 {"model": "schools.user", "pk": 4, "fields": {"password": "pbkdf2_sha256$150000$9aso48r7pq9v$Jz9sixvn77l1pWAEbRbHR0lFbtBSITfKlcPnqu+4MP0=", "last_login": "2019-08-24T23:53:35.378Z", "is_superuser": false, "username": "sufail", "first_name": "Sufail", "last_name": "VS", "email": "", "is_staff": false, "is_active": true, "date_joined": "2019-08-24T23:53:35.072Z", "user_type": 1, "school": 1, "groups": [], "user_permissions": []}},
+{"model": "schools.user", "pk": 5, "fields": {"password": "pbkdf2_sha256$150000$K2lgDqtUPqyC$6KYC6lyTEHcuCwlo9L3lLQi4pi2hfry/5kp59UfRA0w=", "last_login": null, "is_superuser": false, "username": "saji@mailinator.com", "first_name": "Saji", "last_name": "S", "email": "saji@mailinator.com", "is_staff": true, "is_active": true, "date_joined": "2019-09-11T06:32:14.411Z", "user_type": 1, "school": 1, "groups": [], "user_permissions": []}}, 
 
 {"model": "students.student", "pk": 3, "fields": {"classroom": 1, "interests": []}}, 
 {"model": "students.student", "pk": 4, "fields": {"classroom": 1, "interests": []}},
+{"model": "students.student", "pk": 5, "fields": {"classroom": null, "interests": []}}, 
 
-{"model": "schools.academicyear", "pk": 1, "fields": {"name": "2019-2020", "status": true}},
+{"model": "schools.academicyear", "pk": 1, "fields": {"name": "2018-2019", "status": false}},
+{"model": "schools.academicyear", "pk": 2, "fields": {"name": "2019-2020", "status": true}},
 
-{"model": "exams.exam", "pk": 1, "fields": {"school": 1, "academicyear": 1, "name": "Class Test November", "exam_class": 10, "exam_date": "2019-06-09T00:00:00Z", "is_grade": true, "results_published": false}}, 
-{"model": "exams.exam", "pk": 2, "fields": {"school": 1, "academicyear": 1, "name": "Social Class November Test Marks", "exam_class": 10, "exam_date": "2019-06-09T00:00:00Z", "is_grade": false, "results_published": false}},
+{"model": "exams.exam", "pk": 1, "fields": {"school": 1, "academicyear": 2, "name": "Class Test November", "exam_class": 10, "exam_date": "2019-06-09T00:00:00Z", "is_grade": true, "results_published": false}}, 
+{"model": "exams.exam", "pk": 2, "fields": {"school": 1, "academicyear": 2, "name": "Social Class November Test Marks", "exam_class": 10, "exam_date": "2019-06-09T00:00:00Z", "is_grade": false, "results_published": false}},
 
 {"model": "classroom.subject", "pk": 1, "fields": {"school": 1, "name": "Social"}},
 {"model": "classroom.subject", "pk": 2, "fields": {"school": 1, "name": "Mathematics"}}
