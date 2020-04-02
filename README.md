@@ -52,3 +52,13 @@ password: `student`
 ## License
 
 The source code is released under the [MIT License](https://github.com/sibtc/django-multiple-user-types-example/blob/master/LICENSE).
+
+
+# Heroku
+
++ create and app at https://dashboard.heroku.com/apps/
++ click `Deploy` Tab -> Deploy method `Github`
++ Manual deploy, select `heroku` branch, click `Deploy Branch`
++ Install heroku `$ sudo snap install --classic heroku`
++ logs `$ heroku logs -a djangoschools` 
++ `$ heroku run -a djangoschools python django_school/manage.py migrate`

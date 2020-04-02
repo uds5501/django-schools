@@ -1,0 +1,1 @@
+web: gunicorn --pythonpath django_school django_school.wsgi --log-file -
