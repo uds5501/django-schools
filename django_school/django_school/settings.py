@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     'crispy_forms',
-
+    'social_django',
     'classroom',
 ]
 
@@ -54,6 +54,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'social_django.middleware.SocialAuthExceptionMiddleware', 
 ]
 
 ROOT_URLCONF = 'django_school.urls'
@@ -71,6 +73,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'social_django.context_processors.backends',  # <--
+                'social_django.context_processors.login_redirect', # <--
             ],
         },
     },
@@ -123,21 +128,27 @@ STATICFILES_DIRS = [
 ]
 
 
-# Custom Django auth settings
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.github.GithubOAuth2',
+    # 'social_core.backends.twitter.TwitterOAuth',
+    # 'social_core.backends.facebook.FacebookOAuth2',
 
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+SOCIAL_AUTH_GITHUB_KEY = '19c198d4322457e5917e'
+SOCIAL_AUTH_GITHUB_SECRET = '1bd51b62009a516e2071cb5b9c851f4cde89c8a3'
+
+# Custom Django auth settings
 AUTH_USER_MODEL = 'classroom.User'
 
 LOGIN_URL = 'login'
-
 LOGOUT_URL = 'logout'
-
 LOGIN_REDIRECT_URL = 'home'
-
 LOGOUT_REDIRECT_URL = 'home'
 
 
 # Messages built-in framework
-
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-secondary',
     messages.INFO: 'alert-info',
@@ -148,5 +159,4 @@ MESSAGE_TAGS = {
 
 
 # Third party apps configuration
-
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
