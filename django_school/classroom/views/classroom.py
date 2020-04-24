@@ -12,7 +12,7 @@ def home(request):
             return redirect('teachers:quiz_change_list')
         else:
             return redirect('students:quiz_list')
-    return render(request, 'classroom/home.html')
+    return redirect('login') # render(request, 'classroom/home.html')
 
 
 def save_github_user(backend, user, response, *args, **kwargs):
